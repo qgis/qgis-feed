@@ -6,4 +6,5 @@ jobs:
     steps:
       - checkout
       - run: docker-compose up -d
+      - run: sleep 20  # Wait for postgresql
       - run: docker-compose exec qgisfeed sh -c "cd /code/qgisfeedproject && python manage.py test qgisfeed"
