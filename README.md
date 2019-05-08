@@ -67,7 +67,7 @@ The application has a single endpoint available at the web server root `/` the r
 
 Example call: http://localhost:8000/
 
-Retuned data:
+Returned data:
 ```json
 [
   {
@@ -119,7 +119,7 @@ Example call: http://localhost:8000/?lat=44.5&lon=9.23
 
 ## Docker
 
-For development purposes only, you can run this application inde debug mode with docker compose:
+For development purposes only, you can run this application in debug mode with docker compose:
 
 ```bash
 $ docker compose up
