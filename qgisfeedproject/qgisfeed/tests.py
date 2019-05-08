@@ -44,7 +44,7 @@ class QgisFeedEntryTestCase(TestCase):
         response = c.get('/')
         data = json.loads(response.content)
         titles = [d['title'] for d in data]
-        self.assertFalse("QGIS core will be rewritten in PASCAL" in titles)
+        self.assertTrue("QGIS core will be rewritten in PASCAL" in titles)
 
     def test_expired(self):
         c = Client()

@@ -41,7 +41,7 @@ class PublishedManager(models.Manager):
     dates and the published flag"""
 
     def get_queryset(self):
-        return super().get_queryset().filter(Q(publication_start__isnull=True) | (Q(publication_start__gte=datetime.now())), Q(publication_end__isnull=True) | (Q(publication_end__lte=datetime.now())) , published=True )
+        return super().get_queryset().filter(Q(publication_start__isnull=True) | (Q(publication_start__lte=datetime.now())), Q(publication_end__isnull=True) | (Q(publication_end__gte=datetime.now())) , published=True )
 
 
 class QgisFeedEntry(models.Model):

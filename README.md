@@ -53,3 +53,73 @@ This application is the backend part that manages and serves news for the QGIS w
 
     `python manage.py runserver`
 
+## Settings
+
+To prevent DDOS attacks there is limit in the number of returned records (defaults to 20): it can be configured by overriding the settings in `settings_local.py` with:
+
+```python
+QGISFEED_MAX_RECORDS=40  # default value is 20
+```
+
+## Endpoint and accepted parameters
+
+The application has a single endpoint available at the web server root `/` the reponse is in JSON format.
+
+Example call: http://localhost:8000/
+
+Retuned data:
+```json
+[
+  {
+    "title": "QGIS acquired by ESRI",
+    "image": "http://localhost:8000/feedimages/image.png",
+    "content": "<p>QGIS is finally part of the ESRI ecosystem, it has been rebranded as CrashGIS to better integrate with ESRI products line.</p>",
+    "url": "https://www.qgis.com"
+  },
+  {
+    "title": "Null Island QGIS Meeting",
+    "image": "",
+    "content": "<p>Let's dive in the ocean together!</p>",
+    "url": null
+  },
+  {
+    "title": "QGIS Italian Meeting",
+    "image": "",
+    "content": "<p>Ciao from Italy!</p>",
+    "url": null
+  }
+]
+```
+
+### Available parameters for filters
+
+The following parameters can be passed by the client to filter available records.
+
+#### lang
+
+When `lang` is passed, the records that have a different `lang` will be excluded from the results. Only the records with `null` `lang` and the records with a matching `lang` will be returned.
+
+Accepted values: `ISO-939-1` two letters language code
+
+Example call:http://localhost:8000/?lang=de
+
+#### lat lon (location)
+
+When a `lat` and `long` are passed, the records that have a location filter set will be returned only if the point defined by `lat` and `lon` is within record's location.
+
+Accepted values: `ESPG:4326` latitude and longitude
+
+Example call:http://localhost:8000/?lat=44.5&lon=9.23
+
+
+## Docker
+
+You can run this application with docker compose:
+
+```bash
+$ docker compose up
+```
+
+A set of test data will be automatically loaded and the application will be available at http://localhost:8000
+
+To enter the control panel http://localhost:8000/admin the credentials are `admin`/`admin`

@@ -14,6 +14,7 @@ __copyright__ = 'Copyright 2019, ItOpen'
 
 
 from django.core.serializers import serialize
+from django.conf import settings
 from django.contrib.gis.geos import GEOSGeometry
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views import View
@@ -21,6 +22,9 @@ from django.db.models import Q
 from .models import QgisFeedEntry
 from .languages import LANGUAGE_KEYS
 import json
+
+
+QGISFEED_MAX_RECORDS=getattr(settings, 'QGISFEED_MAX_RECORDS', 20)
 
 class BadRequestException(Exception):
     pass
@@ -72,10 +76,10 @@ class QgisEntriesView(View):
         if filters.get('location') is not None:
             qs = qs.filter(spatial_filter__contains=filters.get('location'))
 
-        for record in qs.values('title','image', 'content', 'url'):
+        for record in qs.values('title','image', 'content', 'url')[:QGISFEED_MAX_RECORDS]:
             data.append(record)
 
-        return HttpResponse(json.dumps(data), content_type='application/json')
+        return HttpResponse(json.dumps(data, indent=(2 if settings.DEBUG else 0)),content_type='application/json')
 
 
 

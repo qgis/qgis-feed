@@ -1,0 +1,17 @@
+version: '3'
+services:
+  postgis:
+    image: kartoza/postgis
+    ports:
+    - "55432:5432"
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASS: docker
+      POSTGRES_DBNAME: qgisfeed
+  qgisfeed:
+    build: .
+    command: /code/entrypoint.sh
+    ports:
+    - "8000:8000"
+    depends_on:
+      - postgis
