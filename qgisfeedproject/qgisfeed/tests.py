@@ -15,6 +15,7 @@ __copyright__ = 'Copyright 2019, ItOpen'
 
 from django.test import TestCase
 from django.test import Client
+from django.contrib.auth.models import Group, User
 # Create your tests here.
 import json
 
@@ -113,4 +114,13 @@ class QgisFeedEntryTestCase(TestCase):
         not_sticky = data[-1]
         self.assertFalse(not_sticky['sticky'])
 
+    def test_group_is_created(self):
+        self.assertEqual(Group.objects.filter(name='qgisfeedentry_authors').count(), 1)
+        perms = sorted([p.codename for p in Group.objects.get(name='qgisfeedentry_authors').permissions.all()])
+        self.assertEqual(perms, ['add_qgisfeedentry', 'view_qgisfeedentry'])
+        # Create a staff user and verify
+        staff = User(username='staff_user', is_staff=True)
+        staff.save()
+        self.assertIsNotNone(staff.groups.get(name='qgisfeedentry_authors'))
+        self.assertEqual(staff.get_all_permissions(), set(('qgisfeed.add_qgisfeedentry', 'qgisfeed.view_qgisfeedentry')))
 

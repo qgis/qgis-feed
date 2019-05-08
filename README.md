@@ -62,6 +62,21 @@ To prevent DDOS attacks there is limit in the number of returned records (defaul
 QGISFEED_MAX_RECORDS=40  # default value is 20
 ```
 
+For email notifications, the sender address can be configured with:
+
+```python
+QGISFEED_FROM_EMAIL='noreply@qgis.org'`  # default value is 'noreply@qgis.org'
+```
+
+See https://docs.djangoproject.com/en/2.2/topics/email/#module-django.core.mail for further email configuration.
+
+
+## Control panel and permissions
+
+Users with `staff` flag can enter the control panel at `/admin` and add feed entries, by default entries are not published.
+
+Users with `superadmin` flag will be notified by email when an entry is added to the feed and will be able to publish the entry.
+
 ## Endpoint and accepted parameters
 
 The application has a single endpoint available at the web server root `/` the reponse is in JSON format.
@@ -111,7 +126,7 @@ Example call: http://localhost:8000/?lang=de
 
 #### lat lon (location)
 
-When `lat` **and** `long` are passed, the records that have a location filter set will be returned only if the point defined by `lat` and `lon` is within record's location.
+When `lat` **and** `lon` are passed, the records that have a location filter set will be returned only if the point defined by `lat` and `lon` is within record's location.
 
 Accepted values: `ESPG:4326` latitude and longitude
 
@@ -128,4 +143,7 @@ $ docker compose up
 
 A set of test data will be automatically loaded and the application will be available at http://localhost:8000
 
-To enter the control panel http://localhost:8000/admin the credentials are `admin`/`admin`
+To enter the control panel http://localhost:8000/admin, two test users are available:
+
+- Super Admin: the credentials are `admin`/`admin`
+- Staff (News Entry Author): the credentials are `staff`/`staff`
