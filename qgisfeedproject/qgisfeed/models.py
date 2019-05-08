@@ -19,9 +19,6 @@ from django.utils.translation import gettext as _
 from django.contrib.auth import get_user_model
 from tinymce import models as tinymce_models
 from datetime import datetime
-# Create your models here.
-
-
 
 
 class QgisLanguageField(models.CharField):

@@ -26,7 +26,7 @@ from django.urls import reverse
 from .models import QgisFeedEntry
 
 # Get an instance of a logger
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('qgisfeed.admin')
 
 QGISFEED_FROM_EMAIL = getattr(settings, 'QGISFEED_FROM_EMAIL', 'noreply@qgis.org')
 
@@ -35,7 +35,7 @@ class QgisFeedEntryAdmin(admin.GeoModelAdmin):
     list_display = ('title', 'author', 'language_filter', 'published',
                     'publication_start', 'publication_end', 'sorting')
 
-    def notify(self, author, recipients, obj):
+    def notify(self, author, request, recipients, obj):
         """Send notification emails"""
         body = """
             User %s added a new entry.\r\n
@@ -44,7 +44,7 @@ class QgisFeedEntryAdmin(admin.GeoModelAdmin):
             """ % (
                 author.username,
                 obj.title,
-                reverse('admin:qgisfeed_qgisfeedentry_change', args=(obj.pk,))
+                request.build_absolute_uri(reverse('admin:qgisfeed_qgisfeedentry_change', args=(obj.pk,)))
             )
         if settings.DEBUG:
             logger.debug("DEBUG is True: email not sent:\n %s" % body)
@@ -67,7 +67,7 @@ class QgisFeedEntryAdmin(admin.GeoModelAdmin):
         if not change and not request.user.is_superuser:
             recipients = [u.email for u in User.objects.filter(is_superuser=True, is_active=True, email__isnull=False).exclude(email='')]
             if recipients:
-                self.notify(request.user, recipients, obj)
+                self.notify(request.user, request, recipients, obj)
 
 
     def get_form(self, request, obj=None, **kwargs):
