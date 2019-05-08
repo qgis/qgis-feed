@@ -6,4 +6,4 @@ jobs:
     steps:
       - checkout
       - run: docker-compose up -d
-      - run: docker-compose exec -w /code/qgisfeedproject qgis-feed_qgisfeed_1 python manage.py test qgisfeed
+      - run: docker-compose exec qgisfeed sh -c "cd /code/qgisfeedproject && python manage.py test qgisfeed"
