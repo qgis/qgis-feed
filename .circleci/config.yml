@@ -1,0 +1,8 @@
+version: 2 # CircleCI version
+jobs:
+  build:
+    machine: true # Use a Linux VM instead of docker environment
+    working_directory: ~/repo # Default working directory, where your project will be cloned
+    steps:
+      - run: docker-compose up -d
+      - run: docker-compose exec -w /code/qgisfeedproject qgis-feed_qgisfeed_1 python manage.py test qgisfeed
