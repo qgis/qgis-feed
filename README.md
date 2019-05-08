@@ -1,3 +1,4 @@
+[![CircleCI](https://circleci.com/gh/elpaso/qgis-feed.svg?style=svg)](https://circleci.com/gh/elpaso/qgis-feed)
 
 # QGIS Home Page News Feed
 
