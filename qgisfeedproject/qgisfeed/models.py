@@ -92,4 +92,4 @@ class QgisFeedEntry(models.Model):
         managed = True
         verbose_name = _('QGIS Feed Entry')
         verbose_name_plural = _('QGIS Feed Entries')
-        ordering = ('-sorting', '-created')
+        ordering = ('-sticky', '-sorting', '-created')

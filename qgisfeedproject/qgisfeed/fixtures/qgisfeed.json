@@ -79,12 +79,12 @@
     "created": "2019-05-07",
     "modified": "2019-05-07",
     "published": true,
-    "sticky": false,
+    "sticky": true,
     "sorting": 0,
     "language_filter": null,
     "spatial_filter": null,
-    "publication_start": "1999-04-07",
-    "publication_end": "1999-05-06"
+    "publication_start": "1999-01-01",
+    "publication_end": "2999-01-01"
   }
 },
 {
@@ -171,8 +171,8 @@
     "sorting": 0,
     "language_filter": null,
     "spatial_filter": null,
-    "publication_start": "1999-01-01",
-    "publication_end": "2999-01-01"
+    "publication_start": "1999-04-07",
+    "publication_end": "1999-05-06"
   }
 },
 {

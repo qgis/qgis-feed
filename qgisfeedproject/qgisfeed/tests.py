@@ -44,14 +44,14 @@ class QgisFeedEntryTestCase(TestCase):
         response = c.get('/')
         data = json.loads(response.content)
         titles = [d['title'] for d in data]
-        self.assertTrue("QGIS core will be rewritten in PASCAL" in titles)
+        self.assertTrue("QGIS core will be rewritten in Rust" in titles)
 
     def test_expired(self):
         c = Client()
         response = c.get('/')
         data = json.loads(response.content)
         titles = [d['title'] for d in data]
-        self.assertFalse("QGIS core will be rewritten in Rust" in titles)
+        self.assertFalse("QGIS core will be rewritten in PASCAL" in titles)
         self.assertFalse("QGIS core will be rewritten in GO" in titles)
 
     def test_future(self):
@@ -96,4 +96,21 @@ class QgisFeedEntryTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         response = c.get('/?lang=KK')
         self.assertEqual(response.status_code, 400)
+
+    def test_image_link(self):
+        c = Client()
+        response = c.get('/')
+        data = json.loads(response.content)
+        image = [d['image'] for d in data if d['image'] != ""][0]
+        self.assertEqual(image, "http://testserver/media/feedimages/rust.png" )
+
+    def test_sticky(self):
+        c = Client()
+        response = c.get('/')
+        data = json.loads(response.content)
+        sticky = data[0]
+        self.assertTrue(sticky['sticky'])
+        not_sticky = data[-1]
+        self.assertFalse(not_sticky['sticky'])
+
 

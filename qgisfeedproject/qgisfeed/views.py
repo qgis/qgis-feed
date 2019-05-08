@@ -76,7 +76,9 @@ class QgisEntriesView(View):
         if filters.get('location') is not None:
             qs = qs.filter(spatial_filter__contains=filters.get('location'))
 
-        for record in qs.values('title','image', 'content', 'url')[:QGISFEED_MAX_RECORDS]:
+        for record in qs.values('title','image', 'content', 'url', 'sticky')[:QGISFEED_MAX_RECORDS]:
+            if record['image']:
+                record['image'] = request.build_absolute_uri(settings.MEDIA_URL + record['image'])
             data.append(record)
 
         return HttpResponse(json.dumps(data, indent=(2 if settings.DEBUG else 0)),content_type='application/json')

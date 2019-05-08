@@ -114,7 +114,7 @@ Example call:http://localhost:8000/?lat=44.5&lon=9.23
 
 ## Docker
 
-You can run this application with docker compose:
+For development purposes only, you can run this application inde debug mode with docker compose:
 
 ```bash
 $ docker compose up
