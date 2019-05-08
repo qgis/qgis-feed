@@ -72,21 +72,24 @@ Retuned data:
 [
   {
     "title": "QGIS acquired by ESRI",
-    "image": "http://localhost:8000/feedimages/image.png",
+    "image": "http://localhost:8000/media/feedimages/image.png",
     "content": "<p>QGIS is finally part of the ESRI ecosystem, it has been rebranded as CrashGIS to better integrate with ESRI products line.</p>",
-    "url": "https://www.qgis.com"
+    "url": "https://www.qgis.com",
+    "sticky": true
   },
   {
     "title": "Null Island QGIS Meeting",
     "image": "",
     "content": "<p>Let's dive in the ocean together!</p>",
-    "url": null
+    "url": null,
+    "sticky": false
   },
   {
     "title": "QGIS Italian Meeting",
     "image": "",
     "content": "<p>Ciao from Italy!</p>",
-    "url": null
+    "url": null,
+    "sticky": false
   }
 ]
 ```
@@ -95,21 +98,23 @@ Retuned data:
 
 The following parameters can be passed by the client to filter available records.
 
+Parameters are validated and in case they are not valid a `Bad Request` HTTP error code `400` is returned.
+
 #### lang
 
 When `lang` is passed, the records that have a different `lang` will be excluded from the results. Only the records with `null` `lang` and the records with a matching `lang` will be returned.
 
 Accepted values: `ISO-939-1` two letters language code
 
-Example call:http://localhost:8000/?lang=de
+Example call: http://localhost:8000/?lang=de
 
 #### lat lon (location)
 
-When a `lat` and `long` are passed, the records that have a location filter set will be returned only if the point defined by `lat` and `lon` is within record's location.
+When `lat` **and** `long` are passed, the records that have a location filter set will be returned only if the point defined by `lat` and `lon` is within record's location.
 
 Accepted values: `ESPG:4326` latitude and longitude
 
-Example call:http://localhost:8000/?lat=44.5&lon=9.23
+Example call: http://localhost:8000/?lat=44.5&lon=9.23
 
 
 ## Docker
