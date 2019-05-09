@@ -22,6 +22,7 @@ from django.contrib.auth.models import User
 from django.contrib.gis import admin
 from django.core.mail import send_mail
 from django.urls import reverse
+from django.utils import timezone
 
 from .models import QgisFeedEntry
 
@@ -33,7 +34,7 @@ QGISFEED_FROM_EMAIL = getattr(settings, 'QGISFEED_FROM_EMAIL', 'noreply@qgis.org
 class QgisFeedEntryAdmin(admin.GeoModelAdmin):
 
     list_display = ('title', 'author', 'language_filter', 'published',
-                    'publication_start', 'publication_end', 'sorting')
+                    'publish_from', 'publish_to', 'sorting')
 
     def notify(self, author, request, recipients, obj):
         """Send notification emails"""
@@ -62,6 +63,10 @@ class QgisFeedEntryAdmin(admin.GeoModelAdmin):
 
         if not change:
             obj.author = request.user
+
+        if obj.publish_from is None and obj.published:
+            obj.publish_from = timezone.now()
+
         obj.save()
 
         if not change and not request.user.is_superuser:

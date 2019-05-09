@@ -12,14 +12,45 @@ __author__ = 'elpaso@itopen.it'
 __date__ = '2019-05-07'
 __copyright__ = 'Copyright 2019, ItOpen'
 
+import json
 
 from django.test import TestCase
 from django.test import Client
 from django.contrib.auth.models import Group, User
-# Create your tests here.
-import json
+from django.contrib.admin.sites import AdminSite
+from django.utils import timezone
 
 from .models import QgisFeedEntry
+from .admin import QgisFeedEntryAdmin
+
+
+class MockRequest:
+
+    def build_absolute_uri(self, uri):
+        return uri
+
+class MockSuperUser:
+
+    def is_superuser(self):
+        return True
+
+    def has_perm(self, perm):
+        return True
+
+class MockStaff:
+
+    def is_superuser(self):
+        return False
+
+    def is_staff(self):
+        return True
+
+    def has_perm(self, perm):
+        return True
+
+
+request = MockRequest()
+
 
 class QgisFeedEntryTestCase(TestCase):
     fixtures = ['qgisfeed.json', 'users.json']
@@ -91,6 +122,14 @@ class QgisFeedEntryTestCase(TestCase):
         self.assertFalse("Null Island QGIS Meeting" in titles)
         self.assertTrue("QGIS Italian Meeting" in titles)
 
+    def test_after(self):
+        c = Client()
+        response = c.get('/?after=%s' % timezone.datetime(2019, 5, 9).timestamp())
+        data = json.loads(response.content)
+        titles = [d['title'] for d in data]
+        self.assertFalse("Null Island QGIS Meeting" in titles)
+        self.assertTrue("QGIS Italian Meeting" in titles)
+
     def test_invalid_parameters(self):
         c = Client()
         response = c.get('/?lat=ZZ&lon=KK')
@@ -123,4 +162,29 @@ class QgisFeedEntryTestCase(TestCase):
         staff.save()
         self.assertIsNotNone(staff.groups.get(name='qgisfeedentry_authors'))
         self.assertEqual(staff.get_all_permissions(), set(('qgisfeed.add_qgisfeedentry', 'qgisfeed.view_qgisfeedentry')))
+
+    def test_admin_publish_from(self):
+        """Test that published entries have publish_from set"""
+
+        site = AdminSite()
+        ma = QgisFeedEntryAdmin(QgisFeedEntry, site)
+        obj = QgisFeedEntry(title='Test entry')
+        request.user = User.objects.get(username='admin')
+        form = ma.get_form(request, obj)
+        ma.save_model(request, obj, form, False)
+        self.assertIsNone(obj.publish_from)
+        self.assertFalse(obj.published)
+        obj.published = True
+        ma.save_model(request, obj, form, True)
+        self.assertIsNotNone(obj.publish_from)
+        self.assertTrue(obj.published)
+
+    def test_admin_author_is_set(self):
+        site = AdminSite()
+        ma = QgisFeedEntryAdmin(QgisFeedEntry, site)
+        obj = QgisFeedEntry(title='Test entry 2')
+        request.user = User.objects.get(username='staff')
+        form = ma.get_form(request, obj)
+        ma.save_model(request, obj, form, False)
+        self.assertEqual(obj.author, request.user)
 

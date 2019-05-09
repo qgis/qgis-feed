@@ -11,14 +11,14 @@
     "image_height": null,
     "image_width": null,
     "created": "2019-05-07",
-    "modified": "2019-05-07",
+    "modified": "2019-05-09",
     "published": true,
     "sticky": false,
     "sorting": 0,
     "language_filter": null,
     "spatial_filter": null,
-    "publication_start": null,
-    "publication_end": null
+    "publish_from": "2019-05-05T16:29:08.136Z",
+    "publish_to": null
   }
 },
 {
@@ -33,14 +33,14 @@
     "image_height": null,
     "image_width": null,
     "created": "2019-05-07",
-    "modified": "2019-05-07",
+    "modified": "2019-05-09",
     "published": true,
     "sticky": true,
     "sorting": 1,
     "language_filter": null,
     "spatial_filter": null,
-    "publication_start": null,
-    "publication_end": null
+    "publish_from": "2019-05-05T16:29:08.130Z",
+    "publish_to": null
   }
 },
 {
@@ -55,14 +55,14 @@
     "image_height": null,
     "image_width": null,
     "created": "2019-05-07",
-    "modified": "2019-05-07",
+    "modified": "2019-05-09",
     "published": true,
     "sticky": false,
     "sorting": 0,
     "language_filter": "en",
     "spatial_filter": "SRID=4326;POLYGON ((-9.580078125 3.251953125, -10.107421875 -10.634765625, 12.12890625 -10.72265625, 11.42578125 5.09765625, 6.767578125 5.009765625, -9.580078125 3.251953125))",
-    "publication_start": null,
-    "publication_end": null
+    "publish_from": "2019-05-05T16:29:08.134Z",
+    "publish_to": null
   }
 },
 {
@@ -83,8 +83,8 @@
     "sorting": 0,
     "language_filter": null,
     "spatial_filter": null,
-    "publication_start": "1999-01-01",
-    "publication_end": "2999-01-01"
+    "publish_from": "1999-01-01T13:16:08Z",
+    "publish_to": "2999-01-01"
   }
 },
 {
@@ -92,7 +92,7 @@
   "pk": 7,
   "fields": {
     "title": "QGIS core will be rewritten in FORTRAN",
-    "image": null,
+    "image": "",
     "content": "<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>FORTRAN</strong>.</p>",
     "url": null,
     "author": 1,
@@ -105,8 +105,8 @@
     "sorting": 0,
     "language_filter": null,
     "spatial_filter": null,
-    "publication_start": null,
-    "publication_end": null
+    "publish_from": null,
+    "publish_to": null
   }
 },
 {
@@ -114,7 +114,7 @@
   "pk": 8,
   "fields": {
     "title": "QGIS core will be rewritten in BASIC",
-    "image": null,
+    "image": "",
     "content": "<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>BASIC</strong>.</p>",
     "url": null,
     "author": 1,
@@ -127,8 +127,8 @@
     "sorting": 0,
     "language_filter": null,
     "spatial_filter": null,
-    "publication_start": "2099-01-01",
-    "publication_end": null
+    "publish_from": "2099-01-01T13:16:08Z",
+    "publish_to": null
   }
 },
 {
@@ -136,21 +136,21 @@
   "pk": 9,
   "fields": {
     "title": "QGIS core will be rewritten in GO",
-    "image": null,
+    "image": "",
     "content": "<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>GO</strong>.</p>",
     "url": null,
     "author": 1,
     "image_height": 180,
     "image_width": 180,
     "created": "2019-05-07",
-    "modified": "2019-05-07",
+    "modified": "2019-05-09",
     "published": true,
     "sticky": false,
     "sorting": 0,
     "language_filter": null,
     "spatial_filter": null,
-    "publication_start": null,
-    "publication_end": "1999-01-01"
+    "publish_from": "2019-05-05T16:29:08.135Z",
+    "publish_to": "1999-01-01"
   }
 },
 {
@@ -158,7 +158,7 @@
   "pk": 10,
   "fields": {
     "title": "QGIS core will be rewritten in PASCAL",
-    "image": null,
+    "image": "",
     "content": "<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>PASCAL</strong>.</p>",
     "url": null,
     "author": 1,
@@ -171,8 +171,8 @@
     "sorting": 0,
     "language_filter": null,
     "spatial_filter": null,
-    "publication_start": "1999-04-07",
-    "publication_end": "1999-05-06"
+    "publish_from": "1999-04-07T13:16:08Z",
+    "publish_to": "1999-05-06"
   }
 },
 {
@@ -187,14 +187,14 @@
     "image_height": null,
     "image_width": null,
     "created": "2019-05-07",
-    "modified": "2019-05-07",
+    "modified": "2019-05-09",
     "published": true,
     "sticky": false,
     "sorting": 0,
     "language_filter": null,
     "spatial_filter": "SRID=4326;POLYGON ((9 44, 10 44, 10 45, 9 45, 9 44))",
-    "publication_start": null,
-    "publication_end": null
+    "publish_from": "2019-05-09T00:00:08.132Z",
+    "publish_to": null
   }
 }
 ]

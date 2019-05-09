@@ -87,25 +87,31 @@ Returned data:
 ```json
 [
   {
+    "pk": 1,
     "title": "QGIS acquired by ESRI",
     "image": "http://localhost:8000/media/feedimages/image.png",
     "content": "<p>QGIS is finally part of the ESRI ecosystem, it has been rebranded as CrashGIS to better integrate with ESRI products line.</p>",
     "url": "https://www.qgis.com",
-    "sticky": true
+    "sticky": true,
+    "publish_from": 1557419128
   },
   {
+    "pk": 2,
     "title": "Null Island QGIS Meeting",
     "image": "",
     "content": "<p>Let's dive in the ocean together!</p>",
     "url": null,
-    "sticky": false
+    "sticky": false,
+    "publish_from": 1557419128
   },
   {
+    "pk": 3,
     "title": "QGIS Italian Meeting",
     "image": "",
     "content": "<p>Ciao from Italy!</p>",
     "url": null,
-    "sticky": false
+    "sticky": false,
+    "publish_from": 1557419128
   }
 ]
 ```
@@ -115,6 +121,15 @@ Returned data:
 The following parameters can be passed by the client to filter available records.
 
 Parameters are validated and in case they are not valid a `Bad Request` HTTP error code `400` is returned.
+
+#### after
+
+When `after` is passed, only the records that have been published after the given value will be returned.
+
+Accepted values: unix timestamp (UTC)
+
+Example call: http://localhost:8000/?after=1557419013
+
 
 #### lang
 

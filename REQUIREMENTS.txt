@@ -3,6 +3,5 @@ psycopg2
 django-tinymce
 Pillow
 
-
 # DEBUG=True only
 django-extensions

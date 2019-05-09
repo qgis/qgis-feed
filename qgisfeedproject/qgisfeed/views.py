@@ -15,6 +15,7 @@ __copyright__ = 'Copyright 2019, ItOpen'
 
 from django.core.serializers import serialize
 from django.conf import settings
+from django.utils import timezone
 from django.contrib.gis.geos import GEOSGeometry
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views import View
@@ -57,6 +58,11 @@ class QgisEntriesView(View):
                 filters['location'] = location
             except ValueError:
                 raise BadRequestException("Invalid lat/lon parameters.")
+        if request.GET.get('after') is not None:
+            try:
+                filters['after'] = timezone.make_aware(timezone.datetime.fromtimestamp(float(request.GET.get('after'))))
+            except ValueError:
+                raise BadRequestException("Invalid after parameter.")
         return filters
 
 
@@ -69,19 +75,22 @@ class QgisEntriesView(View):
         except BadRequestException as ex:
             return HttpResponseBadRequest("%s" % ex)
 
-        # Get filters for lang and lat/lon
+        # Get filters for lang and lat/lon and after
         if filters.get('lang') is not None:
             qs = qs.filter(Q(language_filter__isnull=True) | Q(language_filter=filters.get('lang')))
 
         if filters.get('location') is not None:
             qs = qs.filter(spatial_filter__contains=filters.get('location'))
 
-        for record in qs.values('title','image', 'content', 'url', 'sticky')[:QGISFEED_MAX_RECORDS]:
+        if filters.get('after') is not None:
+            qs = qs.filter(publish_from__gte=filters.get('after'))
+
+        for record in qs.values('pk', 'publish_from', 'title','image', 'content', 'url', 'sticky')[:QGISFEED_MAX_RECORDS]:
+            if record['publish_from']:
+                record['publish_from'] = record['publish_from'].timestamp()
             if record['image']:
                 record['image'] = request.build_absolute_uri(settings.MEDIA_URL + record['image'])
             data.append(record)
 
         return HttpResponse(json.dumps(data, indent=(2 if settings.DEBUG else 0)),content_type='application/json')
-
-
 

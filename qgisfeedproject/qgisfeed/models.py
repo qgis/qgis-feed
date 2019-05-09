@@ -13,12 +13,12 @@ __date__ = '2019-05-07'
 __copyright__ = 'Copyright 2019, ItOpen'
 
 
+from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
 from django.db.models import Q
+from django.utils import timezone
 from django.utils.translation import gettext as _
-from django.contrib.auth import get_user_model
 from tinymce import models as tinymce_models
-from datetime import datetime
 
 
 class QgisLanguageField(models.CharField):
@@ -38,7 +38,7 @@ class PublishedManager(models.Manager):
     dates and the published flag"""
 
     def get_queryset(self):
-        return super().get_queryset().filter(Q(publication_start__isnull=True) | (Q(publication_start__lte=datetime.now())), Q(publication_end__isnull=True) | (Q(publication_end__gte=datetime.now())) , published=True )
+        return super().get_queryset().filter(Q(publish_from__isnull=True) | (Q(publish_from__lte=timezone.now())), Q(publish_to__isnull=True) | (Q(publish_to__gte=timezone.now())) , published=True )
 
 
 class QgisFeedEntry(models.Model):
@@ -60,26 +60,27 @@ class QgisFeedEntry(models.Model):
     # Options
     published = models.BooleanField(_('Published'), default=False, db_index=True)
     sticky = models.BooleanField(_('Sticky entry'), default=False, help_text=_('Check this option to keep this entry on top'))
-    sorting = models.PositiveIntegerField(blank=False,
-                                          null=False,
-                                          default=0,
-                                          verbose_name=_('Sorting order'),
-                                          help_text=_('Increase to show at top of the list'),
-                                          db_index=True
-                                          )
+    sorting = models.PositiveIntegerField(blank=False, null=False, default=0, verbose_name=_('Sorting order'), help_text=_('Increase to show at top of the list'), db_index=True)
 
     # Filters
     language_filter = QgisLanguageField(_('Language filter'), blank=True, null=True, help_text=_('The entry will be hidden to users who have not set a matching language filter'), db_index=True)
     spatial_filter = models.PolygonField(_('Spatial filter'), blank=True, null=True, help_text=_('The entry will be hidden to users who have set a location that does not match'))
 
     # Dates
-    publication_start = models.DateField(_('Publication start'), auto_now=False, auto_now_add=False, blank=True, null=True, db_index=True)
-    publication_end = models.DateField(_('Publication end'), auto_now=False, auto_now_add=False, blank=True, null=True, db_index=True)
+    publish_from = models.DateTimeField(_('Publication start'), auto_now=False, auto_now_add=False, blank=True, null=True, db_index=True)
+    publish_to = models.DateField(_('Publication end'), auto_now=False, auto_now_add=False, blank=True, null=True, db_index=True)
 
     # Managers
     objects = models.Manager()
     published_entries = PublishedManager()
 
+    @property
+    def publish_from_epoch(self):
+        """Return publish_from as epoch"""
+
+        if self.publish_from is not None:
+            return self.publish_from.timestamp()
+        return 0
 
     def __str__(self):
         return self.title
@@ -89,4 +90,4 @@ class QgisFeedEntry(models.Model):
         managed = True
         verbose_name = _('QGIS Feed Entry')
         verbose_name_plural = _('QGIS Feed Entries')
-        ordering = ('-sticky', '-sorting', '-created')
+        ordering = ('-sticky', '-sorting', '-publish_from')
