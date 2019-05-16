@@ -1,10 +1,18 @@
-version: 2 # CircleCI version
+version: 2
 jobs:
   build:
-    #machine: true # Use a Linux VM instead of docker environment
-    working_directory: ~/repo # Default working directory, where your project will be cloned
+    docker:
+      - image: docker:18.03.0-ce-git
     steps:
       - checkout
+      - setup_remote_docker
+      - run:
+            name: Install Docker Compose
+            command: |
+                curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+                chmod +x ~/docker-compose
+                sudo mv ~/docker-compose /usr/local/bin/docker-compose
+
       - run: docker-compose up -d
       - run: sleep 20  # Wait for postgresql
       - run: docker-compose exec qgisfeed sh -c "cd /code/qgisfeedproject && python manage.py test qgisfeed"
