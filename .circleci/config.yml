@@ -1,10 +1,11 @@
-version: 2 # CircleCI version
+version: 2
 jobs:
   build:
-    machine: true # Use a Linux VM instead of docker environment
-    working_directory: ~/repo # Default working directory, where your project will be cloned
+    docker:
+      - image: circleci/buildpack-deps:bionic
     steps:
       - checkout
+      - setup_remote_docker
       - run: docker-compose up -d
       - run: sleep 20  # Wait for postgresql
       - run: docker-compose exec qgisfeed sh -c "cd /code/qgisfeedproject && python manage.py test qgisfeed"
