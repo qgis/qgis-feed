@@ -1,0 +1,9 @@
+package_upgrade: true
+packages:
+  - docker-compose
+runcmd:
+  - sudo usermod -aG docker $USER
+  - git clone https://github.com/elpaso/qgis-feed
+  - cd qgis-feed
+  - docker-compose up
+
