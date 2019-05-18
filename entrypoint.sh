@@ -4,6 +4,8 @@ cd /code/qgisfeedproject
 
 # Wait for postgres
 wait-for-it -h postgis -p 5432 -t 60
+sleep 10
+
 
 if [ ! -e "setup_done" ]; then
     touch setup_done
