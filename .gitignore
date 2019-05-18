@@ -1,4 +1,5 @@
 *_local.*
+.directory
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
