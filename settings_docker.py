@@ -1,6 +1,8 @@
 
 # Settings local for docker compose
 
+ALLOWED_HOSTS=['*']
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',

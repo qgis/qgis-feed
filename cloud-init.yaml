@@ -1,0 +1,14 @@
+#cloud-config
+package_upgrade: true
+packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - software-properties-common
+  - docker-compose
+runcmd:
+  - sudo usermod -aG docker qgisfeed
+  - git clone https://github.com/elpaso/qgis-feed
+  - cd qgis-feed
+  - docker-compose up
+
