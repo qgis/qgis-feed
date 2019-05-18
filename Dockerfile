@@ -1,6 +1,6 @@
 FROM python:3
 ENV PYTHONUNBUFFERED 1
-RUN apt-get update && apt install -y libgdal20
+RUN apt-get update && apt install -y libgdal20 wait-for-it
 RUN mkdir /code
 WORKDIR /code
 COPY REQUIREMENTS.txt /code/
