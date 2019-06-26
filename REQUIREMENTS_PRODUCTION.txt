@@ -1,0 +1,4 @@
+-r REQUIREMENTS.txt
+
+# For production only
+gunicorn

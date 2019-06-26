@@ -5,3 +5,6 @@ Pillow
 
 # DEBUG=True only
 django-extensions
+
+# PRODUCTION only
+gunicorn

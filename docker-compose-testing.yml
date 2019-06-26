@@ -8,8 +8,11 @@ services:
       POSTGRES_USER: docker
       POSTGRES_PASS: docker
       POSTGRES_DBNAME: qgisfeed
+
   qgisfeed:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.testing
     command: /code/entrypoint.sh
     ports:
     - "8000:8000"
