@@ -15,3 +15,9 @@ DATABASES = {
         'PORT': '5432'
     }
 }
+
+MEDIA_ROOT = '/shared-volume/media/'
+MEDIA_URL = '/media/'
+STATIC_ROOT = '/shared-volume/static/'
+STATIC_URL = '/static/'
+

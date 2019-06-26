@@ -13,7 +13,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.testing
-    command: /code/entrypoint.sh
+    command: /code/entrypoint_testing.sh
     ports:
     - "8000:8000"
     depends_on:
