@@ -7,4 +7,4 @@ COPY REQUIREMENTS.txt /code/
 RUN pip install -r REQUIREMENTS.txt
 COPY . /code/
 COPY ./settings_docker_testing.py /code/qgisfeedproject/qgisfeedproject/settings_local.py
-COPY ./entrypoint.sh /code/
+COPY ./entrypoint_testing.sh /code/
