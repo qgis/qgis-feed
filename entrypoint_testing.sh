@@ -1,8 +1,6 @@
 #!/bin/bash
 
 
-PRODUCTION=${QGIS_FEED_PRODUCTION:-false}
-PERSISTENT_STORAGE=${QGIS_FEED_PERSISTENT_STORAGE:-""}
 LOCKFILE="setup_done.lock"
 cd /code/qgisfeedproject
 

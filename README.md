@@ -148,12 +148,12 @@ Accepted values: `ESPG:4326` latitude and longitude
 Example call: http://localhost:8000/?lat=44.5&lon=9.23
 
 
-## Docker
+## Docker for testing
 
 For development purposes only, you can run this application in debug mode with docker compose:
 
 ```bash
-$ docker compose up
+$ docker-compose -f docker-compose-testing.yml up
 ```
 
 A set of test data will be automatically loaded and the application will be available at http://localhost:8000
@@ -162,3 +162,42 @@ To enter the control panel http://localhost:8000/admin, two test users are avail
 
 - Super Admin: the credentials are `admin`/`admin`
 - Staff (News Entry Author): the credentials are `staff`/`staff`
+
+## Docker for production
+
+For production, you can run this application  with docker compose:
+
+Docker configuration should be present in `.env` file in the main directory,
+an example is provided in `env.template`:
+
+```bash
+# This file can be used as a template for .env
+# The values in this file are also the default values.
+
+# Host machine persistent storage directory, this path
+# must be an existent directory with r/w permissions for
+# the users from the Docker containers.
+QGISFEED_DOCKER_SHARED_VOLUME=/shared-volume
+
+# Number of Gunicorn workers (usually: number of cores * 2 + 1)
+QGISFEED_GUNICORN_WORKERS=4
+
+# Database name
+QGISFEED_DOCKER_DBNAME=qgisfeed
+# Database user
+QGISFEED_DOCKER_DBUSER=docker
+# Database password
+QGISFEED_DOCKER_DBPASSWORD=docker
+```
+
+```bash
+$ docker-compose -f docker-compose-production.yml up
+```
+
+A set of test data will be automatically loaded and the application will be available at http://localhost:80
+
+To enter the control panel http://localhost:80/admin, two test users are available:
+
+- Super Admin: the credentials are `admin`/`admin`
+- Staff (News Entry Author): the credentials are `staff`/`staff`
+

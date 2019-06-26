@@ -46,7 +46,7 @@ class QgisFeedEntry(models.Model):
     """
 
     title = models.CharField(_('Title'), max_length=255)
-    image = models.ImageField(_('Image'), upload_to='feedimages', height_field='image_height', width_field='image_width', max_length=None, blank=True, null=True)
+    image = models.ImageField(_('Image'), upload_to='feedimages/%Y/%m/%d/', height_field='image_height', width_field='image_width', max_length=None, blank=True, null=True)
     content = tinymce_models.HTMLField()
     url = models.URLField(_('URL'), max_length=200, blank=True, null=True, help_text=_('URL for more information link'))
 

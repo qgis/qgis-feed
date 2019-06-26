@@ -4,7 +4,8 @@ RUN apt-get update && apt install -y libgdal20 wait-for-it
 RUN mkdir /code
 WORKDIR /code
 COPY REQUIREMENTS.txt /code/
+COPY REQUIREMENTS_PRODUCTION.txt /code/
 RUN pip install -r REQUIREMENTS_PRODUCTION.txt
 COPY . /code/
 COPY ./settings_docker_production.py /code/qgisfeedproject/qgisfeedproject/settings_local.py
-COPY ./entrypoint.sh /code/
+COPY ./entrypoint_production.sh /code/

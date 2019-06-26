@@ -1,47 +1,55 @@
-version: '3'
+version: "3.7"
+
 services:
 
   postgis:
-    image: kartoza/postgis
+    image: kartoza/postgis:11.0-2.5
     ports:
     - "55432:5432"
     environment:
-      POSTGRES_USER: docker
-      POSTGRES_PASS: docker
-      POSTGRES_DBNAME: qgisfeed
+      POSTGRES_USER: ${QGISFEED_DOCKER_DBUSER}
+      POSTGRES_PASS: ${QGISFEED_DOCKER_DBPASSWORD}
+      POSTGRES_DBNAME: ${QGISFEED_DOCKER_DBNAME}
     logging:
       driver: "json-file"
       options:
         max-size: "200k"
         max-file: "10"
+    restart: always
+    volumes:
+      - ${QGISFEED_DOCKER_SHARED_VOLUME}:/var/lib/postgresql
     networks:
       internal:
 
   qgisfeed:
+    image: qgisfeed:production
     build:
       context: .
       dockerfile: Dockerfile.production
     environment:
-      QGIS_FEED_PRDUCTION: true
-    command: /code/entrypoint.sh
-    ports:
-    - "80:8000"
+      - QGISFEED_DOCKER_DBNAME
+      - QGISFEED_DOCKER_DBUSER
+      - QGISFEED_DOCKER_DBPASSWORD
+    command: /code/entrypoint_production.sh
+    expose:
+    - "8000"
     volumes:
       - ${QGISFEED_DOCKER_SHARED_VOLUME}:/shared-volume
     depends_on:
       - postgis
-     logging:
+    logging:
       driver: "json-file"
       options:
         max-size: "200k"
         max-file: "10"
+    restart: always
     networks:
       internal:
 
   nginx:
     image: nginx:latest
     ports:
-    - "80:80"
+    - "80:8000"
     logging:
       driver: "json-file"
       options:
@@ -50,12 +58,9 @@ services:
     volumes:
       - ${QGISFEED_DOCKER_SHARED_VOLUME}:/shared-volume
       - ./config/nginx:/etc/nginx/conf.d
+    restart: always
     networks:
       internal:
-
-
-volumes:
-    shared-volume:
 
 networks:
     internal:
