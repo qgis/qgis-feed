@@ -2,9 +2,7 @@ django
 psycopg2
 django-tinymce
 Pillow
+django-imagekit
 
 # DEBUG=True only
 django-extensions
-
-# PRODUCTION only
-gunicorn
