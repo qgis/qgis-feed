@@ -48,7 +48,7 @@ class QgisFeedEntry(models.Model):
     title = models.CharField(_('Title'), max_length=255)
     image = models.ImageField(_('Image'), upload_to='feedimages/%Y/%m/%d/', height_field='image_height', width_field='image_width', max_length=None, blank=True, null=True)
     content = tinymce_models.HTMLField()
-    url = models.URLField(_('URL'), max_length=200, blank=True, null=True, help_text=_('URL for more information link'))
+    url = models.URLField(_('URL'), max_length=200, help_text=_('URL for more information link'))
 
     # Auto fields
     author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, editable=False)
@@ -68,7 +68,7 @@ class QgisFeedEntry(models.Model):
 
     # Dates
     publish_from = models.DateTimeField(_('Publication start'), auto_now=False, auto_now_add=False, blank=True, null=True, db_index=True)
-    publish_to = models.DateField(_('Publication end'), auto_now=False, auto_now_add=False, blank=True, null=True, db_index=True)
+    publish_to = models.DateTimeField(_('Publication end'), auto_now=False, auto_now_add=False, blank=True, null=True, db_index=True)
 
     # Managers
     objects = models.Manager()
