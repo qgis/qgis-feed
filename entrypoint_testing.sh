@@ -9,8 +9,9 @@ wait-for-it -h postgis -p 5432 -t 60
 sleep 10
 
 
+python manage.py migrate
+
 if [ ! -e ${LOCKFILE} ]; then
-    python manage.py migrate
     python manage.py loaddata qgisfeed/fixtures/users.json qgisfeed/fixtures/qgisfeed.json
     touch ${LOCKFILE}
 

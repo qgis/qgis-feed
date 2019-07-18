@@ -85,9 +85,11 @@ class QgisEntriesView(View):
         if filters.get('after') is not None:
             qs = qs.filter(publish_from__gte=filters.get('after'))
 
-        for record in qs.values('pk', 'publish_from', 'title','image', 'content', 'url', 'sticky')[:QGISFEED_MAX_RECORDS]:
+        for record in qs.values('pk', 'publish_from', 'publish_to', 'title','image', 'content', 'url', 'sticky')[:QGISFEED_MAX_RECORDS]:
             if record['publish_from']:
                 record['publish_from'] = record['publish_from'].timestamp()
+            if record['publish_to']:
+                record['publish_to'] = record['publish_to'].timestamp()
             if record['image']:
                 record['image'] = request.build_absolute_uri(settings.MEDIA_URL + record['image'])
             data.append(record)

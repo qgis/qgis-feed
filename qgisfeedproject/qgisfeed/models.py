@@ -19,7 +19,8 @@ from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from tinymce import models as tinymce_models
-
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
 
 class QgisLanguageField(models.CharField):
     """
@@ -46,9 +47,9 @@ class QgisFeedEntry(models.Model):
     """
 
     title = models.CharField(_('Title'), max_length=255)
-    image = models.ImageField(_('Image'), upload_to='feedimages/%Y/%m/%d/', height_field='image_height', width_field='image_width', max_length=None, blank=True, null=True)
+    image = ProcessedImageField([ResizeToFill(500, 354)], 'JPEG', {'quality': 60}, _('Image'),upload_to='feedimages/%Y/%m/%d/', height_field='image_height', width_field='image_width', max_length=None, blank=True, null=True, help_text=_('Landscape orientation, image will be cropped and scaled automatically to 500x354 px') )
     content = tinymce_models.HTMLField()
-    url = models.URLField(_('URL'), max_length=200, blank=True, null=True, help_text=_('URL for more information link'))
+    url = models.URLField(_('URL'), max_length=200, help_text=_('URL for more information link'))
 
     # Auto fields
     author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, editable=False)
@@ -68,7 +69,7 @@ class QgisFeedEntry(models.Model):
 
     # Dates
     publish_from = models.DateTimeField(_('Publication start'), auto_now=False, auto_now_add=False, blank=True, null=True, db_index=True)
-    publish_to = models.DateField(_('Publication end'), auto_now=False, auto_now_add=False, blank=True, null=True, db_index=True)
+    publish_to = models.DateTimeField(_('Publication end'), auto_now=False, auto_now_add=False, blank=True, null=True, db_index=True)
 
     # Managers
     objects = models.Manager()
