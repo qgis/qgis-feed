@@ -1,0 +1,103 @@
+version: "3.7"
+volumes:
+  postgis-data:
+  django-postgis-dbbackup-data:
+  sftpbackup-postgis-target-data:
+  shared-volume:
+
+services:
+
+  postgis:
+    image: kartoza/postgis:11.0-2.5
+    ports:
+    - "55432:5432"
+    environment:
+      POSTGRES_USER: ${QGISFEED_DOCKER_DBUSER}
+      POSTGRES_PASS: ${QGISFEED_DOCKER_DBPASSWORD}
+      POSTGRES_DBNAME: ${QGISFEED_DOCKER_DBNAME}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+    restart: always
+    volumes:
+      - shared-volume:/var/lib/postgresql
+    networks:
+      internal:
+
+  dbbackup:
+    environment:
+    image: kartoza/pg-backup:11.0
+      DUMPPREFIX: PG_qgis_feed
+      PGDATABASE: ${QGISFEED_DOCKER_DBNAME}
+      PGHOST: db
+      PGPASSWORD: ${QGISFEED_DOCKER_DBPASSWORD}
+      PGPORT: '5432'
+      PGUSER: ${QGISFEED_DOCKER_DBUSER}
+    volumes:
+    - django-postgis-dbbackup-data:/backups
+    - sftpbackup-postgis-target-data:/pg_backup
+    links:
+    - db:db
+
+  sftppgbackup:
+    image: kartoza/sftp-backup:1.0
+    environment:
+      DAILY: '14'
+      DUMPPREFIX: PG-qgis-feed
+      MONTHLY: '12'
+      TARGET_FOLDER: /pg_backup
+      USE_SFTP_BACKUP: 'False'
+      YEARLY: '3'
+    volumes:
+    - sftpbackup-postgis-history-data:/backups
+    - sftpbackup-postgis-target-data:/pg_backup
+    links:
+    - db:db
+
+  qgisfeed:
+    image: qgisfeed:production
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+    environment:
+      - ${QGISFEED_DOCKER_DBNAME}
+      - ${QGISFEED_DOCKER_DBUSER}
+      - ${QGISFEED_DOCKER_DBPASSWORD}
+    command: /code/entrypoint_production.sh
+    expose:
+    - "8000"
+    volumes:
+      - shared-volume:/shared-volume
+    depends_on:
+      - postgis
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+    restart: always
+    networks:
+      internal:
+
+  nginx:
+    image: nginx:latest
+    ports:
+    - "80:8000"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+    volumes:
+      - shared-volume:/shared-volume
+      #- ./config/nginx:/etc/nginx/conf.d
+    restart: always
+    networks:
+      internal:
+
+networks:
+    internal:
+
+
