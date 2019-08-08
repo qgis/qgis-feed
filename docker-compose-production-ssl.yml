@@ -1,0 +1,83 @@
+version: "3.7"
+
+services:
+
+  postgis:
+    image: kartoza/postgis:11.0-2.5
+    ports:
+      - "55432:5432"
+    environment:
+      POSTGRES_USER: ${QGISFEED_DOCKER_DBUSER}
+      POSTGRES_PASS: ${QGISFEED_DOCKER_DBPASSWORD}
+      POSTGRES_DBNAME: ${QGISFEED_DOCKER_DBNAME}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+    restart: always
+    volumes:
+      - ${QGISFEED_DOCKER_SHARED_VOLUME}:/var/lib/postgresql
+    networks:
+      internal:
+
+  qgisfeed:
+    image: qgisfeed:production
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+    environment:
+      - QGISFEED_DOCKER_DBNAME
+      - QGISFEED_DOCKER_DBUSER
+      - QGISFEED_DOCKER_DBPASSWORD
+    command: /code/entrypoint_production.sh
+    expose:
+      - "8000"
+    volumes:
+      - ${QGISFEED_DOCKER_SHARED_VOLUME}:/shared-volume
+    depends_on:
+      - postgis
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+    restart: always
+    networks:
+      internal:
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:8000"
+      - "443:443"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+    volumes:
+      - ${QGISFEED_DOCKER_SHARED_VOLUME}:/shared-volume
+      - ./config/nginx:/etc/nginx/conf.d
+      - ./webroot:/var/www/webroot
+      - ./certbot-etc:/etc/letsencrypt
+      - ./certbot-var:/var/lib/letsencrypt
+      - ./dhparam:/etc/ssl/certs
+    restart: always
+    networks:
+      internal:
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./webroot:/var/www/webroot
+      - ./certbot-etc:/etc/letsencrypt
+      - ./certbot-var:/var/lib/letsencrypt
+    depends_on:
+      - nginx
+    command: certonly --webroot --webroot-path=/var/www/webroot --email admin@qgis.org --agree-tos --no-eff-email --force-renewal -d feed.qgis.org
+
+networks:
+    internal:
+
