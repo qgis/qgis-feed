@@ -201,6 +201,31 @@ To enter the control panel http://localhost:80/admin, two test users are availab
 - Super Admin: the credentials are `admin`/`admin`
 - Staff (News Entry Author): the credentials are `staff`/`staff`
 
+### Enable SSL Certificate on production using Docker
+
+1. Generate key using openssl in dhparam directory
+```bash
+openssl dhparam -out /home/web/qgis-feed/dhparam/dhparam-2048.pem 2048
+```
+
+2. Run docker-compose using `docker-compose-production-ssl.yml`
+```bash
+$ docker-compose -f docker-compose-production-ssl.yml up
+```
+
+3. Update `nginx.conf` file inside nginx container to include the new config file in `config/nginx/ssl/qgisfeed.conf`
+```
+# include    /etc/nginx/conf.d/qgisfeed.conf;
+include    /etc/nginx/conf.d/ssl/qgisfeed.conf
+```
+
+4. Restart nginx service
+```
+nginx -s reload
+```
+
+5. To enable a cronjob to automatically renew ssl cert, add `scripts/renew_ssl.sh` to crontab file.
+
 ## Deploying on Rancher
 
 This repository contains a rancher template directory (the ``template`` folder in the root of the repo)
