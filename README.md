@@ -213,10 +213,9 @@ openssl dhparam -out /home/web/qgis-feed/dhparam/dhparam-2048.pem 2048
 $ docker-compose -f docker-compose-production-ssl.yml up
 ```
 
-3. Update `nginx.conf` file inside nginx container to include the new config file in `config/nginx/ssl/qgisfeed.conf`
+3. Update `config/nginx/qgisfeed.conf` to include the new config file in `config/nginx/ssl/qgisfeed.conf`
 ```
-# include    /etc/nginx/conf.d/qgisfeed.conf;
-include    /etc/nginx/conf.d/ssl/qgisfeed.conf
+include conf.d/ssl/*.conf;
 ```
 
 4. Restart nginx service
