@@ -27,3 +27,7 @@ if not os.path.exists(MEDIA_ROOT):
 
 if not os.path.exists(STATIC_ROOT):
     os.mkdir(STATIC_ROOT)
+
+# settings for enabling https forwarding
+USE_X_FORWARDED_PORT = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
