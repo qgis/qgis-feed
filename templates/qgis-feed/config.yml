@@ -1,0 +1,7 @@
+name: QGIS Feed Backend
+description: This is a QGIS feed backend instance to feed QGIS desktop welcome page.
+version: 1
+category: GIS
+maintainer: Kartoza (Pty) Ltd. - Tim Sutton, tim@kartoza.com
+license: GPL v3
+projectURL: https://github.com/qgis/qgis-feed
