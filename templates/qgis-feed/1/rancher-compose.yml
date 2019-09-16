@@ -4,7 +4,7 @@
   version: 1.0
   uuid: qgis-feed
   questions:
-  - variable: QGISFEED_DOCKER_DBPASSWORD
+  - variable: QGISFEED_DOCKER_DBNAME
     label: "PostgreSQL db to create."
     required: true
     default: gis
@@ -14,7 +14,7 @@
     required: true
     default: docker
     type: "string"
-  - variable: QGISFEED_DOCKER_DBNAME
+  - variable: QGISFEED_DOCKER_DBPASSWORD
     label: "PostgreSQL superuser password to create."
     required: true
     default: docker
@@ -30,6 +30,12 @@
     required: true
     default: 5432
     type: "int"
+  - variable: POSTGRES_HBA_RANGE
+    label: "Database allowed hosts"
+    description: "PostgreSQL pg_hba (host based authentication) address range from which connections should be allowed. See http://rancher.com/docs/rancher/latest/en/rancher-services/networking/#differences-from-previous-releases for the network range that Rancher uses."
+    required: true
+    default: 10.42.0.0/16
+    type: "string"
   - variable: WEBUSER
     label: "Admin login for Dashboard"
     description: "User for login in to define dashboards"
