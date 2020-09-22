@@ -48,7 +48,7 @@ class QgisFeedEntry(models.Model):
 
     title = models.CharField(_('Title'), max_length=255)
     image = ProcessedImageField([ResizeToFill(500, 354)], 'JPEG', {'quality': 60}, _('Image'),upload_to='feedimages/%Y/%m/%d/', height_field='image_height', width_field='image_width', max_length=None, blank=True, null=True, help_text=_('Landscape orientation, image will be cropped and scaled automatically to 500x354 px') )
-    content = tinymce_models.HTMLField()
+    content = models.TextField()
     url = models.URLField(_('URL'), max_length=200, help_text=_('URL for more information link'))
 
     # Auto fields
