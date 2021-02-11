@@ -225,6 +225,40 @@ nginx -s reload
 
 5. To enable a cronjob to automatically renew ssl cert, add `scripts/renew_ssl.sh` to crontab file.
 
+
+## Troubleshooting SSL in production
+
+Sometimes it seems our cron does not refresh the certificate. We can fix like this:
+
+**Gentle Way**
+
+```
+ssh feed.qgis.org
+cd /home/web/qgis-feed
+scipts/renew_ssl.sh
+```
+
+Now check if your browser is showing the site opening with no SSL errors: https://feed.qgis.org
+
+**More crude way**
+
+```
+ssh feed.qgis.org
+cd /home/web/qgis-feed
+docker-compose -f docker-compose-production-ssl.yml up certbot
+docker-compose -f docker-compose-production-ssl.yml restart nginx
+```
+
+Now check if your browser is showing the site opening with no SSL errors: https://feed.qgis.org
+
+## Backups
+
+If something goes terribly wrong, we keep 7 nights of backups on hetzner
+
+If those are also not useful there are a collection of snapshot backups on hetzner
+
+Last resort: Tim makes backups to his local machine on a semi-regular basis.
+
 ## Deploying on Rancher
 
 This repository contains a rancher template directory (the ``template`` folder in the root of the repo)
