@@ -235,7 +235,7 @@ Sometimes it seems our cron does not refresh the certificate. We can fix like th
 ```
 ssh feed.qgis.org
 cd /home/web/qgis-feed
-scipts/renew_ssl.sh
+scripts/renew_ssl.sh
 ```
 
 Now check if your browser is showing the site opening with no SSL errors: https://feed.qgis.org
