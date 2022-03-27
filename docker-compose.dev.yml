@@ -1,0 +1,24 @@
+version: '3'
+services:
+  postgis:
+    image: kartoza/postgis:14-3.1
+    platform: linux/arm64, linux/amd64
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASS: docker
+      POSTGRES_DBNAME: qgisfeed
+
+  qgisfeed:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    platform: linux/arm64, linux/amd64
+    command: /code/entrypoint_testing.sh
+    environment:
+      DJANGO_SETTINGS_MODULE: qgisfeedproject.settings_dev
+    ports:
+    - "8000:8000"
+    depends_on:
+      - postgis
+    volumes:
+      - ../qgis-feed:/code

@@ -12,15 +12,21 @@ __author__ = 'elpaso@itopen.it'
 __date__ = '2019-05-07'
 __copyright__ = 'Copyright 2019, ItOpen'
 
+from platform import platform
+import re
 
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
-from django.db.models import Q
+from django.db.models import Q, signals
 from django.utils import timezone
 from django.utils.translation import gettext as _
+import geoip2
+
 from tinymce import models as tinymce_models
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
+from user_visit.models import UserVisit
+
 
 class QgisLanguageField(models.CharField):
     """
@@ -92,3 +98,61 @@ class QgisFeedEntry(models.Model):
         verbose_name = _('QGIS Feed Entry')
         verbose_name_plural = _('QGIS Feed Entries')
         ordering = ('-sticky', '-sorting', '-publish_from')
+
+
+class QgisUserVisit(models.Model):
+    
+    user_visit = models.OneToOneField(
+        UserVisit,
+        on_delete=models.CASCADE,
+        primary_key=True
+    )
+
+    location = models.JSONField()
+
+    # Mozilla/5.0 QGIS/32400/Fedora Linux (Workstation Edition)
+    qgis_version = models.CharField(
+        max_length=255,
+        default='',
+        blank=True
+    )
+
+    platform = models.CharField(
+        max_length=255,
+        default='',
+        blank=True
+    )
+
+# Post save user visit signals 
+def post_save_user_visit(sender, instance, **kwargs):
+    from django.contrib.gis.geoip2 import GeoIP2
+    g = GeoIP2()
+    country_data = {}
+    qgis_version = ''
+    platform = ''
+
+    if instance.remote_addr:
+        try:
+            country_data = g.city(instance.remote_addr)
+        except: # AddressNotFoundErrors:
+            country_data = {}
+        
+    version_match = re.search('QGIS(.*)\/', instance.ua_string)
+
+    if version_match:
+        qgis_version = version_match.group().replace('QGIS', '').strip('/')
+        platform = instance.ua_string[version_match.end():]
+    
+    if not platform:
+        if instance.user_agent:
+            platform = instance.user_agent.get_os()
+
+    QgisUserVisit.objects.create(
+        user_visit=instance,
+        location=country_data,
+        qgis_version=qgis_version,
+        platform=platform
+    )
+
+
+signals.post_save.connect(post_save_user_visit, sender=UserVisit)

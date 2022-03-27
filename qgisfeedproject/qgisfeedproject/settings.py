@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -45,6 +48,9 @@ INSTALLED_APPS = [
     # Dependencies
     'tinymce',  # HTML field
     'imagekit',  # Image crop and resize
+
+    # User visit
+    'user_visit',
 ]
 
 # Useful debugging extensions
@@ -61,6 +67,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'qgisfeed.middleware.QgisFeedUserVisitMiddleware',
 ]
 
 ROOT_URLCONF = 'qgisfeedproject.urls'
@@ -140,7 +147,10 @@ STATIC_URL = '/static/'
 MEDIA_ROOT=os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+GEOIP_PATH='/var/opt/maxmind/'
+
+
 try:
     from .settings_local import *
 except ImportError as ex:
-    raise ex
+    pass

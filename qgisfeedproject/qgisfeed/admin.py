@@ -24,7 +24,10 @@ from django.core.mail import send_mail
 from django.urls import reverse
 from django.utils import timezone
 
-from .models import QgisFeedEntry
+from user_visit.admin import UserVisitAdmin
+from user_visit.models import UserVisit
+
+from .models import QgisFeedEntry, QgisUserVisit
 
 # Get an instance of a logger
 logger = logging.getLogger('qgisfeed.admin')
@@ -84,4 +87,55 @@ class QgisFeedEntryAdmin(admin.GeoModelAdmin):
         return form
 
 
+class QgisUserVisitAdmin(admin.StackedInline):
+    readonly_fields = ('qgis_version', 'location', 'platform')
+    can_delete = False
+    model = QgisUserVisit
+   
+
+class UpdatedUserVisitAdmin(UserVisitAdmin):
+    inlines = [
+        QgisUserVisitAdmin
+    ]
+    list_display = ("timestamp", "qgis_version", "country", "platform")
+    search_fields = (
+        "qgisuservisit__qgis_version",
+        "qgisuservisit__location"
+    )
+    readonly_fields = (
+        "timestamp",
+        "hash",
+        "session_key",
+        "user_agent",
+        "ua_string",
+        "created_at",
+    )
+    exclude = ['user', 'remote_addr']
+
+    def qgis_version(self, obj):
+        qgis_version = ''
+        if obj.qgisuservisit:
+            qgis_version = obj.qgisuservisit.qgis_version
+        if not qgis_version:
+            qgis_version = '-'
+        return qgis_version
+    
+    def country(self, obj):
+        country = '-'
+        if obj.qgisuservisit:
+            if obj.qgisuservisit.location and 'country_name' in obj.qgisuservisit.location:
+                country = obj.qgisuservisit.location['country_name']
+        return country
+
+    def platform(sel, obj):
+        platfrom_string = 'Unknown'
+        if obj.qgisuservisit:
+            platfrom_string = obj.qgisuservisit.platform
+        return platfrom_string
+
+    qgis_version.short_description = 'QGIS Version'
+
+
 admin.site.register(QgisFeedEntry, QgisFeedEntryAdmin)
+admin.site.unregister(UserVisit)
+admin.site.register(UserVisit, UpdatedUserVisitAdmin)
