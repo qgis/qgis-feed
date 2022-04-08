@@ -21,7 +21,7 @@ RUN echo "Installing GDAL dependencies" && \
     rm -rf ~/.cache/pip
 
 # Install pip requirements
-COPY REQUIREMENTS.txt .
+ADD REQUIREMENTS.txt .
 RUN python -m pip install -r REQUIREMENTS.txt
 
 RUN apt-get update && apt-get install -y curl && curl -LJO https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-City.mmdb && \

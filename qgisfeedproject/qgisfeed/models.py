@@ -129,7 +129,10 @@ def post_save_user_visit(sender, instance, **kwargs):
     g = GeoIP2()
     country_data = {}
     qgis_version = ''
-    platform = ''
+    platform_name = ''
+
+    if hasattr(instance, '_dirty'):
+        return
 
     if instance.remote_addr:
         try:
@@ -141,18 +144,25 @@ def post_save_user_visit(sender, instance, **kwargs):
 
     if version_match:
         qgis_version = version_match.group().replace('QGIS', '').strip('/')
-        platform = instance.ua_string[version_match.end():]
+        platform_name = instance.ua_string[version_match.end():]
     
-    if not platform:
+    if not platform_name:
         if instance.user_agent:
-            platform = instance.user_agent.get_os()
+            platform_name = instance.user_agent.get_os()
 
-    QgisUserVisit.objects.create(
+    QgisUserVisit.objects.get_or_create(
         user_visit=instance,
         location=country_data,
         qgis_version=qgis_version,
-        platform=platform
+        platform=platform_name
     )
+
+    instance.remote_addr = ''
+    try:
+        instance._dirty = True
+        instance.save()
+    finally:
+        del instance._dirty
 
 
 signals.post_save.connect(post_save_user_visit, sender=UserVisit)
