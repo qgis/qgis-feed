@@ -24,6 +24,8 @@ from .models import QgisFeedEntry
 from .languages import LANGUAGE_KEYS
 import json
 
+from user_visit.models import UserVisit
+
 
 QGISFEED_MAX_RECORDS=getattr(settings, 'QGISFEED_MAX_RECORDS', 20)
 

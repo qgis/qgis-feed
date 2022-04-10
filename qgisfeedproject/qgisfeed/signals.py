@@ -24,3 +24,40 @@ def setup_group(sender, **kwargs):
     for staff_user in User.objects.filter(is_staff=True, is_superuser=False):
         group.user_set.add(staff_user)
 
+
+# Post save user visit signals
+def post_save_user_visit(sender, instance, **kwargs):
+    import re
+    from django.contrib.gis.geoip2 import GeoIP2
+    from qgisfeed.models import QgisUserVisit
+    from user_visit.models import UserVisit
+
+    g = GeoIP2()
+    country_data = {}
+    qgis_version = ''
+    platform_name = ''
+
+    if instance.remote_addr:
+        try:
+            country_data = g.city(instance.remote_addr)
+        except:  # AddressNotFoundErrors:
+            country_data = {}
+
+    version_match = re.search('QGIS(.*)\/', instance.ua_string)
+
+    if version_match:
+        qgis_version = version_match.group().replace('QGIS', '').strip('/')
+        platform_name = instance.ua_string[version_match.end():]
+
+    if not platform_name:
+        if instance.user_agent:
+            platform_name = instance.user_agent.get_os()
+
+    QgisUserVisit.objects.get_or_create(
+        user_visit=instance,
+        location=country_data,
+        qgis_version=qgis_version,
+        platform=platform_name
+    )
+
+    UserVisit.objects.filter(pk=instance.pk).update(remote_addr='')

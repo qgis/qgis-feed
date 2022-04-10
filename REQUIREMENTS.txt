@@ -6,3 +6,6 @@ django-imagekit
 
 # DEBUG=True only
 django-extensions
+
+django-user-visit==0.5.1
+geoip2==4.5.0
