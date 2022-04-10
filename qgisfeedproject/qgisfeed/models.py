@@ -12,17 +12,12 @@ __author__ = 'elpaso@itopen.it'
 __date__ = '2019-05-07'
 __copyright__ = 'Copyright 2019, ItOpen'
 
-from platform import platform
-import re
-
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
-from django.db.models import Q, signals
+from django.db.models import Q, F, Count
 from django.utils import timezone
 from django.utils.translation import gettext as _
-import geoip2
 
-from tinymce import models as tinymce_models
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
 from user_visit.models import UserVisit
@@ -123,46 +118,111 @@ class QgisUserVisit(models.Model):
         blank=True
     )
 
-# Post save user visit signals 
-def post_save_user_visit(sender, instance, **kwargs):
-    from django.contrib.gis.geoip2 import GeoIP2
-    g = GeoIP2()
-    country_data = {}
-    qgis_version = ''
-    platform_name = ''
 
-    if hasattr(instance, '_dirty'):
-        return
+class DailyQgisUserVisit(models.Model):
 
-    if instance.remote_addr:
-        try:
-            country_data = g.city(instance.remote_addr)
-        except: # AddressNotFoundErrors:
-            country_data = {}
-        
-    version_match = re.search('QGIS(.*)\/', instance.ua_string)
-
-    if version_match:
-        qgis_version = version_match.group().replace('QGIS', '').strip('/')
-        platform_name = instance.ua_string[version_match.end():]
-    
-    if not platform_name:
-        if instance.user_agent:
-            platform_name = instance.user_agent.get_os()
-
-    QgisUserVisit.objects.get_or_create(
-        user_visit=instance,
-        location=country_data,
-        qgis_version=qgis_version,
-        platform=platform_name
+    date = models.DateField(
+        auto_now_add=True,
+        blank=True
     )
 
-    instance.remote_addr = ''
-    try:
-        instance._dirty = True
-        instance.save()
-    finally:
-        del instance._dirty
+    qgis_version = models.JSONField()
+
+    platform = models.JSONField()
+
+    country = models.JSONField()
 
 
-signals.post_save.connect(post_save_user_visit, sender=UserVisit)
+def aggregate_user_visit_data():
+    user_visits = QgisUserVisit.objects.all()
+
+    # Group by date
+    user_visit_dates = (
+        user_visits.annotate(
+            date=F('user_visit__timestamp__date')
+        ).values_list('date', flat=True).distinct()
+    )
+
+    for user_visit_date in user_visit_dates:
+
+        daily_visit, _ = DailyQgisUserVisit.objects.get_or_create(
+            date=user_visit_date,
+            defaults={
+                'qgis_version': {},
+                'platform': {},
+                'country': {}
+            }
+        )
+
+        qgis_user_visit = user_visits.filter(
+            user_visit__timestamp__date=user_visit_date
+        )
+
+        total_platform_data = dict(
+            qgis_user_visit.values(
+                'platform'
+            ).annotate(total_platform=Count('platform')).values_list(
+                'platform', 'total_platform'
+            )
+        )
+
+        total_country = dict(
+            qgis_user_visit.filter(
+                location__country_name__isnull=False
+            ).values(
+                'location__country_name'
+            ).annotate(
+                total_country=Count('location__country_name')
+            ).values_list(
+                'location__country_name', 'total_country'
+            )
+        )
+
+        total_qgis_version = dict(
+            qgis_user_visit.exclude(
+                qgis_version=''
+            ).values(
+                'qgis_version'
+            ).annotate(
+                total_qgis_version=Count('qgis_version')
+            ).values_list(
+                'qgis_version', 'total_qgis_version'
+            )
+        )
+
+        if total_platform_data:
+            daily_platform_data = daily_visit.platform
+            for platform, value in total_platform_data.items():
+                if platform not in daily_platform_data:
+                    daily_platform_data[platform] = (
+                        value
+                    )
+                else:
+                    daily_platform_data[platform] += (
+                        value
+                    )
+            daily_visit.platform = daily_platform_data
+
+        if total_country:
+            daily_country = daily_visit.country
+            for country, value in total_country.items():
+                if country not in daily_country:
+                    daily_country[country] = value
+                else:
+                    daily_country[country] += value
+            daily_visit.country = daily_country
+
+        if total_qgis_version:
+            daily_qgis_version = daily_visit.qgis_version
+            for qgis_version, value in total_qgis_version.items():
+                if qgis_version not in daily_qgis_version:
+                    daily_qgis_version[qgis_version] = value
+                else:
+                    daily_qgis_version[qgis_version] += value
+            daily_visit.qgis_version = daily_qgis_version
+
+        daily_visit.save()
+
+        UserVisit.objects.filter(
+            timestamp__date=user_visit_date
+        ).delete()

@@ -27,7 +27,7 @@ from django.utils import timezone
 from user_visit.admin import UserVisitAdmin
 from user_visit.models import UserVisit
 
-from .models import QgisFeedEntry, QgisUserVisit
+from .models import QgisFeedEntry, QgisUserVisit, DailyQgisUserVisit
 
 # Get an instance of a logger
 logger = logging.getLogger('qgisfeed.admin')
@@ -91,7 +91,16 @@ class QgisUserVisitAdmin(admin.StackedInline):
     readonly_fields = ('qgis_version', 'location', 'platform')
     can_delete = False
     model = QgisUserVisit
-   
+
+
+class DailyQgisUserVisitAdmin(admin.ModelAdmin):
+    list_display = (
+        'date',
+    )
+
+    def has_add_permission(self, request):
+        return False
+
 
 class UpdatedUserVisitAdmin(UserVisitAdmin):
     inlines = [
@@ -139,3 +148,4 @@ class UpdatedUserVisitAdmin(UserVisitAdmin):
 admin.site.register(QgisFeedEntry, QgisFeedEntryAdmin)
 admin.site.unregister(UserVisit)
 admin.site.register(UserVisit, UpdatedUserVisitAdmin)
+admin.site.register(DailyQgisUserVisit, DailyQgisUserVisitAdmin)

@@ -21,7 +21,9 @@ class QgisFeedConfig(AppConfig):
     name = 'qgisfeed'
 
     def ready(self):
-        from .signals import setup_group
+        from .signals import setup_group, post_save_user_visit
         from django.contrib.auth.models import User
+        from user_visit.models import UserVisit
         post_save.connect(setup_group, sender=User)
+        post_save.connect(post_save_user_visit, sender=UserVisit)
 
