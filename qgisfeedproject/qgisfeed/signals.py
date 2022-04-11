@@ -43,11 +43,14 @@ def post_save_user_visit(sender, instance, **kwargs):
         except:  # AddressNotFoundErrors:
             country_data = {}
 
-    version_match = re.search('QGIS(.*)\/', instance.ua_string)
+    version_match = re.search('QGIS(.*)', instance.ua_string)
 
     if version_match:
-        qgis_version = version_match.group().replace('QGIS', '').strip('/')
-        platform_name = instance.ua_string[version_match.end():]
+        version_match_array = version_match.group().split('/')
+        if len(version_match_array) > 1:
+            qgis_version = version_match_array[1].strip()
+        if len(version_match_array) > 2:
+            platform_name = version_match_array[2].strip()
 
     if not platform_name:
         if instance.user_agent:

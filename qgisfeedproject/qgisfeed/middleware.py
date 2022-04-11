@@ -20,6 +20,7 @@ class QgisFeedUserVisitMiddleware(UserVisitMiddleware):
 
         uv = UserVisit.objects.build(request, timezone.now())
         if not UserVisit.objects.filter(hash=uv.hash).exists():
-            save_user_visit(uv)
+            if 'QGIS' in uv.ua_string:
+                save_user_visit(uv)
 
         return self.get_response(request)
