@@ -22,6 +22,8 @@ from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
 from user_visit.models import UserVisit
 
+from qgisfeed.utils import simplify
+
 
 class QgisLanguageField(models.CharField):
     """
@@ -193,6 +195,7 @@ def aggregate_user_visit_data():
         if total_platform_data:
             daily_platform_data = daily_visit.platform
             for platform, value in total_platform_data.items():
+                platform = simplify(platform)
                 if platform not in daily_platform_data:
                     daily_platform_data[platform] = (
                         value
