@@ -218,6 +218,7 @@ def aggregate_user_visit_data():
         if total_qgis_version:
             daily_qgis_version = daily_visit.qgis_version
             for qgis_version, value in total_qgis_version.items():
+                qgis_version = simplify(qgis_version)
                 if qgis_version not in daily_qgis_version:
                     daily_qgis_version[qgis_version] = value
                 else:
