@@ -170,13 +170,13 @@ def aggregate_user_visit_data():
 
         total_country = dict(
             qgis_user_visit.filter(
-                location__country_name__isnull=False
+                location__country_code__isnull=False
             ).values(
-                'location__country_name'
+                'location__country_code'
             ).annotate(
-                total_country=Count('location__country_name')
+                total_country=Count('location__country_code')
             ).values_list(
-                'location__country_name', 'total_country'
+                'location__country_code', 'total_country'
             )
         )
 
