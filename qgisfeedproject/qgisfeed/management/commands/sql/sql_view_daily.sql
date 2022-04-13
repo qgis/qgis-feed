@@ -22,6 +22,14 @@ begin
     return cols;
 end $$;
 
-select create_jsonb_flat_view('qgisfeed_dailyqgisuservisit', 'daily_platform', 'id, date', 'platform');
-select create_jsonb_flat_view('qgisfeed_dailyqgisuservisit', 'daily_country', 'id, date', 'country');
-select create_jsonb_flat_view('qgisfeed_dailyqgisuservisit', 'daily_qgis_version', 'id, date', 'qgis_version');
+select create_jsonb_flat_view('qgisfeed_dailyqgisuservisit', 'daily_platform_unpivot', 'id, date', 'platform');
+select create_jsonb_flat_view('qgisfeed_dailyqgisuservisit', 'daily_country_unpivot', 'id, date', 'country');
+select create_jsonb_flat_view('qgisfeed_dailyqgisuservisit', 'daily_qgis_version_unpivot', 'id, date', 'qgis_version');
+
+-- Create normal table
+drop view if exists daily_country;
+drop view if exists daily_platform;
+drop view if exists daily_qgis_version;
+create view daily_country as select distinct key as country, (country->>key)::int as value, date from qgisfeed_dailyqgisuservisit, jsonb_each(country) order by 1;
+create view daily_platform as select distinct key as platform, (platform->>key)::int as value, date from qgisfeed_dailyqgisuservisit, jsonb_each(platform) order by 1;
+create view daily_qgis_version as select distinct key as qgis_version, (qgis_version->>key)::int as value, date from qgisfeed_dailyqgisuservisit, jsonb_each(qgis_version) order by 1;
