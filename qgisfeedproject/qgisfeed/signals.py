@@ -39,7 +39,7 @@ def post_save_user_visit(sender, instance, **kwargs):
 
     if instance.remote_addr:
         try:
-            country_data = g.city(instance.remote_addr)
+            country_data = g.country(instance.remote_addr)
         except:  # AddressNotFoundErrors:
             country_data = {}
 
