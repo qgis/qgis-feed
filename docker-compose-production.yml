@@ -5,7 +5,7 @@ services:
   postgis:
     image: kartoza/postgis:11.0-2.5
     ports:
-    - "55432:5432"
+    - "5432"
     environment:
       POSTGRES_USER: ${QGISFEED_DOCKER_DBUSER}
       POSTGRES_PASS: ${QGISFEED_DOCKER_DBPASSWORD}
@@ -18,6 +18,29 @@ services:
     restart: always
     volumes:
       - ${QGISFEED_DOCKER_SHARED_VOLUME}:/var/lib/postgresql
+    networks:
+      internal:
+
+  metabase:
+    image: metabase/metabase:latest
+    hostname: metabase-secrets
+    volumes:
+      - /dev/urandom:/dev/random:ro
+    ports:
+      - 3000:3000
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: metabase
+      MB_DB_PORT: 5432
+      MB_DB_HOST: db
+      MB_DB_USER: ${QGISFEED_DOCKER_DBUSER}
+      MB_DB_PASS: ${QGISFEED_DOCKER_DBPASSWORD}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+    restart: always
     networks:
       internal:
 
