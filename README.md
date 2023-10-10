@@ -153,7 +153,8 @@ Example call: http://localhost:8000/?lat=44.5&lon=9.23
 For development purposes only, you can run this application in debug mode with docker compose:
 
 ```bash
-$ docker-compose -f docker-compose-testing.yml up
+$ docker-compose -f docker-compose-dev.yml build
+$ docker-compose -f docker-compose-dev.yml up
 ```
 
 A set of test data will be automatically loaded and the application will be available at http://localhost:8000

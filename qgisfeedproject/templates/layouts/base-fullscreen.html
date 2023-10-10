@@ -1,0 +1,46 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>
+    QGIS Feeds
+  </title>
+
+  <link
+    rel="icon"
+    type="image/png"
+    href=""
+  />
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}" type="text/css">
+  <!-- Icons -->
+  <link rel="stylesheet" href="{% static 'font-awesome/css/fontawesome.min.css' %}" type="text/css">
+  <!-- Style CSS -->
+  <link rel="stylesheet" href="{% static 'style/style.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'style/login.css' %}" type="text/css">
+
+  <script type="text/javascript" src="{% static "js/jquery.js" %}"></script>
+  <script type="text/javascript" src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
+
+    <!-- Specific CSS goes HERE -->
+  {% block stylesheets %}{% endblock stylesheets %}
+
+</head>
+<body class="d-flex align-items-center py-4 bg-body-tertiary">
+
+  {% block content %}{% endblock content %}
+
+  <!-- Specific JS goes HERE -->
+  {% block javascripts %}
+  {% endblock javascripts %}
+
+</body>
+
+</html>

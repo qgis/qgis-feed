@@ -1,0 +1,81 @@
+{% extends 'layouts/base-fullscreen.html' %} {% block title %} Login {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+
+
+<div class="form-signin w-100 m-auto bg-body shadow rounded-4">
+  <form method="POST">
+    <h1 class="h3 mb-3 fw-normal text-center">Sign in</h1>
+    {% csrf_token %}
+    <div class="form-floating">
+      <input
+        type="text"
+        class="form-control"
+        id="username"
+        name="username"
+        placeholder="admin"
+      />
+      <label for="username">Username</label>
+    </div>
+    <div class="form-floating">
+      <input
+        type="password"
+        class="form-control"
+        id="password"
+        name="password"
+        placeholder="********"
+      />
+      <label for="password">Password</label>
+    </div>
+
+
+   {% if form.errors or form.non_field_errors %}
+   <div class="alert alert-danger" role="alert">
+       {% for error in form.non_field_errors %}
+           <div>{{ error }}</div>
+       {% endfor %}
+       {% for error in form.field_errors %}
+           <div>{{ error }}</div>
+       {% endfor %}
+   </div>
+   {% endif %}
+    <button 
+    class="btn btn-primary w-100 py-2"
+     type="submit" 
+     value="login" 
+     id="submit-button"
+     >
+      Sign in
+    </button>
+  </form>
+</div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+<script>
+  $(document).ready(function() {
+      // Function to update the button state
+      function updateButtonState() {
+          var usernameIsEmpty = $('#username').val() === '';
+          var passwordIsEmpty = $('#password').val() === '';
+  
+          if (usernameIsEmpty || passwordIsEmpty) {
+              $('#submit-button').prop('disabled', true);
+          } else {
+              $('#submit-button').prop('disabled', false);
+          }
+      }
+  
+      // Call the function when the page loads
+      updateButtonState();
+  
+      // Call the function when the field changes or the form is submitted
+      $('#username').on('input', updateButtonState);
+      $('#password').on('input', updateButtonState);
+      $('form').on('submit', updateButtonState);
+  });
+  </script>
+{% endblock javascripts %}
