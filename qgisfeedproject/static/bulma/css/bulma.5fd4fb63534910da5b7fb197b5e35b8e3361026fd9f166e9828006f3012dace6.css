@@ -1,0 +1,61 @@
+/* SASS Stuff here .... */
+/* Customize mark tag used by search results */
+mark {
+  background: linear-gradient(-100deg, #93b023, #f0e64a 95%);
+  border-radius: 0.25em;
+  padding: .05rem 0.25em; }
+
+.gradient-row, .box-section-footer, .news-container {
+  background: linear-gradient(to right, #589732, #93B022);
+  height: 3em;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; }
+
+.news-text {
+  padding-right: 3em;
+  font-size: 14px;
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+  letter-spacing: 1px;
+  font-weight: 500; }
+
+.img-grid-1-columns-0 .img-grid-1-column-0 {
+  display: flex;
+  justify-content: flex-end;
+  align-items: end;
+  padding-right: 0; }
+  .img-grid-1-columns-0 .img-grid-1-column-0 img {
+    height: 80%; }
+
+.img-grid-1-columns-0 .img-grid-1-column-1 {
+  align-items: end;
+  display: flex; }
+
+.img-grid-1-columns-1 {
+  margin-top: -1.5em;
+  padding-right: 50px; }
+  .img-grid-1-columns-1 .img-grid-1-column-2 {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 0; }
+    .img-grid-1-columns-1 .img-grid-1-column-2 img {
+      height: 60%; }
+
+.box-section-footer {
+  margin-top: -1em; }
+
+.hero-title {
+  font-size: 4.5vw; }
+
+.mkdown strong, .mkdown h1, .mkdown h2, .mkdown h3 {
+  color: inherit; }
+
+.mkdown li {
+  margin: 20px 0; }
+
+.bottom-bar {
+  border-bottom: 1.5em solid  #ee7913; }
+
+.pb-7 {
+  padding-bottom: 4rem !important; }
