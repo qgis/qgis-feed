@@ -1,0 +1,63 @@
+name: pr-test
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  lint:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version:
+          - '3.7'
+    
+    steps:
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+
+      - name: Checkout
+      - uses: actions/checkout@v3
+
+      - name: Install Python requirements
+        run: pip install -r REQUIREMENTS-dev.txt
+
+  test:
+    runs-on: ubuntu-latest
+    needs:
+      - lint
+
+    steps:
+      - name: Checkout
+      - uses: actions/checkout@v3
+
+
+      - name: Run docker-compose build
+        run: docker-compose -f docker-compose-dev.yml build
+
+      - name: Run the containers
+        run: docker-compose -f docker-compose-dev.yml up -d
+      
+      - name: Run Coverage test
+        run: |
+          cat << EOF | docker-compose -f docker-compose-dev.yml exec -T qgisfeed bash
+          pip install coverage
+          python manage.py makemigrations
+          python manage.py migrate
+          coverage run manage.py test
+          coverage xml
+          EOF
+
+      - name: Upload coverage to codecov
+        uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
