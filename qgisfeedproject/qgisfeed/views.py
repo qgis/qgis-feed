@@ -107,8 +107,18 @@ class QgisEntriesView(View):
 def feeds_list(request):
     """
     List of feeds
-    This view will be updated later,
-    it is used to handle the login feature
-    for now
     """
-    return render(request, 'feeds/feeds_list.html')
+    feeds_entry = QgisFeedEntry.objects.all()
+    # Get sorting parameters from the query string
+
+    sort_by = request.GET.get('sort_by', 'title')
+    order = request.GET.get('order', 'asc')
+
+    if order == 'asc':
+        feeds_entry = feeds_entry.order_by(sort_by)
+        order = 'desc'
+    else:
+        order = 'asc'
+        feeds_entry = feeds_entry.order_by(f'-{sort_by}')
+
+    return render(request, 'feeds/feeds_list.html', {"feeds_entry": feeds_entry,  "sort_by": sort_by, "order": order})

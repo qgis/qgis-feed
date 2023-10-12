@@ -1,13 +1,74 @@
 {% extends 'layouts/base-fullscreen.html' %} 
-{% block title %} Login {% endblock title %} {% load static %}
+{% block title %} QGIS Home Page News Feed {% endblock title %} {% load static %}
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}{% endblock stylesheets %} 
 
 {% block content %}
 
-Feeds will be listed here!
 
+<section class="hero is-dark is-small has-bg-img"
+
+style="background: url({% static "images/banner4.png" %});
+       background-position: center;
+       background-size: cover;"
+>
+
+    <div class="hero-body">
+        <div class="columns">
+            <div class="column is-1">
+            </div>
+            <div class="column is-5">
+                <div class="container has-text-left">
+                    <p class="title hero-title pr-3">
+                        QGIS Home Page News Feed
+                    </p>
+                    <p class="subtitle is-size-2 hero-subtitle">
+                        
+                    </p>
+                </div>
+            </div>
+            <div class="column is-5 is-justify-content-center" style="display: flex">
+                <figure class="image">
+                    <img src="{% static "images/large-logo.svg" %}" style="width: 15vw">
+                </figure>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container content">
+        <table class="table is-fullwidth is-hoverable">
+            <thead>
+              <tr>
+                <th><a href="?sort_by=title&order={{ order|lower|default:"asc" }}">{% if sort_by == "title" and order == "desc" %}&uarr;{% else %}&darr;{% endif %} Title</a></th>
+                <th>Author</th>
+                <th>Language filter</th>
+                <th>Published</th>
+                <th>Publication Start</th>
+                <th>Publication End</th>
+                <th>Sorting Order</th>
+              </tr>
+            </thead>
+    
+            <tbody>
+                {% for feed in feeds_entry %}
+                    <tr>
+                        <td>{{ feed.title }}</td>
+                        <td>{{ feed.author }}</td>
+                        <td>{{ feed.language_filter }}</td>
+                        <td>{{ feed.published }}</td>
+                        <td>{{ feed.publish_from }}</td>
+                        <td>{{ feed.publish_to }}</td>
+                        <td>{{ feed.sorting }}</td>
+                    </tr>
+                {% endfor %}
+    
+            </tbody>
+        </table>
+    </div>
+</section>
 
 {% endblock content %}
 <!-- Specific JS goes HERE -->
