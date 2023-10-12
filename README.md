@@ -148,10 +148,11 @@ Accepted values: `ESPG:4326` latitude and longitude
 Example call: http://localhost:8000/?lat=44.5&lon=9.23
 
 ## Runing test cases
+Run test cases, from the `qgisfeedproject` directory:
 You can run unit tests using the following comands:
 ### Run all tests
 ```sh
-$ python manage.py test
+$ python manage.py test qgisfeed
 ```
 
 ### Run each test
