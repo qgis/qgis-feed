@@ -50,12 +50,15 @@
       <div id="menu" class="navbar-menu">
           <div class="navbar-end">
               
-                  
-                  
-                  <a class="navbar-item has-text-weight-bold is-size-7 is-active" href="/accounts/login">
-                      <span>Login</span>
-                  </a>
-                  
+            {% if user.is_authenticated and user.is_staff %}
+                <a class="navbar-item has-text-weight-bold is-size-7 is-active" href="{% url "logout" %}">
+                    <span>Logout</span>
+                </a>
+            {% else %}
+                <a class="navbar-item has-text-weight-bold is-size-7 is-active" href="{% url "login" %}">
+                    <span>Login</span>
+                </a>   
+            {% endif %}
               <div class="navbar-item">
                   <div class="buttons is-medium">
                       <a class="button is-primary is-size-7" href="https://qgis.org/funding/">
