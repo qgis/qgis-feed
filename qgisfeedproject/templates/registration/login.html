@@ -1,0 +1,107 @@
+{% extends 'layouts/base-fullscreen.html' %} 
+{% block title %} Login {% endblock title %} {% load static %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %} 
+
+{% block content %}
+
+<section class="hero is-medium">
+  <div class="hero-body" 
+  style="background: url({% static "images/Rectangle_298.png" %});
+  background-position: center;
+  background-size: cover;">
+    <div class="columns is-vcentered is-centered">
+      <div class="column is-4 has-background-light p-6 login-container" >
+        <div class="container has-text-centered">
+          <h3 class="title has-text-black">Login</h3>
+          <hr class="login-hr" />
+          <p class="subtitle has-text-black">Log in with your credentials.</p>
+          <div>
+            <form method="POST">
+              {% csrf_token %}
+              <div class="field">
+                <div class="control has-icons-left">
+                  <input
+                    class="input is-large"
+                    type="text"
+                    placeholder="Username"
+                    autofocus=""
+                    id="username"
+                    name="username"
+                  />
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-user"></i>
+                  </span>
+                </div>
+              </div>
+
+              <div class="field">
+                <div class="control has-icons-left">
+                  <input
+                    class="input is-large"
+                    type="password"
+                    placeholder="Password"
+                    id="password"
+                    name="password"
+                  />
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-lock"></i>
+                  </span>
+                </div>
+              </div>
+
+              {% if form.errors or form.non_field_errors %}
+              <div class="notification is-danger">
+                  {% for error in form.non_field_errors %}
+                      <div>{{ error }}</div>
+                  {% endfor %}
+                  {% for error in form.field_errors %}
+                      <div>{{ error }}</div>
+                  {% endfor %}
+              </div>
+              {% endif %}
+
+              <button 
+                class="button is-block is-success is-large is-fullwidth"
+                type="submit" 
+                value="login" 
+                id="submit-button"
+              >
+                Login <i class="fa fa-sign-in" aria-hidden="true"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock content %}
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+<script>
+  $(document).ready(function () {
+    // Function to update the button state
+    function updateButtonState() {
+      var usernameIsEmpty = $("#username").val() === "";
+      var passwordIsEmpty = $("#password").val() === "";
+
+      if (usernameIsEmpty || passwordIsEmpty) {
+        $("#submit-button").prop("disabled", true);
+      } else {
+        $("#submit-button").prop("disabled", false);
+      }
+    }
+
+    // Call the function when the page loads
+    updateButtonState();
+
+    // Call the function when the field changes or the form is submitted
+    $("#username").on("input", updateButtonState);
+    $("#password").on("input", updateButtonState);
+    $("form").on("submit", updateButtonState);
+  });
+</script>
+{% endblock javascripts %}

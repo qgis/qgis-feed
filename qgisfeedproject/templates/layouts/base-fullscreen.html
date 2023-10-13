@@ -1,0 +1,198 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" class="has-navbar-fixed-top">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>
+    QGIS Feeds
+  </title>
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="{% static "images/favicon.ico" %}"
+  />
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+  <!-- Bulma -->
+  <link rel="stylesheet" href="{% static 'bulma/css/bulma.5fd4fb63534910da5b7fb197b5e35b8e3361026fd9f166e9828006f3012dace6.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'bulma/css/bulma.a1f59066fc0b67379f41bacf36f013e052697140cf2d49ba28bce5278aadb33b.css' %}" type="text/css">
+  <!-- Icons -->
+  <link rel="stylesheet" href="{% static 'font-awesome/css/fontawesome.min.css' %}" type="text/css">
+  <!-- Style CSS -->
+  <link rel="stylesheet" href="{% static 'style/style.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'style/login.css' %}" type="text/css">
+
+  <script type="text/javascript" src="{% static "js/jquery.js" %}"></script>
+
+    <!-- Specific CSS goes HERE -->
+  {% block stylesheets %}{% endblock stylesheets %}
+
+</head>
+<body>
+
+<section style="height: 20px">
+  <nav class="is-highest navbar is-fixed-top is-semi-transparent" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand pl-6">
+          <a class="navbar-item logo-img" href="https://qgis.org/">
+              <img alt="Logo" src="{% static "images/logo.png" %}">
+          </a>
+          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="menu">
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+          </a>
+      </div>
+      <div id="menu" class="navbar-menu">
+          <div class="navbar-end">
+              
+                  
+                  
+                  <a class="navbar-item has-text-weight-bold is-size-7 is-active" href="/accounts/login">
+                      <span>Login</span>
+                  </a>
+                  
+              <div class="navbar-item">
+                  <div class="buttons is-medium">
+                      <a class="button is-primary is-size-7" href="https://qgis.org/funding/">
+                          <strong>Fund Us!</strong>
+                      </a>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </nav>
+</section>
+<div>
+  {% block content %}{% endblock content %}
+</div>
+
+<footer class="footer has-background-dark has-text-white">
+  <section class="section">
+      <div class="container is-fluid">
+          <div class="columns has-text-justified">
+              <div class="column">
+                  <ul class="block-list is-small is-outlined is-success is-centered mb-4">
+                      <li class="is-size-5">Download</li>
+                      <li><a href="http://" class="has-text-white">Latest Releases</a></li>
+                      <li><a href="http://" class="has-text-white">Release Notes</a></li>
+                      <li><a href="http://" class="has-text-white">Source Code</a></li>
+                  </ul>
+                  <ul class="block-list is-small is-outlined is-success is-centered">
+                      <li class="is-size-5">News</li>
+                      <li><a href="http://" class="has-text-white">Releases</a></li>
+                      <li><a href="http://" class="has-text-white">User Cases</a></li>
+                  </ul>
+              </div>
+              <div class="column">
+                  <ul class="block-list is-small is-outlined is-success is-centered mb-4">
+                      <li class="is-size-5">About</li>
+                      <li><a href="http://" class="has-text-white">License</a></li>
+                      <li><a href="http://" class="has-text-white">Logo & Trademark</a></li>
+                      <li><a href="http://" class="has-text-white">Privacy Policy</a></li>
+                  </ul>
+                  <ul class="block-list is-small is-outlined is-success is-centered">
+                      <li class="is-size-5">Organization</li>
+                      <li><a href="http://" class="has-text-white">People</a></li>
+                      <li><a href="http://" class="has-text-white">Jobs</a></li>
+                  </ul>
+              </div>
+              <div class="column">
+                  <ul class="block-list is-small is-outlined is-success is-centered">
+                      <li class="is-size-5">Get Involved</li>
+                      <li><a href="http://" class="has-text-white">Write Documentation</a></li>
+                      <li><a href="http://" class="has-text-white">Translation</a></li>
+                      <li><a href="http://" class="has-text-white">Development</a></li>
+                      <li><a href="http://" class="has-text-white">Tests </a></li>
+                      <li><a href="http://" class="has-text-white">Daily Report</a></li>
+                      <li><a href="http://" class="has-text-white">Plugin Website</a></li>
+                      <li><a href="http://" class="has-text-white">Mailing Lists</a></li>
+                      <li><a href="http://" class="has-text-white">Project Organization</a></li>
+                      <li><a href="http://" class="has-text-white">Meetings</a></li>
+                      <li><a href="http://" class="has-text-white">Sustaining Members</a></li>
+                  </ul>
+              </div>
+              <div class="column">
+                  <ul class="block-list is-small is-outlined is-success is-centered mb-4">
+                      <li class="is-size-5">Support</li>
+                      <li><a href="http://" class="has-text-white">Community</a></li>
+                      <li><a href="http://" class="has-text-white">FAQ</a></li>
+                      <li><a href="http://" class="has-text-white">Tutorials</a></li>
+                  </ul>
+                  <ul class="block-list is-small is-outlined is-success is-centered">
+                      <li class="is-size-5">This site</li>
+                      <li><a href="https://github.com/kartoza/hugo-bulma-blocks-theme/issues/new/choose" class="has-text-white">Report an issue</a></li>
+                      <li><a href="https://github.com/kartoza/hugo-bulma-blocks-theme/edit/main/content/_index.md" class="has-text-white">Edit this page</a></li>
+                      <li><a href="https://github.com/kartoza/hugo-bulma-blocks-theme/" class="has-text-white">GitHub Repo</a></li>
+                  </ul>
+              </div>                
+              <div class="column follow-us">
+                  <ul class="block-list is-small is-outlined is-success is-centered ">
+                      <li class="is-size-5">Follow us!</li>
+                      <li>
+                          <span class="icon-text">
+                              <span class="icon">
+                                  <i class="fa-brands fa-facebook-f"></i>
+                              </span>
+                              <span>Facebook</span>
+                          </span>
+                      </li>
+                      <li>
+                          <span class="icon-text">
+                              <span class="icon">
+                                  <i class="fa-brands fa-twitter"></i>
+                              </span>
+                              <span>Twitter</span>
+                          </span>
+                      </li>
+                      <li>
+                          <span class="icon-text">
+                              <span class="icon">
+                                  <i class="fa-brands fa-youtube"></i>
+                              </span>
+                              <span>YouTube</span>
+                          </span>
+                      </li>
+                      <li>
+                          <span class="icon-text">
+                              <span class="icon">
+                                  <i class="fa-brands fa-instagram"></i>
+                              </span>
+                              <span>Instagram</span>
+                          </span>
+                      </li>
+                      <li>
+                          <span class="icon-text">
+                              <span class="icon">
+                                  <i class="fa-brands fa-github"></i>
+                              </span>
+                              <span>GitHub</span>
+                          </span>
+                      </li>
+                      <li>
+                          <span class="icon-text">
+                              <span class="icon">
+                                  <i class="fa-sharp fa-solid fa-envelope"></i>
+                              </span>
+                              <span>Mailing Lists</span>
+                          </span>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+      </div>
+  </section>
+</footer>
+
+
+  <!-- Specific JS goes HERE -->
+  {% block javascripts %}
+  {% endblock javascripts %}
+
+</body>
+
+</html>

@@ -20,6 +20,8 @@ from django.contrib.gis.geos import GEOSGeometry
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views import View
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.shortcuts import render
 from .models import QgisFeedEntry
 from .languages import LANGUAGE_KEYS
 import json
@@ -28,6 +30,9 @@ from user_visit.models import UserVisit
 
 
 QGISFEED_MAX_RECORDS=getattr(settings, 'QGISFEED_MAX_RECORDS', 20)
+
+# Decorator
+staff_required = user_passes_test(lambda u: u.is_staff)
 
 class BadRequestException(Exception):
     pass
@@ -98,3 +103,12 @@ class QgisEntriesView(View):
 
         return HttpResponse(json.dumps(data, indent=(2 if settings.DEBUG else 0)),content_type='application/json')
 
+@staff_required
+def feeds_list(request):
+    """
+    List of feeds
+    This view will be updated later,
+    it is used to handle the login feature
+    for now
+    """
+    return render(request, 'feeds/feeds_list.html')

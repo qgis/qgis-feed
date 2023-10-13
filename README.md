@@ -147,13 +147,37 @@ Accepted values: `ESPG:4326` latitude and longitude
 
 Example call: http://localhost:8000/?lat=44.5&lon=9.23
 
+## Runing test cases
+Run test cases, from the `qgisfeedproject` directory:
+You can run unit tests using the following comands:
+### Run all tests
+```sh
+$ python manage.py test qgisfeed
+```
+
+### Run each test
+```sh
+$ python manage.py test qgisfeed.tests.QgisFeedEntryTestCase
+$ python manage.py test qgisfeed.tests.QgisUserVisitTestCase
+$ python manage.py test qgisfeed.tests.LoginTestCase
+```
+
+### Run test with docker
+If you are using docker, you can run tests by adding `docker-compose -f <docker-compose-file> exec <service-name>` before the command.
+For example, to run login test case using docker-compose:
+```sh
+$ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/manage.py test qgisfeed.tests.LoginTestCase 
+```
+
+
 
 ## Docker for testing
 
 For development purposes only, you can run this application in debug mode with docker compose:
 
 ```bash
-$ docker-compose -f docker-compose-testing.yml up
+$ docker-compose -f docker-compose-dev.yml build
+$ docker-compose -f docker-compose-dev.yml up
 ```
 
 A set of test data will be automatically loaded and the application will be available at http://localhost:8000

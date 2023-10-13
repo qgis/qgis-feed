@@ -227,3 +227,21 @@ class QgisUserVisitTestCase(TestCase):
         self.assertTrue(daily_visit.platform['Windows 10'] == 1)
         self.assertTrue(daily_visit.qgis_version['32400'] == 2)
         self.assertTrue(daily_visit.country['Indonesia'] == 3)
+
+
+class LoginTestCase(TestCase):
+    """
+    Test the login feature
+    """
+    fixtures = ['qgisfeed.json', 'users.json']
+
+    def setUp(self):
+        self.client = Client()
+
+    def test_valid_login(self):
+        response = self.client.login(username='admin', password='admin')
+        self.assertTrue(response)
+
+    def test_invalid_login(self):
+        response = self.client.login(username='admin', password='wrongpassword')
+        self.assertFalse(response)
