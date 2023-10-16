@@ -32,7 +32,6 @@ from user_visit.models import UserVisit
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
-
 QGISFEED_MAX_RECORDS=getattr(settings, 'QGISFEED_MAX_RECORDS', 20)
 
 # Decorator
@@ -127,9 +126,17 @@ def feeds_list(request):
         if author:
             feeds_entry = feeds_entry.filter(author__username__icontains=author)
     
+        language_filter = form.cleaned_data.get('language_filter')
+        if language_filter:
+            feeds_entry = feeds_entry.filter(language_filter=language_filter)
+
         publish_from = form.cleaned_data.get('publish_from')
         if publish_from:
-            feeds_entry = feeds_entry.filter(publish_from=publish_from)
+            feeds_entry = feeds_entry.filter(publish_from__gt=publish_from)
+
+        publish_to = form.cleaned_data.get('publish_to')
+        if publish_to:
+            feeds_entry = feeds_entry.filter(publish_to__lt=publish_to)
 
 
     # Get sorting parameters from the query string
@@ -143,6 +150,9 @@ def feeds_list(request):
     else:
         order = 'asc'
         feeds_entry = feeds_entry.order_by(f'-{sort_by}')
+
+    # Get the count of all/filtered entries
+    count = feeds_entry.count()
     
     # Paginate the list of feeds
     page = request.GET.get('page', 1)
@@ -165,6 +175,7 @@ def feeds_list(request):
               "sort_by": sort_by, 
               "order": order, 
               "current_order":current_order,
-              "form": form
+              "form": form,
+              "count": count
             }
     )
