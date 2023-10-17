@@ -4,20 +4,9 @@
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}
 
-<style>
-    .spatial-filter-map {
-        .dj_map_wrapper {
-            width: 100%;
-        }
-    }
-</style>
-
 {% endblock stylesheets %} 
 {% block content %}
 
-<head>
-    {{ form.media }}
-</head>
 <section class="hero is-dark is-small has-bg-img"
 
 style="background: url({% static "images/banner4.png" %});
@@ -65,7 +54,7 @@ style="background: url({% static "images/banner4.png" %});
                 <div class="field">
                     <label class="label">Image:</label>
                 </div>
-                <div class="file is-fullwidth field">
+                <div class="file is-boxed field is-fullwidth">
                     <label class="file-label">
                         {{form.image}}
                       <span class="file-cta">
@@ -123,12 +112,6 @@ style="background: url({% static "images/banner4.png" %});
                     {{form.language_filter}}
                   </div>
                 </div>
-                <div class="field">
-                    <label class="label">Spatial filter:</label>
-                    <div class="spatial-filter-map">
-                        {{form.spatial_filter}}
-                    </div>
-                </div>
     
                 <div class="field">
                     <label class="label">Publication start:</label>
@@ -160,24 +143,10 @@ style="background: url({% static "images/banner4.png" %});
                 </button>
             </form>
         </div>
-        <div class="column is-6">
-            <h5 class="title is-5">Preview</h5>
-            <div id="preview"></div>
-        </div>
     </div>
 </section>
 
 {% endblock content %}
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
-<script>
-  // Capture user input in real-time
-  var contentField = document.getElementById('id_content');
-  var preview = document.getElementById('preview');
-
-  contentField.addEventListener('input', function() {
-      var fieldValue = contentField.value;
-      preview.innerHTML = fieldValue;
-  });
-</script>
 {% endblock javascripts %}
