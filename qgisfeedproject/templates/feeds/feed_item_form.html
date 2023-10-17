@@ -161,8 +161,15 @@ style="background: url({% static "images/banner4.png" %});
             </form>
         </div>
         <div class="column is-6">
-            <h5 class="title is-5">Preview</h5>
-            <div id="preview"></div>
+            <h5 class="title is-5 has-text-centered">News preview</h5>
+            <div class="form-preview columns has-background-light p-2 box-container has-text-dark m-5">
+                <div class="column is-4" id="imagePreview">
+                </div>
+                <div class="column is-8">
+                    <h5 id="titlePreview" class="title is-5"></h5>
+                    <div id="contentPreview"></div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -172,12 +179,32 @@ style="background: url({% static "images/banner4.png" %});
 {% block javascripts %}
 <script>
   // Capture user input in real-time
+  var titleField = document.getElementById('id_title');
   var contentField = document.getElementById('id_content');
-  var preview = document.getElementById('preview');
+  var imageField = document.getElementById('id_image');
+
+  var contentPreview = document.getElementById('contentPreview');
+  var titlePreview = document.getElementById('titlePreview');
+  var imagePreview = document.getElementById('imagePreview');
+
+  titleField.addEventListener('input', function() {
+        var fieldValue = titleField.value;
+        titlePreview.innerText = fieldValue;
+    });
 
   contentField.addEventListener('input', function() {
       var fieldValue = contentField.value;
-      preview.innerHTML = fieldValue;
+      contentPreview.innerHTML = fieldValue;
   });
+
+  imageField.addEventListener('change', function() {
+    var selectedImage = imageField.files[0];
+    if (selectedImage) {
+        var imageURL = URL.createObjectURL(selectedImage);
+        imagePreview.innerHTML = '<img src="'+imageURL+'" style="border-radius:20px;">';
+    } else {
+        imagePreview.innerHTML = '';
+    }
+});
 </script>
 {% endblock javascripts %}
