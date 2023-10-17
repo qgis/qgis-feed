@@ -15,7 +15,7 @@ RUN echo "Installing GDAL dependencies" && \
     echo "Installing other depdencies" && \
     apt-get install -y wait-for-it curl sudo && \
     echo "Install C library for geoip2" && \
-    apt-get install -y libmaxminddb0 libmaxminddb-dev mmdb-bin && \
+    apt install libmaxminddb0 libmaxminddb-dev mmdb-bin && \
     echo "Removing build dependencies and cleaning up" && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf ~/.cache/pip
