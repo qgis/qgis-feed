@@ -21,9 +21,9 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.views import View
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render
 
-from .forms import FeedEntryFilterForm, FeedItemForm
+from .forms import FeedEntryFilterForm
 from .models import QgisFeedEntry
 from .languages import LANGUAGE_KEYS
 import json
@@ -179,31 +179,3 @@ def feeds_list(request):
               "count": count
             }
     )
-
-
-@staff_required
-def feed_entry_add(request):
-    """
-    View to add a feed entry item
-    """
-    msg = None
-    success = False
-    if request.method == 'POST':
-        form = FeedItemForm(request.POST)
-        if form.is_valid():
-            form.save()
-            success = True
-            return redirect('feeds_list')
-        else:
-            success = False
-            msg = "Form is not valid"
-    else:
-        form = FeedItemForm()
-
-    args = {
-        "form": form,
-        "msg": msg,
-        "success": success,
-
-    }
-    return render(request, 'feeds/feed_item_form.html', args)
