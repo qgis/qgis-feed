@@ -32,7 +32,11 @@ style="background: url({% static "images/banner4.png" %});
             <div class="column is-5 is-align-items-center" style="display: flex">
                 <div class="container has-text-left">
                     <p class="title hero-title pr-3">
-                        Add a feed entry
+                        {% if form.title.value %}
+                            Edit an entry
+                        {% else %}
+                            Add an entry
+                        {% endif %}
                     </p>
                     <p class="subtitle is-size-2 hero-subtitle">
                         
