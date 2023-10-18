@@ -1,8 +1,13 @@
 from django.contrib.gis import forms
+
+from .models import QgisFeedEntry
 from .languages import LANGUAGES
 
 
 class FeedEntryFilterForm(forms.Form):
+    """
+    Form for feed entry filter
+    """
     empty_lang = ('', 'Select a language')
     LANG_CHOICES = (empty_lang,) + LANGUAGES
     title = forms.CharField(
@@ -40,12 +45,30 @@ class FeedEntryFilterForm(forms.Form):
     )
 
 
-class FeedItemForm(forms.Form):
+class FeedItemForm(forms.ModelForm):
+    """
+    Form for feed entry add or update
+    """
+    class Meta:
+        model = QgisFeedEntry
+        fields = [
+            'title', 
+            'image', 
+            'content', 
+            'url', 
+            'sticky', 
+            'sorting', 
+            'language_filter', 
+            'spatial_filter', 
+            'publish_from', 
+            'publish_to'
+        ]
+
     empty_lang = ('', 'Select a language')
     LANG_CHOICES = (empty_lang,) + LANGUAGES
 
     title = forms.CharField(
-        required=False,
+        required=True,
         widget=forms.TextInput(attrs={'class': 'input', 'placeholder': 'Title'})
     )
     image = forms.FileField(
@@ -54,12 +77,12 @@ class FeedItemForm(forms.Form):
     )
 
     content = forms.CharField(
-        required=False,
+        required=True,
         widget=forms.Textarea(attrs={'class': 'textarea', 'placeholder': 'Content', 'rows': 5})
     )
 
     url = forms.CharField(
-        required=False,
+        required=True,
         widget=forms.TextInput(attrs={'class': 'input', 'placeholder': 'URL for more information link'})
     )
 
@@ -69,7 +92,7 @@ class FeedItemForm(forms.Form):
     )
 
     sorting = forms.IntegerField(
-        required=False,
+        required=True,
         widget=forms.NumberInput(attrs={'class': 'input',  'placeholder': 'Increase to show at top of the list'})
     )
 

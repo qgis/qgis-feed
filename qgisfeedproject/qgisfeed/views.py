@@ -207,3 +207,32 @@ def feed_entry_add(request):
 
     }
     return render(request, 'feeds/feed_item_form.html', args)
+
+@staff_required
+def feed_entry_update(request, pk):
+    """
+    View to update a feed entry item
+    """
+    msg = None
+    success = False
+    feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
+
+    if request.method == 'POST':
+        form = FeedItemForm(request.POST, instance=feed_entry)
+        if form.is_valid():
+            form.save()
+            success = True
+            return redirect('feeds_list')
+        else:
+            success = False
+            msg = "Form is not valid"
+    else:
+        form = FeedItemForm(instance=feed_entry)
+
+    args = {
+        "form": form,
+        "msg": msg,
+        "success": success,
+
+    }
+    return render(request, 'feeds/feed_item_form.html', args)

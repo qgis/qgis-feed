@@ -3,7 +3,11 @@
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}
-
+<style>
+  tbody tr :hover{
+    cursor: pointer;
+  }
+</style>
 {% endblock stylesheets %} 
 {% block content %}
 
@@ -44,8 +48,9 @@ style="background: url({% static "images/banner4.png" %});
           <button 
               class="button is-block is-success is-fullwidth is-large"
               value="add" 
+              onclick="window.location.href='{% url 'feed_entry_add'%}';"
           >
-              Add a feed entry <i class="fa fa-plus" aria-hidden="true"></i>
+              Add an entry <i class="fa fa-plus" aria-hidden="true"></i>
           </button>
             <hr/>
             <h5 class="title is-5">Filter by</h5>
@@ -173,7 +178,7 @@ style="background: url({% static "images/banner4.png" %});
         
                 <tbody>
                     {% for feed in feeds_entry %}
-                        <tr>
+                        <tr onclick="window.location.href='{% url 'feed_entry_update' feed.pk %}';">
                             <td>{{ feed.title|default:"-" }}</td>
                             <td>{{ feed.author|default:"-" }}</td>
                             <td>{{ feed.get_language_filter_display|default:"-" }}</td>

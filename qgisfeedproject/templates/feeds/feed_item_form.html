@@ -51,7 +51,7 @@ style="background: url({% static "images/banner4.png" %});
 <section class="section">
     <div class="columns">
         <div class="column is-6 box has-background-light p-3 box-container has-text-dark">
-            <form method="post">
+            <form method="POST">
                 {% csrf_token %}
                 <div class="field">
                     <label class="label">Title:</label>
@@ -65,7 +65,7 @@ style="background: url({% static "images/banner4.png" %});
                 <div class="field">
                     <label class="label">Image:</label>
                 </div>
-                <div class="file is-fullwidth field">
+                <div class="file is-fullwidth has-name field">
                     <label class="file-label">
                         {{form.image}}
                       <span class="file-cta">
@@ -75,7 +75,14 @@ style="background: url({% static "images/banner4.png" %});
                         <span class="file-label">
                           Choose an image…
                         </span>
-                      </span>
+                    </span>
+                    <span class="file-name" id="imageFileName">
+                        {% if form.image.value %}
+                            {{ form.image.value.name }}
+                        {% else %}
+                            <i>No image choosed. Click here to add an image.</i>
+                        {% endif %}
+                    </span>
                     </label>
                 </div>
     
@@ -161,13 +168,21 @@ style="background: url({% static "images/banner4.png" %});
             </form>
         </div>
         <div class="column is-6">
-            <h5 class="title is-5 has-text-centered">News preview</h5>
+            <h5 class="title is-5 has-text-centered">Preview</h5>
             <div class="form-preview columns has-background-light p-2 box-container has-text-dark m-5">
                 <div class="column is-4" id="imagePreview">
+                    {% if form.image.value %}
+                    <img src="{{ form.image.value.url }}" style="border-radius:20px;">
+                    {% else %}
+                    {% endif %}
                 </div>
                 <div class="column is-8">
-                    <h5 id="titlePreview" class="title is-5"></h5>
-                    <div id="contentPreview"></div>
+                    <h5 id="titlePreview" class="title is-5">
+                        {{form.title.value | default:""}}
+                    </h5>
+                    <div id="contentPreview">
+                        {{form.content.value | default:"" | safe }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -187,6 +202,8 @@ style="background: url({% static "images/banner4.png" %});
   var titlePreview = document.getElementById('titlePreview');
   var imagePreview = document.getElementById('imagePreview');
 
+  var imageFileName = document.getElementById('imageFileName');
+
   titleField.addEventListener('input', function() {
         var fieldValue = titleField.value;
         titlePreview.innerText = fieldValue;
@@ -202,8 +219,10 @@ style="background: url({% static "images/banner4.png" %});
     if (selectedImage) {
         var imageURL = URL.createObjectURL(selectedImage);
         imagePreview.innerHTML = '<img src="'+imageURL+'" style="border-radius:20px;">';
+        imageFileName.innerHTML = selectedImage.name
     } else {
         imagePreview.innerHTML = '';
+        imageFileName.innerHTML = '<i>No image choosed. Click here to add an image.</i>'
     }
 });
 </script>
