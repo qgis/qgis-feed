@@ -316,3 +316,58 @@ class FeedsListViewTestCase(TestCase):
         self.assertTrue('current_order' in response.context)
         self.assertTrue('form' in response.context)
         self.assertTrue('count' in response.context)
+
+class FeedsItemFormTestCase(TestCase):
+    """
+    Test the feeds list feature
+    """
+    fixtures = ['qgisfeed.json', 'users.json']
+    def setUp(self):
+        self.client = Client()
+
+    def test_authenticated_user_access(self):
+        self.client.login(username='admin', password='admin')
+
+        # Access the feed_entry_add view after logging in
+        response = self.client.get(reverse('feed_entry_add'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'feeds/feed_item_form.html')
+        self.assertTrue('form' in response.context)
+
+        # Access the feed_entry_update view after logging in
+        response = self.client.get(reverse('feed_entry_update', args=[3]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'feeds/feed_item_form.html')
+        self.assertTrue('form' in response.context)
+
+    def test_unauthenticated_user_redirect_to_login(self):
+        # Access the feed_entry_add view without logging in
+        response = self.client.get(reverse('feed_entry_add'))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('login') + '?next=' + reverse('feed_entry_add'))
+        self.assertIsNone(response.context)
+
+        # Access the feed_entry_update view without logging in
+        response = self.client.get(reverse('feed_entry_update', args=[3]))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('login') + '?next=' + reverse('feed_entry_update', args=[3]))
+        self.assertIsNone(response.context)
+    
+    def test_nonstaff_user_redirect_to_login(self):
+        user = User.objects.create_user(username='testuser', password='testpassword')
+        self.client.login(username='testuser', password='testpassword')
+
+        # Access the feed_entry_add view with a non staff user
+        response = self.client.get(reverse('feed_entry_add'))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('login') + '?next=' + reverse('feed_entry_add'))
+        self.assertIsNone(response.context)
+
+        # Access the feed_entry_add view with a non staff user
+        response = self.client.get(reverse('feed_entry_update', args=[3]))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('login') + '?next=' + reverse('feed_entry_update', args=[3]))
+        self.assertIsNone(response.context)
+
+    # Test for adding and updating feed item will be added after
+
