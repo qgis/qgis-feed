@@ -99,7 +99,7 @@ class QgisFeedEntry(models.Model):
 
     def save(self, *args, **kwargs):
         """Auto-set author and notify superadmin when entry is added"""
-        if self.pk is None and self._request:
+        if self.pk is None and hasattr(self, '_request') and self._request:
             self.author = self._request.user
 
         if self.published and self.publish_from is None:
