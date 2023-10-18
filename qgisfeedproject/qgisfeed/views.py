@@ -189,9 +189,11 @@ def feed_entry_add(request):
     msg = None
     success = False
     if request.method == 'POST':
-        form = FeedItemForm(request.POST)
+        form = FeedItemForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            new_object = form.save(commit=False)
+            new_object.set_request(request)  # Pass the 'request' to get the user in the model
+            new_object.save()
             success = True
             return redirect('feeds_list')
         else:
@@ -218,7 +220,7 @@ def feed_entry_update(request, pk):
     feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
 
     if request.method == 'POST':
-        form = FeedItemForm(request.POST, instance=feed_entry)
+        form = FeedItemForm(request.POST, request.FILES, instance=feed_entry)
         if form.is_valid():
             form.save()
             success = True

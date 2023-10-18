@@ -21,11 +21,16 @@ from django.contrib.admin.sites import AdminSite
 from django.utils import timezone
 from django.core.paginator import Page
 from django.urls import reverse
+from django.contrib.gis.geos import Polygon
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.conf import settings
 
 from .models import (
     QgisFeedEntry, QgisUserVisit, DailyQgisUserVisit, aggregate_user_visit_data
 )
 from .admin import QgisFeedEntryAdmin
+
+from os.path import join
 
 
 class MockRequest:
@@ -369,5 +374,53 @@ class FeedsItemFormTestCase(TestCase):
         self.assertRedirects(response, reverse('login') + '?next=' + reverse('feed_entry_update', args=[3]))
         self.assertIsNone(response.context)
 
-    # Test for adding and updating feed item will be added after
+    def test_authenticated_user_add_feed(self):
+        # Add a feed entry test
+        self.client.login(username='admin', password='admin')
+        spatial_filter = Polygon(((0, 0), (0, 1), (1, 1), (1, 0), (0, 0)))
+        image_path = join(settings.MEDIA_ROOT, "feedimages", "rust.png")
+
+        post_data = {
+            'title': 'QGIS core will be rewritten in Rust', 
+            'image': open(image_path, "rb"), 
+            'content': '<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>Rust</strong>', 
+            'url': 'https://www.null.com', 
+            'sticky': False, 
+            'sorting': 0, 
+            'language_filter': 'en', 
+            'spatial_filter': str(spatial_filter), 
+            'publish_from': '2023-10-18 14:46:00+00', 
+            'publish_to': '2023-10-29 14:46:00+00'
+        }
+
+        response = self.client.post(reverse('feed_entry_add'), data=post_data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('feeds_list'))
+
+
+    def test_authenticated_user_u_feed(self):
+        # Update a feed entry test
+        self.client.login(username='admin', password='admin')
+        spatial_filter = Polygon([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)])
+        image_path = join(settings.MEDIA_ROOT, "feedimages", "rust.png")
+
+        post_data = {
+            'title': 'QGIS core will be rewritten in Rust', 
+            'image': open(image_path, "rb"),
+            'content': '<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>Rust</strong>', 
+            'url': 'https://www.null.com', 
+            'sticky': False, 
+            'sorting': 0, 
+            'language_filter': 'en', 
+            'spatial_filter': str(spatial_filter),
+            'publish_from': '2023-10-18 14:46:00+00', 
+            'publish_to': '2023-10-29 14:46:00+00'
+        }
+        
+        response = self.client.post(reverse('feed_entry_update', args=[3]), data=post_data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('feeds_list'))
+
+    # TODO: Test invalid form after adding data validity check
+
 

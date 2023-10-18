@@ -51,7 +51,7 @@ style="background: url({% static "images/banner4.png" %});
 <section class="section">
     <div class="columns">
         <div class="column is-6 box has-background-light p-3 box-container has-text-dark">
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="field">
                     <label class="label">Title:</label>
