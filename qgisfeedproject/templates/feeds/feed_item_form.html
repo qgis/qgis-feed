@@ -53,12 +53,21 @@
     <div class="columns">
         <div class="column is-6">
             {% include 'feeds/feed_item_form_widgets.html' %}
+            <button class="button is-block is-success js-modal-trigger mt-5" data-target="form-review-modal">
+                <span class="icon">
+                    <i class="fa fa-floppy-disk" aria-hidden="true"></i>
+                </span>
+                <span>Review and save changes</span>
+            </button>
         </div>
         <div class="column is-6">
+            <h5 class="title is-5 has-text-centered">Preview</h5>
             {% include 'feeds/feed_item_preview.html' %}
         </div>
     </div>
 </section>
+
+{% include 'feeds/feed_item_confirmation.html' %}
 
 {% endblock content %}
 <!-- Specific JS goes HERE -->

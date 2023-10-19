@@ -1,5 +1,5 @@
 
-<form method="POST" enctype="multipart/form-data">
+<form method="POST" enctype="multipart/form-data" id="feedItemForm">
     {% csrf_token %}
     <div class="box has-background-light p-3 box-container has-text-dark">
         <div class="field">
@@ -110,7 +110,4 @@
             </div>
         </div>
     </div>
-    <button class="button is-block is-success" type="submit" value="submit" id="submit-button">
-        Save <i class="fa fa-floppy-disk" aria-hidden="true"></i>
-    </button>
 </form>
