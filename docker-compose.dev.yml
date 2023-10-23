@@ -24,3 +24,13 @@ services:
       - postgis
     volumes:
       - ../qgis-feed:/code
+
+  webpack:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    platform: linux/amd64 
+    command: npx webpack --config webpack.config.js --watch
+    working_dir: /code
+    volumes:
+      - .:/code
