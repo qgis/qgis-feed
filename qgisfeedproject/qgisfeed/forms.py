@@ -2,7 +2,7 @@ from django.contrib.gis import forms
 
 from .models import QgisFeedEntry
 from .languages import LANGUAGES
-
+from django.utils import timezone
 
 class FeedEntryFilterForm(forms.Form):
     """
@@ -111,6 +111,7 @@ class FeedItemForm(forms.ModelForm):
 
     publish_from = forms.CharField(
         required=False,
+        initial=timezone.now(),
         widget=forms.DateTimeInput(
             attrs={
                 'type': 'datetime-local', 
@@ -120,6 +121,7 @@ class FeedItemForm(forms.ModelForm):
     )
     publish_to = forms.CharField(
         required=False,
+        initial=timezone.now() + timezone.timedelta(days=30),
         widget=forms.DateTimeInput(
             attrs={
                 'type': 'datetime-local', 
