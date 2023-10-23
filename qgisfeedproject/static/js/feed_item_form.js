@@ -20,7 +20,6 @@ var languagePreview = document.getElementById("languagePreview");
 var spatialFilterPreview = document.getElementById("spatialFilterPreview");
 var publishFromPreview = document.getElementById("publishFromPreview");
 var publishToPreview = document.getElementById("publishToPreview");
-var imagePreview = document.getElementById("imagePreview");
 
 var imageFileName = document.getElementById("imageFileName");
 
@@ -52,7 +51,7 @@ imageField.addEventListener("change", function () {
     } else {
       item.innerHTML = "";
       imageFileName.innerHTML =
-        "<i>No image choosed. Click here to add an image.</i>";
+        "<i>No image chosen. Click here to add an image.</i>";
     }
   });
 });
