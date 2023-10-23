@@ -52,7 +52,7 @@ imageField.addEventListener("change", function () {
     } else {
       item.innerHTML = "";
       imageFileName.innerHTML =
-        "<i>No image choosed. Click here to add an image.</i>";
+        "<i>No image chosen. Click here to add an image.</i>";
     }
   });
 });
