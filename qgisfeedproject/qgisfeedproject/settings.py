@@ -51,6 +51,9 @@ INSTALLED_APPS = [
 
     # User visit
     'user_visit',
+
+    # Webpack
+    'webpack_loader'
 ]
 
 # Useful debugging extensions
@@ -162,3 +165,12 @@ except ImportError as ex:
 
 LOGIN_REDIRECT_URL = "/manage"
 LOGOUT_REDIRECT_URL = "/accounts/login"
+
+
+# Webpack
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'bundles',
+        'STATS_FILE': os.path.join(os.path.dirname(BASE_DIR), 'webpack-stats.json'),
+    }
+}
