@@ -20,7 +20,6 @@ var languagePreview = document.getElementById("languagePreview");
 var spatialFilterPreview = document.getElementById("spatialFilterPreview");
 var publishFromPreview = document.getElementById("publishFromPreview");
 var publishToPreview = document.getElementById("publishToPreview");
-var imagePreview = document.getElementById("imagePreview");
 
 var imageFileName = document.getElementById("imageFileName");
 
