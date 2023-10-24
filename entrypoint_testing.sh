@@ -3,8 +3,8 @@
 
 LOCKFILE="setup_done.lock"
 
-# Install Bulma CSS dependencies
-npm install
+# Install Bulma CSS dependencies and build the bundle
+npm install && npm run build
 
 cd /code/qgisfeedproject
 
