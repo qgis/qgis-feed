@@ -46,13 +46,23 @@
       </div>
       <div id="menu" class="navbar-menu">
           <div class="navbar-end">
+
+            {% if user.is_authenticated and user.is_staff %}
+              <div class="navbar-item " >
+                  <span>Welcome, {{user.username | upper}}</span>
+              </div>
+              <a class="navbar-item has-text-weight-bold is-size-7" href="{% url "feeds_list" %}">
+                  <span>News Feed List</span>
+              </a>
+
+            {% endif %}
               
             {% if user.is_authenticated and user.is_staff %}
-                <a class="navbar-item has-text-weight-bold is-size-7 is-active" href="{% url "logout" %}">
+                <a class="navbar-item has-text-weight-bold is-size-7" href="{% url "logout" %}">
                     <span>Logout</span>
                 </a>
             {% else %}
-                <a class="navbar-item has-text-weight-bold is-size-7 is-active" href="{% url "login" %}">
+                <a class="navbar-item has-text-weight-bold is-size-7" href="{% url "login" %}">
                     <span>Login</span>
                 </a>   
             {% endif %}

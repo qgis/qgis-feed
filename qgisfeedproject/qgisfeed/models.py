@@ -107,8 +107,6 @@ class QgisFeedEntry(models.Model):
 
         super(QgisFeedEntry, self).save(*args, **kwargs)
 
-        # TODO: Add send notification email to superadmin
-
 
 class QgisUserVisit(models.Model):
     

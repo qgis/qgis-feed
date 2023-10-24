@@ -22,8 +22,11 @@ from django.views import View
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db import transaction
+from django.contrib.auth.models import User
 
 from .forms import FeedEntryFilterForm, FeedItemForm
+from .utils import notify_admin
 from .models import QgisFeedEntry
 from .languages import LANGUAGE_KEYS
 import json
@@ -138,6 +141,10 @@ def feeds_list(request):
         if publish_to:
             feeds_entry = feeds_entry.filter(publish_to__lt=publish_to)
 
+        need_review = form.cleaned_data.get('need_review')
+        if need_review:
+            feeds_entry = feeds_entry.filter(published=need_review)
+
 
     # Get sorting parameters from the query string
     sort_by = request.GET.get('sort_by', 'publish_from')
@@ -188,14 +195,24 @@ def feed_entry_add(request):
     """
     msg = None
     success = False
-    if request.method == 'POST':
+    user = request.user
+    user_is_approver = user.has_perm("qgisfeed.publish_qgisfeedentry")
+    user_can_add = user.has_perm("qgisfeed.change_qgisfeedentry")
+    if request.method == 'POST' and user_can_add:
         form = FeedItemForm(request.POST, request.FILES)
         if form.is_valid():
-            new_object = form.save(commit=False)
-            new_object.set_request(request)  # Pass the 'request' to get the user in the model
-            new_object.save()
-            success = True
-            return redirect('feeds_list')
+            with transaction.atomic():
+                new_object = form.save(commit=False)
+                new_object.set_request(request)  # Pass the 'request' to get the user in the model
+                new_object.save()
+                success = True
+
+                if not request.user.is_superuser:
+                    recipients = [u.email for u in User.objects.filter(is_superuser=True, is_active=True, email__isnull=False).exclude(email='')]
+                    if recipients:
+                        notify_admin(request.user, request, recipients, new_object)
+
+                return redirect('feeds_list')
         else:
             success = False
             msg = "Form is not valid"
@@ -206,7 +223,8 @@ def feed_entry_add(request):
         "form": form,
         "msg": msg,
         "success": success,
-
+        "published": False,
+        "user_is_approver": user_is_approver,
     }
     return render(request, 'feeds/feed_item_form.html', args)
 
@@ -218,11 +236,16 @@ def feed_entry_update(request, pk):
     msg = None
     success = False
     feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
-
-    if request.method == 'POST':
+    user = request.user
+    user_is_approver = user.has_perm("qgisfeed.publish_qgisfeedentry")
+    user_can_change = user.has_perm("qgisfeed.change_qgisfeedentry")
+    if request.method == 'POST' and user_can_change:
         form = FeedItemForm(request.POST, request.FILES, instance=feed_entry)
         if form.is_valid():
-            form.save()
+            instance = form.save(commit=False)
+            if 'publish' in request.POST and user_is_approver:
+                instance.published = True
+            instance.save()
             success = True
             return redirect('feeds_list')
         else:
@@ -235,6 +258,7 @@ def feed_entry_update(request, pk):
         "form": form,
         "msg": msg,
         "success": success,
-
+        "published": feed_entry.published,
+        "user_is_approver": user_is_approver
     }
     return render(request, 'feeds/feed_item_form.html', args)

@@ -101,6 +101,16 @@ style="background: url({% static "images/banner4.png" %});
                         </span>
                       </div>
                     </div>
+
+                  
+                  <div class="field">
+                    <label class="label">
+                      Need review:
+                    </label>
+                    <div class="control has-text-black">
+                      {{form.need_review}}
+                    </div>
+                  </div>
                 <button 
                     class="button is-block is-info is-fullwidth"
                     type="submit" 
@@ -158,6 +168,7 @@ style="background: url({% static "images/banner4.png" %});
                             Language filter
                         </a>
                     </th>
+                    <th>Need review</th>
                     <th>Published</th>
                     <th>
                         <a href="?page={{ feeds_entry.number }}&sort_by=publish_from&order={{ order|lower|default:"asc" }}">
@@ -183,6 +194,15 @@ style="background: url({% static "images/banner4.png" %});
                             <td>{{ feed.author|default:"-" }}</td>
                             <td>{{ feed.get_language_filter_display|default:"-" }}</td>
                             <td class="has-text-centered">
+                                {% if not feed.published %}
+                                    <span class="icon has-text-danger">
+                                        <i class="fa-solid fa-circle-exclamation"></i>
+                                    </span>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td class="has-text-centered">
                                 {% if feed.published %}
                                     <span class="icon has-text-success">
                                         <i class="fa-solid fa-circle-check"></i>
@@ -193,6 +213,7 @@ style="background: url({% static "images/banner4.png" %});
                                     </span>
                                 {% endif %}
                             </td>
+
                             <td>{{ feed.publish_from|default:"-" }}</td>
                             <td>{{ feed.publish_to|default:"-" }}</td>
                             <td>{{ feed.sorting|default:"-" }}</td>

@@ -25,6 +25,13 @@ class FeedEntryFilterForm(forms.Form):
         widget=forms.Select()
     )
 
+    need_review = forms.ChoiceField(
+        required=False,
+        widget=forms.RadioSelect(attrs={'class': 'radio'}),
+        choices=[(False, 'Yes'), (True, 'No')] # We need the inverted value because we use the published field
+    )
+
+
     publish_from = forms.CharField(
         required=False,
         widget=forms.DateInput(

@@ -57,7 +57,11 @@
                 <span class="icon">
                     <i class="fa fa-floppy-disk" aria-hidden="true"></i>
                 </span>
+                {% if user_is_approver and not published and form.instance.pk%}
+                <span>Review and publish</span>
+                {% else %}
                 <span>Review and save changes</span>
+                {% endif %}
             </button>
         </div>
         <div class="column is-6">
