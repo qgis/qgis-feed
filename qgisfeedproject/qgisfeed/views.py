@@ -152,7 +152,8 @@ class FeedsListView(View):
 
             need_review = form.cleaned_data.get('need_review')
             if need_review:
-                feeds_entry = feeds_entry.filter(published=need_review)
+                published = not bool(int(need_review))
+                feeds_entry = feeds_entry.filter(published=published)
 
         # Get sorting parameters from the query string
         sort_by = request.GET.get('sort_by', 'publish_from')
