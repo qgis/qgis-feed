@@ -21,9 +21,9 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.views import View
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 
-from .forms import FeedEntryFilterForm
+from .forms import FeedEntryFilterForm, FeedItemForm
 from .models import QgisFeedEntry
 from .languages import LANGUAGE_KEYS
 import json
@@ -178,3 +178,62 @@ def feeds_list(request):
               "count": count
             }
     )
+
+
+@staff_required
+def feed_entry_add(request):
+    """
+    View to add a feed entry item
+    """
+    msg = None
+    success = False
+    if request.method == 'POST':
+        form = FeedItemForm(request.POST, request.FILES)
+        if form.is_valid():
+            new_object = form.save(commit=False)
+            new_object.set_request(request)  # Pass the 'request' to get the user in the model
+            new_object.save()
+            success = True
+            return redirect('feeds_list')
+        else:
+            success = False
+            msg = "Form is not valid"
+    else:
+        form = FeedItemForm()
+
+    args = {
+        "form": form,
+        "msg": msg,
+        "success": success,
+
+    }
+    return render(request, 'feeds/feed_item_form.html', args)
+
+@staff_required
+def feed_entry_update(request, pk):
+    """
+    View to update a feed entry item
+    """
+    msg = None
+    success = False
+    feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
+
+    if request.method == 'POST':
+        form = FeedItemForm(request.POST, request.FILES, instance=feed_entry)
+        if form.is_valid():
+            form.save()
+            success = True
+            return redirect('feeds_list')
+        else:
+            success = False
+            msg = "Form is not valid"
+    else:
+        form = FeedItemForm(instance=feed_entry)
+
+    args = {
+        "form": form,
+        "msg": msg,
+        "success": success,
+
+    }
+    return render(request, 'feeds/feed_item_form.html', args)

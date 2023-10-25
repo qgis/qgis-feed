@@ -111,3 +111,7 @@ venv.bak/
 
 # Setup done
 qgisfeedproject/setup_done.lock
+
+# Uploaded images
+qgisfeedproject/media/feedimages/*
+!qgisfeedproject/media/feedimages/rust.png

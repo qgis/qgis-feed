@@ -21,11 +21,16 @@ from django.contrib.admin.sites import AdminSite
 from django.utils import timezone
 from django.core.paginator import Page
 from django.urls import reverse
+from django.contrib.gis.geos import Polygon
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.conf import settings
 
 from .models import (
     QgisFeedEntry, QgisUserVisit, DailyQgisUserVisit, aggregate_user_visit_data
 )
 from .admin import QgisFeedEntryAdmin
+
+from os.path import join
 
 
 class MockRequest:
@@ -316,3 +321,106 @@ class FeedsListViewTestCase(TestCase):
         self.assertTrue('current_order' in response.context)
         self.assertTrue('form' in response.context)
         self.assertTrue('count' in response.context)
+
+class FeedsItemFormTestCase(TestCase):
+    """
+    Test the feeds list feature
+    """
+    fixtures = ['qgisfeed.json', 'users.json']
+    def setUp(self):
+        self.client = Client()
+
+    def test_authenticated_user_access(self):
+        self.client.login(username='admin', password='admin')
+
+        # Access the feed_entry_add view after logging in
+        response = self.client.get(reverse('feed_entry_add'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'feeds/feed_item_form.html')
+        self.assertTrue('form' in response.context)
+
+        # Access the feed_entry_update view after logging in
+        response = self.client.get(reverse('feed_entry_update', args=[3]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'feeds/feed_item_form.html')
+        self.assertTrue('form' in response.context)
+
+    def test_unauthenticated_user_redirect_to_login(self):
+        # Access the feed_entry_add view without logging in
+        response = self.client.get(reverse('feed_entry_add'))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('login') + '?next=' + reverse('feed_entry_add'))
+        self.assertIsNone(response.context)
+
+        # Access the feed_entry_update view without logging in
+        response = self.client.get(reverse('feed_entry_update', args=[3]))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('login') + '?next=' + reverse('feed_entry_update', args=[3]))
+        self.assertIsNone(response.context)
+    
+    def test_nonstaff_user_redirect_to_login(self):
+        user = User.objects.create_user(username='testuser', password='testpassword')
+        self.client.login(username='testuser', password='testpassword')
+
+        # Access the feed_entry_add view with a non staff user
+        response = self.client.get(reverse('feed_entry_add'))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('login') + '?next=' + reverse('feed_entry_add'))
+        self.assertIsNone(response.context)
+
+        # Access the feed_entry_add view with a non staff user
+        response = self.client.get(reverse('feed_entry_update', args=[3]))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('login') + '?next=' + reverse('feed_entry_update', args=[3]))
+        self.assertIsNone(response.context)
+
+    def test_authenticated_user_add_feed(self):
+        # Add a feed entry test
+        self.client.login(username='admin', password='admin')
+        spatial_filter = Polygon(((0, 0), (0, 1), (1, 1), (1, 0), (0, 0)))
+        image_path = join(settings.MEDIA_ROOT, "feedimages", "rust.png")
+
+        post_data = {
+            'title': 'QGIS core will be rewritten in Rust', 
+            'image': open(image_path, "rb"), 
+            'content': '<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>Rust</strong>', 
+            'url': 'https://www.null.com', 
+            'sticky': False, 
+            'sorting': 0, 
+            'language_filter': 'en', 
+            'spatial_filter': str(spatial_filter), 
+            'publish_from': '2023-10-18 14:46:00+00', 
+            'publish_to': '2023-10-29 14:46:00+00'
+        }
+
+        response = self.client.post(reverse('feed_entry_add'), data=post_data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('feeds_list'))
+
+
+    def test_authenticated_user_u_feed(self):
+        # Update a feed entry test
+        self.client.login(username='admin', password='admin')
+        spatial_filter = Polygon([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)])
+        image_path = join(settings.MEDIA_ROOT, "feedimages", "rust.png")
+
+        post_data = {
+            'title': 'QGIS core will be rewritten in Rust', 
+            'image': open(image_path, "rb"),
+            'content': '<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>Rust</strong>', 
+            'url': 'https://www.null.com', 
+            'sticky': False, 
+            'sorting': 0, 
+            'language_filter': 'en', 
+            'spatial_filter': str(spatial_filter),
+            'publish_from': '2023-10-18 14:46:00+00', 
+            'publish_to': '2023-10-29 14:46:00+00'
+        }
+        
+        response = self.client.post(reverse('feed_entry_update', args=[3]), data=post_data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('feeds_list'))
+
+    # TODO: Test invalid form after adding data validity check
+
+

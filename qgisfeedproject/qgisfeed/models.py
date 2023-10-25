@@ -94,6 +94,21 @@ class QgisFeedEntry(models.Model):
         verbose_name_plural = _('QGIS Feed Entries')
         ordering = ('-sticky', '-sorting', '-publish_from')
 
+    def set_request(self, request):
+        self._request = request
+
+    def save(self, *args, **kwargs):
+        """Auto-set author and notify superadmin when entry is added"""
+        if self.pk is None and hasattr(self, '_request') and self._request:
+            self.author = self._request.user
+
+        if self.published and self.publish_from is None:
+            self.publish_from = timezone.now()
+
+        super(QgisFeedEntry, self).save(*args, **kwargs)
+
+        # TODO: Add send notification email to superadmin
+
 
 class QgisUserVisit(models.Model):
     
