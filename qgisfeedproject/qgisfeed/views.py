@@ -22,6 +22,8 @@ from django.views import View
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import permission_required
+
 from django.db import transaction
 from django.contrib.auth.models import User
 
@@ -110,6 +112,7 @@ class QgisEntriesView(View):
         return HttpResponse(json.dumps(data, indent=(2 if settings.DEBUG else 0)),content_type='application/json')
 
 @staff_required
+@permission_required('qgisfeed.view_qgisfeedentry')
 def feeds_list(request):
     """
     List of feeds
@@ -174,6 +177,10 @@ def feeds_list(request):
         # If page is out of range (e.g., 9999), deliver the last page.
         feeds_entry = paginator.page(paginator.num_pages)
 
+    user = request.user
+    user_can_add = user.has_perm("qgisfeed.add_qgisfeedentry")
+    user_can_change = user.has_perm("qgisfeed.change_qgisfeedentry")
+
     return render(
         request, 
         'feeds/feeds_list.html',
@@ -183,12 +190,15 @@ def feeds_list(request):
               "order": order, 
               "current_order":current_order,
               "form": form,
-              "count": count
+              "count": count,
+              "user_can_change": user_can_change,
+              "user_can_add": user_can_add,
             }
     )
 
 
 @staff_required
+@permission_required('qgisfeed.add_qgisfeedentry')
 def feed_entry_add(request):
     """
     View to add a feed entry item
@@ -197,8 +207,7 @@ def feed_entry_add(request):
     success = False
     user = request.user
     user_is_approver = user.has_perm("qgisfeed.publish_qgisfeedentry")
-    user_can_add = user.has_perm("qgisfeed.change_qgisfeedentry")
-    if request.method == 'POST' and user_can_add:
+    if request.method == 'POST':
         form = FeedItemForm(request.POST, request.FILES)
         if form.is_valid():
             with transaction.atomic():
@@ -229,17 +238,17 @@ def feed_entry_add(request):
     return render(request, 'feeds/feed_item_form.html', args)
 
 @staff_required
+@permission_required('qgisfeed.change_qgisfeedentry')
 def feed_entry_update(request, pk):
     """
-    View to update a feed entry item
+    View to update/publish a feed entry item
     """
     msg = None
     success = False
     feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
     user = request.user
     user_is_approver = user.has_perm("qgisfeed.publish_qgisfeedentry")
-    user_can_change = user.has_perm("qgisfeed.change_qgisfeedentry")
-    if request.method == 'POST' and user_can_change:
+    if request.method == 'POST':
         form = FeedItemForm(request.POST, request.FILES, instance=feed_entry)
         if form.is_valid():
             instance = form.save(commit=False)
@@ -253,10 +262,6 @@ def feed_entry_update(request, pk):
         else:
             success = False
             msg = "Form is not valid"
-    elif request.method == 'POST' and not user_can_change:
-        form = FeedItemForm(instance=feed_entry)
-        msg = "Change not allowed"
-        success = False
     else:
         form = FeedItemForm(instance=feed_entry)
 

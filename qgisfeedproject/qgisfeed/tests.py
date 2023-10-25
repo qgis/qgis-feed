@@ -376,7 +376,7 @@ class FeedsItemFormTestCase(TestCase):
 
     def test_authenticated_user_add_feed(self):
         # Add a feed entry test
-        self.client.login(username='admin', password='admin')
+        self.client.login(username='staff', password='staff')
         spatial_filter = Polygon(((0, 0), (0, 1), (1, 1), (1, 0), (0, 0)))
         image_path = join(settings.MEDIA_ROOT, "feedimages", "rust.png")
 
@@ -442,9 +442,9 @@ class FeedsItemFormTestCase(TestCase):
         }
         
         response = self.client.post(reverse('feed_entry_update', args=[7]), data=post_data)
-        self.assertEqual(response.status_code, 200)
-        self.assertFalse(response.context['success'])
-        self.assertEqual(response.context['msg'], "Change not allowed")
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('login') + '?next=' + reverse('feed_entry_update', args=[7]))
+        self.assertIsNone(response.context)
 
     def test_allowed_user_publish_feed(self):
         # Publish a feed entry test
