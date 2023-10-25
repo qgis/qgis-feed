@@ -37,7 +37,7 @@ def setup_approver_group(sender, **kwargs):
     )
     group, is_new = Group.objects.get_or_create(name='qgisfeedentry_approver')
     if is_new:
-        for perm in ('view_qgisfeedentry', 'add_qgisfeedentry', 'publish_qgisfeedentry'):
+        for perm in ('view_qgisfeedentry', 'add_qgisfeedentry', 'publish_qgisfeedentry', 'change_qgisfeedentry'):
             group.permissions.add(Permission.objects.get(codename=perm))
 
 

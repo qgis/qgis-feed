@@ -243,14 +243,20 @@ def feed_entry_update(request, pk):
         form = FeedItemForm(request.POST, request.FILES, instance=feed_entry)
         if form.is_valid():
             instance = form.save(commit=False)
-            if 'publish' in request.POST and user_is_approver:
+            publish = bool(request.POST.get('publish', ''))
+            if publish and user_is_approver:
                 instance.published = True
+
             instance.save()
             success = True
             return redirect('feeds_list')
         else:
             success = False
             msg = "Form is not valid"
+    elif request.method == 'POST' and not user_can_change:
+        form = FeedItemForm(instance=feed_entry)
+        msg = "Change not allowed"
+        success = False
     else:
         form = FeedItemForm(instance=feed_entry)
 
