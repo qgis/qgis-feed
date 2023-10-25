@@ -115,8 +115,3 @@ qgisfeedproject/setup_done.lock
 # Uploaded images
 qgisfeedproject/media/feedimages/*
 !qgisfeedproject/media/feedimages/rust.png
-# Web pack files and folder
-node_modules
-package-lock.json
-webpack-stats.json
-qgisfeedproject/static/bundles
