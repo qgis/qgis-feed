@@ -22,6 +22,16 @@ a.is-active > span {
     background-color: #dddddd;
 }
 
+.box-container hr {
+    background-color: #dddddd;
+}
+
+.box-container {
+    box-shadow: 0 4px 6px 0 rgba(108, 108, 108, 0.2);
+    /* border-radius: 10px; */
+}
+
+
 .is-semi-transparent {
     opacity: 0.9;
 }

@@ -19,6 +19,8 @@ from django.test import Client
 from django.contrib.auth.models import Group, User
 from django.contrib.admin.sites import AdminSite
 from django.utils import timezone
+from django.core.paginator import Page
+from django.urls import reverse
 
 from .models import (
     QgisFeedEntry, QgisUserVisit, DailyQgisUserVisit, aggregate_user_visit_data
@@ -245,3 +247,72 @@ class LoginTestCase(TestCase):
     def test_invalid_login(self):
         response = self.client.login(username='admin', password='wrongpassword')
         self.assertFalse(response)
+
+class FeedsListViewTestCase(TestCase):
+    """
+    Test the feeds list feature
+    """
+    fixtures = ['qgisfeed.json', 'users.json']
+    def setUp(self):
+        self.client = Client()
+
+    def test_authenticated_user_access(self):
+        self.client.login(username='admin', password='admin')
+
+        # Access the feeds_list view after logging in
+        response = self.client.get(reverse('feeds_list'))
+
+        # Check if the response status code is 200 (OK)
+        self.assertEqual(response.status_code, 200)
+
+        # Check if the correct template is used
+        self.assertTemplateUsed(response, 'feeds/feeds_list.html')
+
+    def test_unauthenticated_user_redirect_to_login(self):
+        # Access the feeds_list view without logging in
+        response = self.client.get(reverse('feeds_list'))
+
+        # Check if the response status code is 302 (Redirect)
+        self.assertEqual(response.status_code, 302)
+
+        # Check if the user is redirected to the login page
+        self.assertRedirects(response, reverse('login') + '?next=' + reverse('feeds_list'))
+
+    
+    def test_nonstaff_user_redirect_to_login(self):
+        user = User.objects.create_user(username='testuser', password='testpassword')
+        self.client.login(username='testuser', password='testpassword')
+        # Access the feeds_list view with a non staff user
+        response = self.client.get(reverse('feeds_list'))
+
+        # Check if the response status code is 302 (Redirect)
+        self.assertEqual(response.status_code, 302)
+
+        # Check if the user is redirected to the login page
+        self.assertRedirects(response, reverse('login') + '?next=' + reverse('feeds_list'))
+
+    def test_feeds_list_filtering(self):
+        self.client.login(username='admin', password='admin')
+        # Simulate a GET request with filter parameters
+        data = {
+            'title': 'QGIS',
+            'author': 'admin',
+            'language_filter': 'en',
+            'publish_from': '2019-01-01',
+            'publish_to': '2023-12-31',
+            'sort_by': 'title',
+            'order': 'asc',
+        }
+        response = self.client.get(reverse('feeds_list'), data)
+
+        # Check that the response status code is 200 (OK)
+        self.assertEqual(response.status_code, 200)
+
+        # Check that the response contains the expected context data
+        self.assertTrue('feeds_entry' in response.context)
+        self.assertTrue(isinstance(response.context['feeds_entry'], Page))
+        self.assertTrue('sort_by' in response.context)
+        self.assertTrue('order' in response.context)
+        self.assertTrue('current_order' in response.context)
+        self.assertTrue('form' in response.context)
+        self.assertTrue('count' in response.context)

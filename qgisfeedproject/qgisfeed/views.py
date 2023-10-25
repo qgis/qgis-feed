@@ -22,11 +22,14 @@ from django.views import View
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render
+
+from .forms import FeedEntryFilterForm
 from .models import QgisFeedEntry
 from .languages import LANGUAGE_KEYS
 import json
 
 from user_visit.models import UserVisit
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 QGISFEED_MAX_RECORDS=getattr(settings, 'QGISFEED_MAX_RECORDS', 20)
@@ -107,8 +110,71 @@ class QgisEntriesView(View):
 def feeds_list(request):
     """
     List of feeds
-    This view will be updated later,
-    it is used to handle the login feature
-    for now
+    This view renders a paginated, sorted according
+    to the request parameters list of feeds
     """
-    return render(request, 'feeds/feeds_list.html')
+    form = FeedEntryFilterForm(request.GET)
+    feeds_entry = QgisFeedEntry.objects.all()
+
+    # Get filter parameters from the query string
+    if form.is_valid():
+        title = form.cleaned_data.get('title')
+        if title:
+            feeds_entry = feeds_entry.filter(title__icontains=title)
+            
+        author = form.cleaned_data.get('author')
+        if author:
+            feeds_entry = feeds_entry.filter(author__username__icontains=author)
+    
+        language_filter = form.cleaned_data.get('language_filter')
+        if language_filter:
+            feeds_entry = feeds_entry.filter(language_filter=language_filter)
+
+        publish_from = form.cleaned_data.get('publish_from')
+        if publish_from:
+            feeds_entry = feeds_entry.filter(publish_from__gt=publish_from)
+
+        publish_to = form.cleaned_data.get('publish_to')
+        if publish_to:
+            feeds_entry = feeds_entry.filter(publish_to__lt=publish_to)
+
+
+    # Get sorting parameters from the query string
+    sort_by = request.GET.get('sort_by', 'publish_from')
+    current_order = request.GET.get('order', 'desc')
+
+    if current_order == 'asc':
+        feeds_entry = feeds_entry.order_by(sort_by)
+        next_order = 'desc'
+    else:
+        next_order = 'asc'
+        feeds_entry = feeds_entry.order_by(f'-{sort_by}')
+
+    # Get the count of all/filtered entries
+    count = feeds_entry.count()
+    
+    # Paginate the list of feeds
+    page = request.GET.get('page', 1)
+    paginator = Paginator(feeds_entry, 15)
+
+    try:
+        feeds_entry = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver the first page.
+        feeds_entry = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g., 9999), deliver the last page.
+        feeds_entry = paginator.page(paginator.num_pages)
+
+    return render(
+        request, 
+        'feeds/feeds_list.html',
+          {
+              "feeds_entry": feeds_entry, 
+              "sort_by": sort_by, 
+              "order": next_order, 
+              "current_order":current_order,
+              "form": form,
+              "count": count
+            }
+    )
