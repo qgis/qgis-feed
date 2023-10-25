@@ -151,14 +151,13 @@ def feeds_list(request):
 
     # Get sorting parameters from the query string
     sort_by = request.GET.get('sort_by', 'publish_from')
-    order = request.GET.get('order', 'desc')
-    current_order = order
+    current_order = request.GET.get('order', 'desc')
 
-    if order == 'asc':
+    if current_order == 'asc':
         feeds_entry = feeds_entry.order_by(sort_by)
-        order = 'desc'
+        next_order = 'desc'
     else:
-        order = 'asc'
+        next_order = 'asc'
         feeds_entry = feeds_entry.order_by(f'-{sort_by}')
 
     # Get the count of all/filtered entries
@@ -187,7 +186,7 @@ def feeds_list(request):
           {
               "feeds_entry": feeds_entry, 
               "sort_by": sort_by, 
-              "order": order, 
+              "order": next_order, 
               "current_order":current_order,
               "form": form,
               "count": count,
