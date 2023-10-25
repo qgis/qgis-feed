@@ -47,17 +47,13 @@
       <div id="menu" class="navbar-menu">
           <div class="navbar-end">
 
-            {% if user.is_authenticated and user.is_staff %}
-              <div class="navbar-item " >
-                  <span>Welcome, {{user.username | upper}}</span>
-              </div>
-              <a class="navbar-item has-text-weight-bold is-size-7" href="{% url "feeds_list" %}">
-                  <span>News Feed List</span>
-              </a>
-
-            {% endif %}
-              
-            {% if user.is_authenticated and user.is_staff %}
+            {% if user.is_authenticated and not user.username == 'qgis_user' %}
+                <div class="navbar-item " >
+                    <span>Welcome, {{user.username | upper}}</span>
+                </div>
+                <a class="navbar-item has-text-weight-bold is-size-7" href="{% url "feeds_list" %}">
+                    <span>News Feed List</span>
+                </a>
                 <a class="navbar-item has-text-weight-bold is-size-7" href="{% url "logout" %}">
                     <span>Logout</span>
                 </a>
