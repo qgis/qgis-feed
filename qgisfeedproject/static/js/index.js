@@ -1,2 +1,2 @@
-require('../style/bulma.scss');
+require('../style/custom.bulma.scss');
 require('../style/style.scss');

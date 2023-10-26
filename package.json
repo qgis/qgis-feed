@@ -5,6 +5,8 @@
   "main": "webpack.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --mode development --host 0.0.0.0 --hot --open",
+    "dev": "webpack --mode development",
     "build": "webpack --mode production"
   },
   "keywords": [],
@@ -20,6 +22,7 @@
     "webpack": "^5.89.0",
     "webpack-bundle-tracker": "^2.0.1",
     "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1",
     "webpack-livereload-plugin": "^3.0.2"
   }
 }
