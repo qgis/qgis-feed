@@ -1,6 +1,4 @@
 @charset "utf-8";
-@import "./style.css";
-@import "./login.css";
 
 mark {
   background: linear-gradient(-100deg, #93b023, #f0e64a 95%);
@@ -80,4 +78,42 @@ mark {
 
 .pb-7 {
   padding-bottom: 4rem !important;
+}
+
+.main-page-content {
+  background-position: 50% !important;
+  background-size: cover !important;
+  height: 100vh;
+}
+
+#menu > div > a > span:hover {
+  border-bottom: solid 1px;
+  color: black;
+}
+
+a.is-active > span {
+  border-bottom: solid gray 1px;
+}
+
+.login-container {
+  box-shadow: 0 8px 12px 0 rgba(60, 60, 60, 0.75);
+  /* border-radius: 10px; */
+}
+
+.login-container hr {
+  background-color: #dddddd;
+}
+
+.box-container hr {
+  background-color: #dddddd;
+}
+
+.box-container {
+  box-shadow: 0 4px 6px 0 rgba(108, 108, 108, 0.2);
+  /* border-radius: 10px; */
+}
+
+
+.is-semi-transparent {
+  opacity: 0.9;
 }
