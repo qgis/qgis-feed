@@ -1,4 +1,4 @@
-{% extends 'layouts/base-fullscreen.html' %} 
+{% extends 'layouts/base-fullscreen.html' %}
 {% block title %} QGIS Home Page News Feed {% endblock title %} {% load static %}
 
 <!-- Specific CSS goes HERE -->
@@ -12,18 +12,15 @@
     }
 </style>
 
-{% endblock stylesheets %} 
+{% endblock stylesheets %}
 {% block content %}
 
 <head>
     {{ form.media }}
 </head>
-<section class="hero is-dark is-small has-bg-img"
-
-style="background: url({% static "images/banner4.png" %});
+<section class="hero is-dark is-small has-bg-img" style="background: url({% static "images/banner4.png" %});
        background-position: center;
-       background-size: cover;"
->
+       background-size: cover;">
 
     <div class="hero-body">
         <div class="columns">
@@ -33,13 +30,13 @@ style="background: url({% static "images/banner4.png" %});
                 <div class="container has-text-left">
                     <p class="title hero-title pr-3">
                         {% if form.title.value %}
-                            Edit an entry
+                        Edit an entry
                         {% else %}
-                            Add an entry
+                        Add an entry
                         {% endif %}
                     </p>
                     <p class="subtitle is-size-2 hero-subtitle">
-                        
+
                     </p>
                 </div>
             </div>
@@ -54,180 +51,26 @@ style="background: url({% static "images/banner4.png" %});
 
 <section class="section">
     <div class="columns">
-        <div class="column is-6 box has-background-light p-3 box-container has-text-dark">
-            <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="field">
-                    <label class="label">Title:</label>
-                    <div class="control has-icons-left">
-                        {{form.title}}
-                        <span class="icon is-small is-left">
-                        <i class="fas fa-quote-right"></i>
-                        </span>
-                    </div>
-                </div>
-                <div class="field">
-                    <label class="label">Image:</label>
-                </div>
-                <div class="file is-fullwidth has-name field">
-                    <label class="file-label">
-                        {{form.image}}
-                      <span class="file-cta">
-                        <span class="file-icon">
-                          <i class="fas fa-upload"></i>
-                        </span>
-                        <span class="file-label">
-                          Choose an image…
-                        </span>
-                    </span>
-                    <span class="file-name" id="imageFileName">
-                        {% if form.image.value %}
-                            {{ form.image.value.name }}
-                        {% else %}
-                            <i>No image chosen. Click here to add an image.</i>
-                        {% endif %}
-                    </span>
-                    </label>
-                </div>
-    
-    
-                <div class="field">
-                    <label class="label">Content:</label>
-                    <div class="control">
-                        {{form.content}}
-                    </div>
-                </div>
-    
-                <div class="field">
-                    <label class="label">Url:</label>
-                    <div class="control has-icons-left">
-                        {{form.url}}
-                        <span class="icon is-small is-left">
-                        <i class="fas fa-link"></i>
-                        </span>
-                    </div>
-                </div>
-    
-                <div class="field">
-                    <label class="label">
-                        Sticky:
-                    </label>
-                    <label class="checkbox">
-                        {{form.sticky}}
-                        Check this option to keep this entry on top
-                    </label>
-                </div>
-    
-                <div class="field">
-                    <label class="label">Sorting order:</label>
-                    <div class="control has-icons-left">
-                        {{form.sorting}}
-                        <span class="icon is-small is-left">
-                        <i class="fas fa-sort"></i>
-                        </span>
-                    </div>
-                </div>
-    
-                <div class="field">
-                    <label class="label">Language filter:</label>
-                  <div class="select">
-                    {{form.language_filter}}
-                  </div>
-                </div>
-                <div class="field">
-                    <label class="label">Spatial filter:</label>
-                    <div class="spatial-filter-map">
-                        {{form.spatial_filter}}
-                    </div>
-                </div>
-    
-                <div class="field">
-                    <label class="label">Publication start:</label>
-                    <div class="control has-icons-left">
-                        {{form.publish_from}}
-                        <span class="icon is-small is-left">
-                        <i class="fas fa-calendar"></i>
-                        </span>
-                    </div>
-                    </div>
-    
-                    <div class="field">
-                        <label class="label">Publication end:</label>
-                        <div class="control has-icons-left">
-                        {{form.publish_to}}
-                        <span class="icon is-small is-left">
-                            <i class="fas fa-calendar"></i>
-                        </span>
-                        </div>
-                    </div>
-    
-                <button 
-                    class="button is-block is-success"
-                    type="submit" 
-                    value="submit" 
-                    id="submit-button"
-                >
-                    Save <i class="fa fa-floppy-disk" aria-hidden="true"></i>
-                </button>
-            </form>
+        <div class="column is-6">
+            {% include 'feeds/feed_item_form_widgets.html' %}
+            <button class="button is-block is-success js-modal-trigger mt-5" data-target="form-review-modal">
+                <span class="icon">
+                    <i class="fa fa-floppy-disk" aria-hidden="true"></i>
+                </span>
+                <span>Review and save changes</span>
+            </button>
         </div>
         <div class="column is-6">
             <h5 class="title is-5 has-text-centered">Preview</h5>
-            <div class="form-preview columns has-background-light p-2 box-container has-text-dark m-5">
-                <div class="column is-4" id="imagePreview">
-                    {% if form.image.value %}
-                    <img src="{{ form.image.value.url }}" style="border-radius:20px;">
-                    {% else %}
-                    {% endif %}
-                </div>
-                <div class="column is-8">
-                    <h5 id="titlePreview" class="title is-5">
-                        {{form.title.value | default:""}}
-                    </h5>
-                    <div id="contentPreview">
-                        {{form.content.value | default:"" | safe }}
-                    </div>
-                </div>
-            </div>
+            {% include 'feeds/feed_item_preview.html' %}
         </div>
     </div>
 </section>
 
+{% include 'feeds/feed_item_confirmation.html' %}
+
 {% endblock content %}
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
-<script>
-  // Capture user input in real-time
-  var titleField = document.getElementById('id_title');
-  var contentField = document.getElementById('id_content');
-  var imageField = document.getElementById('id_image');
-
-  var contentPreview = document.getElementById('contentPreview');
-  var titlePreview = document.getElementById('titlePreview');
-  var imagePreview = document.getElementById('imagePreview');
-
-  var imageFileName = document.getElementById('imageFileName');
-
-  titleField.addEventListener('input', function() {
-        var fieldValue = titleField.value;
-        titlePreview.innerText = fieldValue;
-    });
-
-  contentField.addEventListener('input', function() {
-      var fieldValue = contentField.value;
-      contentPreview.innerHTML = fieldValue;
-  });
-
-  imageField.addEventListener('change', function() {
-    var selectedImage = imageField.files[0];
-    if (selectedImage) {
-        var imageURL = URL.createObjectURL(selectedImage);
-        imagePreview.innerHTML = '<img src="'+imageURL+'" style="border-radius:20px;">';
-        imageFileName.innerHTML = selectedImage.name
-    } else {
-        imagePreview.innerHTML = '';
-        imageFileName.innerHTML = '<i>No image chosen. Click here to add an image.</i>'
-    }
-});
-</script>
+<script src="{% static 'js/feed_item_form.js' %}"></script>
 {% endblock javascripts %}

@@ -1,0 +1,16 @@
+<div class="form-preview columns has-background-light p-2 box-container has-text-dark m-5">
+    <div class="column is-4" name="imagePreview">
+        {% if form.image.value %}
+        <img src="{{ form.image.value.url }}" style="border-radius:20px;">
+        {% else %}
+        {% endif %}
+    </div>
+    <div class="column is-8">
+        <h5 name="titlePreview" class="title is-5">
+            {{form.title.value | default:""}}
+        </h5>
+        <div name="contentPreview">
+            {{form.content.value | default:"" | safe }}
+        </div>
+    </div>
+</div>
