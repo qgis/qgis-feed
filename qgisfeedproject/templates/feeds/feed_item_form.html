@@ -76,5 +76,38 @@
 {% endblock content %}
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
+<script type="text/javascript" src="{% static 'tinymce/tinymce.min.js' %}"></script>
 <script src="{% static 'js/feed_item_form.js' %}"></script>
+<script src="{% static 'js/feed_item_form.js' %}"></script>
+<script>
+    tinymce.init({
+        selector: 'textarea#id_content',
+        menubar: false,
+        plugins: "preview searchreplace visualblocks code fullscreen insertdatetime paste help wordcount spellchecker",
+        toolbar: "undo redo | bold italic | searchreplace | code preview ",
+        valid_elements: "p,strong,i",
+        formats: {
+          italic: { inline: 'i' }
+        },
+        setup: function (editor) {
+            editor.on('change', function () {
+                // Update content in preview when change
+                const content = editor.getContent();
+                contentPreview.forEach((item) => {
+                item.innerHTML = content;
+                });
+        
+            });
+            editor.on('input', function () {
+                // Update content in preview when input change
+                const content = editor.getContent();
+                contentPreview.forEach((item) => {
+                item.innerHTML = content;
+                });
+        
+            });
+        }
+    });
+  
+</script>
 {% endblock javascripts %}

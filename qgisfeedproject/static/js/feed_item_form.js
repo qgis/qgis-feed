@@ -23,19 +23,12 @@ var publishToPreview = document.getElementById("publishToPreview");
 
 var imageFileName = document.getElementById("imageFileName");
 
+
 // Update title in preview when input change
 titleField.addEventListener("input", function () {
   var fieldValue = titleField.value;
   titlePreview.forEach((item) => {
     item.innerText = fieldValue;
-  });
-});
-
-// Update content in preview when input change
-contentField.addEventListener("input", function () {
-  var fieldValue = contentField.value;
-  contentPreview.forEach((item) => {
-    item.innerHTML = fieldValue;
   });
 });
 
