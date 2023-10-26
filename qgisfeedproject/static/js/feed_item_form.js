@@ -13,13 +13,13 @@ var publishToField = document.getElementById("id_publish_to");
 var contentPreview = document.getElementsByName("contentPreview");
 var titlePreview = document.getElementsByName("titlePreview");
 var imagePreview = document.getElementsByName("imagePreview");
-var urlPreview = document.getElementById("urlPreview");
-var stickyPreview = document.getElementById("stickyPreview");
-var sortingPreview = document.getElementById("sortingPreview");
-var languagePreview = document.getElementById("languagePreview");
-var spatialFilterPreview = document.getElementById("spatialFilterPreview");
-var publishFromPreview = document.getElementById("publishFromPreview");
-var publishToPreview = document.getElementById("publishToPreview");
+var urlPreview = document.getElementsByName("urlPreview");
+var stickyPreview = document.getElementsByName("stickyPreview");
+var sortingPreview = document.getElementsByName("sortingPreview");
+var languagePreview = document.getElementsByName("languagePreview");
+var spatialFilterPreview = document.getElementsByName("spatialFilterPreview");
+var publishFromPreview = document.getElementsByName("publishFromPreview");
+var publishToPreview = document.getElementsByName("publishToPreview");
 
 var imageFileName = document.getElementById("imageFileName");
 
@@ -49,6 +49,63 @@ imageField.addEventListener("change", function () {
   });
 });
 
+// Update URL in preview when input change
+urlField.addEventListener("input", function () {
+  urlPreview.forEach((item) => {
+    item.innerHTML = urlField.value
+      ? '<a href="' +
+        urlField.value +
+        '" target="_blank">' +
+        urlField.value +
+        "</a>"
+      : "<i>-</i>";
+  });
+});
+
+// Update sticky in preview when change
+stickyField.addEventListener("change", function () {
+  stickyPreview.forEach((item) => {
+    item.innerHTML = stickyField.checked
+    ? '<span class="icon has-text-success">' +
+      '<i class="fa-solid fa-circle-check"></i>' +
+      "</span>"
+    : '<span class="icon has-text-danger">' +
+      '<i class="fa-solid fa-circle-xmark"></i>' +
+      "</span>";
+  });
+});
+
+// Update sorting in preview when input change
+sortingField.addEventListener("input", function () {
+  sortingPreview.forEach((item) => {
+    item.innerText = sortingField.value ? sortingField.value : "-";
+  });
+});
+
+// Update language filter in preview when input change
+languageField.addEventListener("change", function () {
+  languagePreview.forEach((item) => {
+    item.innerText = languageField.value
+      // ? languageField.options[languageField.selectedIndex].text
+      ? languageField.value
+      : "-";
+  });
+});
+
+// Update spatial filter in preview when input change
+console.log(spatialFilterField.olMap)
+spatialFilterField.addEventListener("change", function () {
+  spatialFilterPreview.forEach((item) => {
+    item.classList.add(
+      spatialFilterField.value ? "is-success" : "is-danger"
+    );
+    item.text = spatialFilterField.value
+      ? "Spatial filter defined."
+      : "Spatial filter not defined.";
+  });
+});
+
+
 document.addEventListener("DOMContentLoaded", () => {
   // Functions to open and close the review modal
   function openModal($el) {
@@ -74,39 +131,14 @@ document.addEventListener("DOMContentLoaded", () => {
       openModal($target);
 
       // Update all data in the review modal table
-      urlPreview.innerHTML = urlField.value
-        ? '<a href="' +
-          urlField.value +
-          '" target="_blank">' +
-          urlField.value +
-          "</a>"
-        : "<i>-</i>";
 
-      stickyPreview.innerHTML = stickyField.checked
-        ? '<span class="icon has-text-success">' +
-          '<i class="fa-solid fa-circle-check"></i>' +
-          "</span>"
-        : '<span class="icon has-text-danger">' +
-          '<i class="fa-solid fa-circle-xmark"></i>' +
-          "</span>";
 
-      spatialFilterPreview.classList.add(
-        spatialFilterField.value ? "is-success" : "is-danger"
-      );
-      spatialFilterPreview.innerHTML = spatialFilterField.value
-        ? "Spatial filter defined."
-        : "Spatial filter not defined.";
-
-      sortingPreview.innerText = sortingField.value ? sortingField.value : "-";
-      languagePreview.innerText = languageField.value
-        ? languageField.options[languageField.selectedIndex].text
-        : "-";
-      publishFromPreview.innerText = publishFromField.value
-        ? new Date(publishFromField.value).toString()
-        : "-";
-      publishToPreview.innerText = publishToField.value
-        ? new Date(publishToField.value).toString()
-        : "-";
+      // publishFromPreview.innerText = publishFromField.value
+      //   ? new Date(publishFromField.value).toString()
+      //   : "-";
+      // publishToPreview.innerText = publishToField.value
+      //   ? new Date(publishToField.value).toString()
+      //   : "-";
 
     });
   });

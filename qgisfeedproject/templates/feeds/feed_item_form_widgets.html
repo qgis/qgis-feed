@@ -1,113 +1,107 @@
-
 <form method="POST" enctype="multipart/form-data" id="feedItemForm">
-    {% csrf_token %}
-    <div class="box has-background-light p-3 box-container has-text-dark">
-        <div class="field">
-            <label class="label">Title:</label>
-            <div class="control has-icons-left">
-                {{form.title}}
-                <span class="icon is-small is-left">
-                    <i class="fas fa-quote-right"></i>
-                </span>
-            </div>
-        </div>
-        <div class="field">
-            <label class="label">Image:</label>
-        </div>
-        <div class="file is-fullwidth has-name field">
-            <label class="file-label">
-                {{form.image}}
-                <span class="file-cta">
-                    <span class="file-icon">
-                        <i class="fas fa-upload"></i>
-                    </span>
-                    <span class="file-label">
-                        Choose an image…
-                    </span>
-                </span>
-                <span class="file-name" id="imageFileName">
-                    {% if form.image.value %}
-                    {{ form.image.value.name }}
-                    {% else %}
-                    <i>No image chosen. Click here to add an image.</i>
-                    {% endif %}
-                </span>
-            </label>
-        </div>
-
-
-        <div class="field">
-            <label class="label">Content:</label>
-            <div class="control">
-                {{form.content}}
-            </div>
-        </div>
-
-
+  {% csrf_token %}
+  <div class="box has-background-light p-3 box-container has-text-dark">
+    <div class="field">
+      <label class="label">Title:</label>
+      <div class="control has-icons-left">
+        {{form.title}}
+        <span class="icon is-small is-left">
+          <i class="fas fa-quote-right"></i>
+        </span>
+      </div>
     </div>
-    <div class="box has-background-light p-3 box-container has-text-dark">
-
-        <div class="field">
-            <label class="label">Url:</label>
-            <div class="control has-icons-left">
-                {{form.url}}
-                <span class="icon is-small is-left">
-                    <i class="fas fa-link"></i>
-                </span>
-            </div>
-        </div>
-
-        <div class="field">
-            <label class="label">
-                Sticky:
-            </label>
-            <label class="checkbox">
-                {{form.sticky}}
-                Check this option to keep this entry on top
-            </label>
-        </div>
-
-        <div class="field">
-            <label class="label">Sorting order:</label>
-            <div class="control has-icons-left">
-                {{form.sorting}}
-                <span class="icon is-small is-left">
-                    <i class="fas fa-sort"></i>
-                </span>
-            </div>
-        </div>
-
-        <div class="field">
-            <label class="label">Language filter:</label>
-            <div class="select">
-                {{form.language_filter}}
-            </div>
-        </div>
-        <div class="field">
-            <label class="label">Spatial filter:</label>
-            <div class="spatial-filter-map">
-                {{form.spatial_filter}}
-            </div>
-        </div>
-
-        <div class="field">
-            <label class="label">Publication start:</label>
-            <div class="control has-icons-left">
-                {{form.publish_from}}
-                <span class="icon is-small is-left">
-                    <i class="fas fa-calendar"></i>
-                </span>
-            </div>
-        </div>
-
-        <div class="field">
-            <label class="label">Publication end:</label>
-            <div class="control has-icons-left">
-                {{form.publish_to}}
-                <span class="icon is-small is-left">
-                    <i class="fas fa-calendar"></i>
-                </span>
-            </div>
-        </div>
+    <div class="field">
+      <label class="label">Image:</label>
     </div>
+    <div class="file is-fullwidth has-name field">
+      <label class="file-label">
+        {{form.image}}
+        <span class="file-cta">
+          <span class="file-icon">
+            <i class="fas fa-upload"></i>
+          </span>
+          <span class="file-label"> Choose an image… </span>
+        </span>
+        <span class="file-name" id="imageFileName">
+          {% if form.image.value %} {{ form.image.value.name }} {% else %}
+          <i>No image chosen. Click here to add an image.</i>
+          {% endif %}
+        </span>
+      </label>
+    </div>
+
+    <div class="field">
+      <label class="label">Content:</label>
+      <div class="control">{{form.content}}</div>
+    </div>
+  </div>
+  <div class="box has-background-light p-3 box-container has-text-dark">
+    <div class="columns">
+      <div class="column is-12 field">
+        <label class="label">Url:</label>
+        <div class="control has-icons-left">
+          {{form.url}}
+          <span class="icon is-small is-left">
+            <i class="fas fa-link"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="column is-6 field">
+        <label class="label">Sorting order:</label>
+        <div class="control has-icons-left">
+          {{form.sorting}}
+          <span class="icon is-small is-left">
+            <i class="fas fa-sort"></i>
+          </span>
+        </div>
+      </div>
+      <div class="column is-6 field">
+        <label class="label"> Sticky: </label>
+        <label class="checkbox"> {{form.sticky}} Keep this entry on top </label>
+      </div>
+    </div>
+
+    <div class="columns">
+      <div class="column is-6 field">
+        <label class="label">Spatial filter:</label>
+        <button
+          class="button is-light is-info js-modal-trigger is-fullwidth"
+          data-target="spatial-filter-modal"
+          type="button"
+        >
+          <span class="icon">
+            <i class="fa fa-map" aria-hidden="true"></i>
+          </span>
+          <span>Set spatial filter</span>
+        </button>
+      </div>
+      <div class="column is-6 field">
+        <label class="label">Language filter:</label>
+        <div class="select is-fullwidth">{{form.language_filter}}</div>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="column is-6 field">
+        <label class="label">Publication start:</label>
+        <div class="control has-icons-left">
+          {{form.publish_from}}
+          <span class="icon is-small is-left">
+            <i class="fas fa-calendar"></i>
+          </span>
+        </div>
+      </div>
+
+      <div class="column is-6 field">
+        <label class="label">Publication end:</label>
+        <div class="control has-icons-left">
+          {{form.publish_to}}
+          <span class="icon is-small is-left">
+            <i class="fas fa-calendar"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 </form>
