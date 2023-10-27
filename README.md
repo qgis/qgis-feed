@@ -54,6 +54,14 @@ This application is the backend part that manages and serves news for the QGIS w
 
     `python manage.py runserver`
 
+- Build the bundle for bulma CSS:
+```sh
+$ npm install
+$ npm run build
+# If you want to run the webpack server
+$ npx webpack --config webpack.config.js --watch 
+```
+
 ## Settings
 
 To prevent DDOS attacks there is limit in the number of returned records (defaults to 20): it can be configured by overriding the settings in `settings_local.py` with:

@@ -8,6 +8,10 @@
 
 WORKERS=${QGISFEED_GUNICORN_WORKERS:-4}
 LOCKFILE="/shared-volume/setup_done.lock"
+
+# Build the bulma CSS bundle
+npm install && npm run build
+
 cd /code/qgisfeedproject
 
 # Wait for postgres

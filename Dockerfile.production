@@ -5,7 +5,14 @@ RUN mkdir /code
 WORKDIR /code
 COPY REQUIREMENTS.txt /code/
 COPY REQUIREMENTS_PRODUCTION.txt /code/
-RUN pip install -r REQUIREMENTS_PRODUCTION.txt
+RUN pip install -r REQUIREMENTS_PRODUCTION.txt    
+
+# Install NodeJS and bulma css webpack
+RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends wget && \
+    wget --no-check-certificate https://deb.nodesource.com/setup_18.x -O /tmp/node.sh && bash /tmp/node.sh && \
+    apt-get -qq update && apt-get -qq install -y nodejs build-essential
+
 COPY . /code/
+RUN npm install -g npm@10.2.1 && npm install -g webpack@5.89.0 && npm install -g webpack-cli@5.1.4 && npm install
 COPY ./settings_docker_production.py /code/qgisfeedproject/qgisfeedproject/settings_local.py
 COPY ./entrypoint_production.sh /code/

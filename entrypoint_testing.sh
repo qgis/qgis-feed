@@ -2,6 +2,10 @@
 
 
 LOCKFILE="setup_done.lock"
+
+# Install Bulma CSS dependencies and build the bundle
+npm install && npm run dev
+
 cd /code/qgisfeedproject
 
 # Wait for postgres

@@ -9,3 +9,6 @@ django-extensions
 
 django-user-visit==0.5.1
 geoip2==4.5.0
+
+# Webpack
+django-webpack-loader==2.0.1

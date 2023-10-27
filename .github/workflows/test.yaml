@@ -41,8 +41,11 @@ jobs:
       run: docker-compose -f docker-compose.dev.yml build
 
     - name: Run the containers
-      run: docker-compose -f docker-compose.dev.yml up -d postgis qgisfeed
-    
+      run: docker-compose -f docker-compose.dev.yml up -d postgis qgisfeed webpack
+
+    - name: Wait for the containers to start
+      run: sleep 60 
+      
     - name: Run test
       run: |
         docker-compose -f docker-compose.dev.yml exec -T qgisfeed python qgisfeedproject/manage.py makemigrations
