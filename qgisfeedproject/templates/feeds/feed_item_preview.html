@@ -15,7 +15,7 @@
     </div>
 </div>
 
-<div class="form-preview columns has-background-light p-2 box-container has-text-dark m-5 p-5">
+<div class="form-preview columns p-2 box-container has-text-dark m-5">
     <table class="table is-fullwidth">
         <tbody>
             <tr>
@@ -56,12 +56,7 @@
             </tr>
             <tr>
                 <th>Spatial filter:</th>
-                <td name="spatialFilterPreview" class="notification {% if form.spatial_filter.value %} is-light {% else %} is-danger {% endif %}">
-                    {% if form.spatial_filter.value %}
-                        Spatial filter set.
-                    {% else %}
-                        Spatial filter not defined.
-                    {% endif %}
+                <td name="spatialFilterPreview" class="notification is-light">
                 </td>
             </tr>
             <tr>

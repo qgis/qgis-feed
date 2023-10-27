@@ -34,8 +34,7 @@
       <label class="label">Content:</label>
       <div class="control">{{form.content}}</div>
     </div>
-  </div>
-  <div class="box has-background-light p-3 box-container has-text-dark">
+
     <div class="columns">
       <div class="column is-12 field">
         <label class="label">Url:</label>
@@ -59,18 +58,17 @@
       </div>
       <div class="column is-6 field">
         <label class="label"> Sticky: </label>
-        <label class="checkbox"> {{form.sticky}} Keep this entry on top </label>
+        <div class="control is-flex is-align-items-center" style="height:2.5em;">
+          <label class="checkbox"> {{form.sticky}} Keep this entry on top </label>
+        </div>
       </div>
     </div>
 
     <div class="columns">
       <div class="column is-6 field">
         <label class="label">Spatial filter:</label>
-        <button
-          class="button is-light is-info js-modal-trigger is-fullwidth"
-          data-target="spatial-filter-modal"
-          type="button"
-        >
+        <button class="button is-light is-info js-modal-trigger is-fullwidth" data-target="spatial-filter-modal"
+          type="button">
           <span class="icon">
             <i class="fa fa-map" aria-hidden="true"></i>
           </span>
@@ -104,4 +102,6 @@
       </div>
     </div>
   </div>
+
+  {% include 'feeds/set_spatial_filter_modal.html' %}
 </form>

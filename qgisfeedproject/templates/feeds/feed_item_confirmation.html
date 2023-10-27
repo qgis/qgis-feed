@@ -9,26 +9,36 @@
             {% include 'feeds/feed_item_preview.html' %}
         </section>
         <footer class="modal-card-foot is-justify-content-flex-end">
-            <button class="button">                
+            <button class="button">
                 <span class="icon">
                     <i class="fa fa-pen-to-square" aria-hidden="true"></i>
                 </span>
                 <span>Back to edition</span>
             </button>
-            <button class="button is-success" type="submit" form="feedItemForm">        
+
+            {% if published %}
+            <button class="button is-success" type="submit" form="feedItemForm">
                 <span class="icon">
                     <i class="fa fa-floppy-disk" aria-hidden="true"></i>
                 </span>
-                <span>Submit changes</span>
+                <span>Save changes</span>
             </button>
 
-            {% if user_is_approver and not published and form.instance.pk%}
-            <button class="button is-success" type="submit" form="feedItemForm" name="publish" value="true">        
+            {% elif not published and user_is_approver and form.instance.pk%}
+            <button class="button is-success" type="submit" form="feedItemForm" name="publish" value="true">
                 <span class="icon">
                     <i class="fa fa-check" aria-hidden="true"></i>
                 </span>
                 <span>Approve and publish</span>
             </button>
+            {% else %}
+            <button class="button is-success" type="submit" form="feedItemForm">
+                <span class="icon">
+                    <i class="fa fa-floppy-disk" aria-hidden="true"></i>
+                </span>
+                <span>Submit for review</span>
+            </button>
+
             {% endif %}
 
         </footer>

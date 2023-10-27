@@ -113,11 +113,15 @@ class FeedItemForm(forms.ModelForm):
         required=False, 
         widget=forms.OSMWidget(attrs={
             'map_width': '100%', 
-            'map_height': 500})
+            'map_height': 500,
+            'default_lat': 0,
+            'default_lon': 0,
+            'default_zoom': 2
+        }),
     )
 
     publish_from = forms.CharField(
-        required=False,
+        required=True,
         initial=timezone.now(),
         widget=forms.DateTimeInput(
             attrs={
@@ -127,7 +131,7 @@ class FeedItemForm(forms.ModelForm):
             )
     )
     publish_to = forms.CharField(
-        required=False,
+        required=True,
         initial=timezone.now() + timezone.timedelta(days=30),
         widget=forms.DateTimeInput(
             attrs={

@@ -92,33 +92,71 @@ languageField.addEventListener("change", function () {
   });
 });
 
-// Update spatial filter in preview when input change
-console.log(spatialFilterField.olMap)
-spatialFilterField.addEventListener("change", function () {
+// Update spatial filter
+function refreshSpatialFilter() {
   spatialFilterPreview.forEach((item) => {
+    item.classList.remove("is-success")
+    item.classList.remove("is-danger")
     item.classList.add(
       spatialFilterField.value ? "is-success" : "is-danger"
     );
-    item.text = spatialFilterField.value
-      ? "Spatial filter defined."
-      : "Spatial filter not defined.";
+    item.innerText = spatialFilterField.value
+      ? "Spatial filter set."
+      : "Spatial filter not set.";
+  });
+}
+
+function refreshDates() {
+  publishFromPreview.forEach((item) => {
+    item.innerText = publishFromField.value
+      ? new Date(publishFromField.value).toString()
+      : "-";
+  });
+  publishToPreview.forEach((item) => {
+    item.innerText = publishToField.value
+      ? new Date(publishToField.value).toString()
+      : "-";
+  });
+}
+
+// Update publish from in preview when input change
+publishFromField.addEventListener("change", function () {
+  publishFromPreview.forEach((item) => {
+    item.innerText = publishFromField.value
+      ? new Date(publishFromField.value).toString()
+      : "-";
+  });
+});
+
+// Update publish to in preview when input change
+publishToField.addEventListener("change", function () {
+  publishToPreview.forEach((item) => {
+    item.innerText = publishToField.value
+      ? new Date(publishToField.value).toString()
+      : "-";
   });
 });
 
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Refresh some fieds on start
+  refreshSpatialFilter()
+  refreshDates()
   // Functions to open and close the review modal
   function openModal($el) {
     $el.classList.add("is-active");
+    refreshSpatialFilter()
   }
 
   function closeModal($el) {
     $el.classList.remove("is-active");
+    refreshSpatialFilter()
   }
 
   function closeAllModals() {
     (document.querySelectorAll(".modal") || []).forEach(($modal) => {
       closeModal($modal);
+      refreshSpatialFilter()
     });
   }
 
@@ -129,17 +167,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     $trigger.addEventListener("click", () => {
       openModal($target);
-
-      // Update all data in the review modal table
-
-
-      // publishFromPreview.innerText = publishFromField.value
-      //   ? new Date(publishFromField.value).toString()
-      //   : "-";
-      // publishToPreview.innerText = publishToField.value
-      //   ? new Date(publishToField.value).toString()
-      //   : "-";
-
     });
   });
 
