@@ -74,7 +74,7 @@ class FeedItemForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(FeedItemForm, self).__init__(*args, **kwargs)
         # Custom fields widget
-        self.fields['title'].widget = forms.TextInput(attrs={'class': 'input', 'placeholder': 'Title'})
+        self.fields['title'].widget = forms.TextInput(attrs={'class': 'input', 'placeholder': 'Title', 'maxlength': self.fields['title'].max_length})
         self.fields['image'].widget = forms.FileInput(attrs={'class': 'file-input'})
         self.fields['content'].widget = forms.Textarea(attrs={'class': 'textarea', 'placeholder': 'Content', 'rows': 5})
         self.fields['url'].widget = forms.TextInput(attrs={'class': 'input', 'placeholder': 'URL for more information link'})

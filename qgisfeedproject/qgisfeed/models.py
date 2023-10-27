@@ -42,14 +42,38 @@ class PublishedManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(Q(publish_from__isnull=True) | (Q(publish_from__lte=timezone.now())), Q(publish_to__isnull=True) | (Q(publish_to__gte=timezone.now())) , published=True )
 
+class CharacterLimitConfiguration(models.Model):
+    """
+        Set a hard character limit of a field
+    """
+    field_name = models.CharField(max_length=255, unique=True)
+    max_characters = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.field_name
+    
+
+class ConfigurableCharField(models.CharField):
+    """
+        Customized CharField: the characters limit depends on the configuration
+    """
+    def __init__(self, *args, **kwargs):
+        field_name = kwargs.pop('field_name', None)
+        super(ConfigurableCharField, self).__init__(*args, **kwargs)
+        if field_name:
+            try:
+                config = CharacterLimitConfiguration.objects.get(field_name=field_name)
+                self.max_length = config.max_characters
+            except CharacterLimitConfiguration.DoesNotExist:
+                pass
 
 class QgisFeedEntry(models.Model):
     """A feed entry for QGIS welcome page
     """
 
-    title = models.CharField(_('Title'), max_length=255)
+    title = ConfigurableCharField(_('Title'), max_length=255, field_name='title_field')
     image = ProcessedImageField([ResizeToFill(500, 354)], 'JPEG', {'quality': 60}, _('Image'),upload_to='feedimages/%Y/%m/%d/', height_field='image_height', width_field='image_width', max_length=None, blank=True, null=True, help_text=_('Landscape orientation, image will be cropped and scaled automatically to 500x354 px') )
-    content = models.TextField()
+    content = ConfigurableCharField(max_length=500, field_name='content_field')
     url = models.URLField(_('URL'), max_length=200, help_text=_('URL for more information link'))
 
     # Auto fields

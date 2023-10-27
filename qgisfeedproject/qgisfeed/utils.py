@@ -5,6 +5,8 @@ import logging
 logger = logging.getLogger('qgisfeed.admin')
 QGISFEED_FROM_EMAIL = getattr(settings, 'QGISFEED_FROM_EMAIL', 'noreply@qgis.org')
 
+from django.db import models
+from .models import CharacterLimitConfiguration
 
 def notify_admin(author, request, recipients, obj):
     """Send notification emails"""
