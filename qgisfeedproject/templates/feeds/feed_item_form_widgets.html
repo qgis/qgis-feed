@@ -2,62 +2,100 @@
   {% csrf_token %}
   <div class="box has-background-light p-3 box-container has-text-dark">
     <div class="field">
-      <label class="label">Title:</label>
+      <label class="label">
+        {% if form.title.field.required %}
+            <span style="color:red;">*</span>
+        {% endif %}
+        {{form.title.label_tag}}
+      </label>
       <div class="control has-icons-left">
         {{form.title}}
         <span class="icon is-small is-left">
           <i class="fas fa-quote-right"></i>
         </span>
       </div>
+      <p class="help">{{form.title.help_text}}</p>
     </div>
     <div class="field">
-      <label class="label">Image:</label>
-    </div>
-    <div class="file is-fullwidth has-name field">
-      <label class="file-label">
-        {{form.image}}
-        <span class="file-cta">
-          <span class="file-icon">
-            <i class="fas fa-upload"></i>
-          </span>
-          <span class="file-label"> Choose an image… </span>
-        </span>
-        <span class="file-name" id="imageFileName">
-          {% if form.image.value %} {{ form.image.value.name }} {% else %}
-          <i>No image chosen. Click here to add an image.</i>
-          {% endif %}
-        </span>
+      <label class="label">
+        {% if form.image.field.required %}
+            <span style="color:red;">*</span>
+        {% endif %}
+        {{ form.image.label_tag }}
       </label>
+    </div>
+    <div class="field">
+      <div class="file is-fullwidth has-name">
+        <label class="file-label">
+          {{form.image}}
+          <span class="file-cta">
+            <span class="file-icon">
+              <i class="fas fa-upload"></i>
+            </span>
+            <span class="file-label"> Choose an image… </span>
+          </span>
+          <span class="file-name" id="imageFileName">
+            {% if form.image.value %} {{ form.image.value.name }} {% else %}
+            <i>No image chosen. Click here to add an image.</i>
+            {% endif %}
+          </span>
+        </label>
+      </div>
+      <p class="help">{{form.image.help_text}}</p>
     </div>
 
     <div class="field">
-      <label class="label">Content:</label>
+      <label class="label">
+        {% if form.content.field.required %}
+            <span style="color:red;">*</span>
+        {% endif %}
+        {{ form.content.label_tag }}
+      </label>
       <div class="control">{{form.content}}</div>
+      <p class="help">{{form.content.help_text}}</p>
     </div>
 
     <div class="columns">
       <div class="column is-12 field">
-        <label class="label">Url:</label>
+        <label class="label">
+          {% if form.url.field.required %}
+              <span style="color:red;">*</span>
+          {% endif %}
+          {{ form.url.label_tag }}
+        </label>
         <div class="control has-icons-left">
           {{form.url}}
           <span class="icon is-small is-left">
             <i class="fas fa-link"></i>
           </span>
         </div>
+        <p class="help">{{form.url.help_text}}</p>
+        <p id="urlError" class="help is-danger"></p>
       </div>
     </div>
     <div class="columns">
       <div class="column is-6 field">
-        <label class="label">Sorting order:</label>
+        <label class="label">
+          {% if form.sorting.field.required %}
+              <span style="color:red;">*</span>
+          {% endif %}
+          {{ form.sorting.label_tag }}
+        </label>
         <div class="control has-icons-left">
           {{form.sorting}}
           <span class="icon is-small is-left">
             <i class="fas fa-sort"></i>
           </span>
         </div>
+        <p class="help">{{form.sorting.help_text}}</p>
       </div>
       <div class="column is-6 field">
-        <label class="label"> Sticky: </label>
+        <label class="label"> 
+          {% if form.sticky.field.required %}
+              <span style="color:red;">*</span>
+          {% endif %}
+          Sticky: 
+        </label>
         <div class="control is-flex is-align-items-center" style="height:2.5em;">
           <label class="checkbox"> {{form.sticky}} Keep this entry on top </label>
         </div>
@@ -66,7 +104,12 @@
 
     <div class="columns">
       <div class="column is-6 field">
-        <label class="label">Spatial filter:</label>
+        <label class="label">
+          {% if form.spatial_filter.field.required %}
+              <span style="color:red;">*</span>
+          {% endif %}
+          {{ form.spatial_filter.label_tag }}
+        </label>
         <button class="button is-light is-info js-modal-trigger is-fullwidth" data-target="spatial-filter-modal"
           type="button">
           <span class="icon">
@@ -74,34 +117,55 @@
           </span>
           <span>Set spatial filter</span>
         </button>
+        <p class="help">{{form.spatial_filter.help_text}}</p>
       </div>
       <div class="column is-6 field">
-        <label class="label">Language filter:</label>
+        <label class="label">
+          {% if form.language_filter.field.required %}
+              <span style="color:red;">*</span>
+          {% endif %}
+          {{ form.language_filter.label_tag }}
+        </label>
         <div class="select is-fullwidth">{{form.language_filter}}</div>
+        <p class="help">{{form.language_filter.help_text}}</p>
       </div>
     </div>
     <div class="columns">
       <div class="column is-6 field">
-        <label class="label">Publication start:</label>
+        <label class="label">
+          {% if form.publish_from.field.required %}
+              <span style="color:red;">*</span>
+          {% endif %}
+          {{ form.publish_from.label_tag }}
+        </label>
         <div class="control has-icons-left">
           {{form.publish_from}}
           <span class="icon is-small is-left">
             <i class="fas fa-calendar"></i>
           </span>
         </div>
+        <p class="help">{{form.publish_from.help_text}}</p>
       </div>
 
       <div class="column is-6 field">
-        <label class="label">Publication end:</label>
+        <label class="label">
+          {% if form.publish_to.field.required %}
+              <span style="color:red;">*</span>
+          {% endif %}
+          {{ form.publish_to.label_tag }}
+        </label>
         <div class="control has-icons-left">
           {{form.publish_to}}
           <span class="icon is-small is-left">
             <i class="fas fa-calendar"></i>
           </span>
         </div>
+        <p class="help">{{form.publish_from.help_text}}</p>
       </div>
     </div>
   </div>
-
+  {% for error in form.non_field_errors %}
+  <p class="error">{{ error }}</p>
+  {% endfor %}
   {% include 'feeds/set_spatial_filter_modal.html' %}
 </form>

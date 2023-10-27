@@ -71,72 +71,40 @@ class FeedItemForm(forms.ModelForm):
             'publish_to'
         ]
 
-    empty_lang = ('', 'Select a language')
-    LANG_CHOICES = (empty_lang,) + LANGUAGES
-
-    title = forms.CharField(
-        required=True,
-        widget=forms.TextInput(attrs={'class': 'input', 'placeholder': 'Title'})
-    )
-    image = forms.FileField(
-        required=False,
-        widget=forms.FileInput(attrs={'class': 'file-input'})
-    )
-
-    content = forms.CharField(
-        required=True,
-        widget=forms.Textarea(attrs={'class': 'textarea', 'placeholder': 'Content', 'rows': 5})
-    )
-
-    url = forms.CharField(
-        required=True,
-        widget=forms.TextInput(attrs={'class': 'input', 'placeholder': 'URL for more information link'})
-    )
-
-    sticky = forms.BooleanField(
-        required=False,
-        widget=forms.CheckboxInput(attrs={'class': 'checkbox'})
-    )
-
-    sorting = forms.IntegerField(
-        required=True,
-        widget=forms.NumberInput(attrs={'class': 'input',  'placeholder': 'Increase to show at top of the list'})
-    )
-
-    language_filter = forms.ChoiceField(
-        choices=LANG_CHOICES,
-        required=False, 
-        widget=forms.Select()
-    )
-
-    spatial_filter = forms.PolygonField(
-        required=False, 
-        widget=forms.OSMWidget(attrs={
+    def __init__(self, *args, **kwargs):
+        super(FeedItemForm, self).__init__(*args, **kwargs)
+        # Custom fields widget
+        self.fields['title'].widget = forms.TextInput(attrs={'class': 'input', 'placeholder': 'Title'})
+        self.fields['image'].widget = forms.FileInput(attrs={'class': 'file-input'})
+        self.fields['content'].widget = forms.Textarea(attrs={'class': 'textarea', 'placeholder': 'Content', 'rows': 5})
+        self.fields['url'].widget = forms.TextInput(attrs={'class': 'input', 'placeholder': 'URL for more information link'})
+        self.fields['sorting'].widget = forms.NumberInput(attrs={'class': 'input',  'placeholder': 'Increase to show at top of the list'})
+        self.fields['spatial_filter'].widget = forms.OSMWidget(attrs={
+            'geom_type': 'Polygon',
             'map_width': '100%', 
             'map_height': 500,
             'default_lat': 0,
             'default_lon': 0,
             'default_zoom': 2
-        }),
-    )
+        })
+        self.fields['publish_from'].widget = forms.DateTimeInput(
+            attrs={
+                'type': 'datetime-local', 
+                'class': 'input', 
+                }
+        )
+        self.fields['publish_from'].initial = timezone.now()
 
-    publish_from = forms.CharField(
-        required=True,
-        initial=timezone.now(),
-        widget=forms.DateTimeInput(
+        self.fields['publish_to'].widget = forms.DateTimeInput(
             attrs={
                 'type': 'datetime-local', 
                 'class': 'input', 
                 }
-            )
-    )
-    publish_to = forms.CharField(
-        required=True,
-        initial=timezone.now() + timezone.timedelta(days=30),
-        widget=forms.DateTimeInput(
-            attrs={
-                'type': 'datetime-local', 
-                'class': 'input', 
-                }
-            )
+        )
+        self.fields['publish_to'].initial = timezone.now() + timezone.timedelta(days=30)
+
+
+    sticky = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'checkbox'})
     )
