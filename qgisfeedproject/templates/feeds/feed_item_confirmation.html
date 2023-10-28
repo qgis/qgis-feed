@@ -2,7 +2,7 @@
     <div class="modal-background"></div>
     <div class="modal-card" style="width:60% !important">
         <header class="modal-card-head">
-            <p class="modal-card-title">Review your changes</p>
+            <p class="modal-card-title">Review changes</p>
             <button class="delete" aria-label="close"></button>
         </header>
         <section class="modal-card-body">
@@ -60,6 +60,16 @@
                 </span>
                 <span>Submit changes</span>
             </button>
+
+            {% if user_is_approver and not published and form.instance.pk%}
+            <button class="button is-success" type="submit" form="feedItemForm" name="publish" value="true">        
+                <span class="icon">
+                    <i class="fa fa-check" aria-hidden="true"></i>
+                </span>
+                <span>Approve and publish</span>
+            </button>
+            {% endif %}
+
         </footer>
     </div>
 </div>

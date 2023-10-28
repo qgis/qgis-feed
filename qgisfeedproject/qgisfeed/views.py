@@ -22,8 +22,14 @@ from django.views import View
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import permission_required
+from django.utils.decorators import method_decorator
+
+from django.db import transaction
+from django.contrib.auth.models import User
 
 from .forms import FeedEntryFilterForm, FeedItemForm
+from .utils import notify_admin
 from .models import QgisFeedEntry
 from .languages import LANGUAGE_KEYS
 import json
@@ -106,134 +112,208 @@ class QgisEntriesView(View):
 
         return HttpResponse(json.dumps(data, indent=(2 if settings.DEBUG else 0)),content_type='application/json')
 
-@staff_required
-def feeds_list(request):
+@method_decorator(staff_required, name='dispatch')
+@method_decorator(permission_required('qgisfeed.view_qgisfeedentry'), name='dispatch')
+class FeedsListView(View):
     """
     List of feeds
     This view renders a paginated, sorted according
     to the request parameters list of feeds
     """
-    form = FeedEntryFilterForm(request.GET)
-    feeds_entry = QgisFeedEntry.objects.all()
+    form_class = FeedEntryFilterForm
+    template_name = 'feeds/feeds_list.html'
+    items_per_page = 15  # Set the number of items per page
 
-    # Get filter parameters from the query string
-    if form.is_valid():
-        title = form.cleaned_data.get('title')
-        if title:
-            feeds_entry = feeds_entry.filter(title__icontains=title)
-            
-        author = form.cleaned_data.get('author')
-        if author:
-            feeds_entry = feeds_entry.filter(author__username__icontains=author)
-    
-        language_filter = form.cleaned_data.get('language_filter')
-        if language_filter:
-            feeds_entry = feeds_entry.filter(language_filter=language_filter)
+    def get(self, request):
+        form = self.form_class(request.GET)
+        feeds_entry = QgisFeedEntry.objects.all()
 
-        publish_from = form.cleaned_data.get('publish_from')
-        if publish_from:
-            feeds_entry = feeds_entry.filter(publish_from__gt=publish_from)
+        # Get filter parameters from the query string
+        if form.is_valid():
+            title = form.cleaned_data.get('title')
+            if title:
+                feeds_entry = feeds_entry.filter(title__icontains=title)
 
-        publish_to = form.cleaned_data.get('publish_to')
-        if publish_to:
-            feeds_entry = feeds_entry.filter(publish_to__lt=publish_to)
+            author = form.cleaned_data.get('author')
+            if author:
+                feeds_entry = feeds_entry.filter(author__username__icontains=author)
+
+            language_filter = form.cleaned_data.get('language_filter')
+            if language_filter:
+                feeds_entry = feeds_entry.filter(language_filter=language_filter)
+
+            publish_from = form.cleaned_data.get('publish_from')
+            if publish_from:
+                feeds_entry = feeds_entry.filter(publish_from__gt=publish_from)
+
+            publish_to = form.cleaned_data.get('publish_to')
+            if publish_to:
+                feeds_entry = feeds_entry.filter(publish_to__lt=publish_to)
+
+            need_review = form.cleaned_data.get('need_review')
+            if need_review:
+                published = not bool(int(need_review))
+                feeds_entry = feeds_entry.filter(published=published)
+
+        # Get sorting parameters from the query string
+        sort_by = request.GET.get('sort_by', 'publish_from')
+        current_order = request.GET.get('order', 'desc')
+
+        if current_order == 'asc':
+            feeds_entry = feeds_entry.order_by(sort_by)
+            next_order = 'desc'
+        else:
+            next_order = 'asc'
+            feeds_entry = feeds_entry.order_by(f'-{sort_by}')
+
+        # Get the count of all/filtered entries
+        count = feeds_entry.count()
+
+        # Paginate the list of feeds
+        page = request.GET.get('page', 1)
+        paginator = Paginator(feeds_entry, self.items_per_page)
+
+        try:
+            feeds_entry = paginator.page(page)
+        except PageNotAnInteger:
+            feeds_entry = paginator.page(1)
+        except EmptyPage:
+            feeds_entry = paginator.page(paginator.num_pages)
+
+        user = request.user
+        user_can_add = user.has_perm("qgisfeed.add_qgisfeedentry")
+        user_can_change = user.has_perm("qgisfeed.change_qgisfeedentry")
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "feeds_entry": feeds_entry,
+                "sort_by": sort_by,
+                "order": next_order,
+                "current_order": current_order,
+                "form": form,
+                "count": count,
+                "user_can_change": user_can_change,
+                "user_can_add": user_can_add,
+            },
+        )
 
 
-    # Get sorting parameters from the query string
-    sort_by = request.GET.get('sort_by', 'publish_from')
-    current_order = request.GET.get('order', 'desc')
-
-    if current_order == 'asc':
-        feeds_entry = feeds_entry.order_by(sort_by)
-        next_order = 'desc'
-    else:
-        next_order = 'asc'
-        feeds_entry = feeds_entry.order_by(f'-{sort_by}')
-
-    # Get the count of all/filtered entries
-    count = feeds_entry.count()
-    
-    # Paginate the list of feeds
-    page = request.GET.get('page', 1)
-    paginator = Paginator(feeds_entry, 15)
-
-    try:
-        feeds_entry = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver the first page.
-        feeds_entry = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g., 9999), deliver the last page.
-        feeds_entry = paginator.page(paginator.num_pages)
-
-    return render(
-        request, 
-        'feeds/feeds_list.html',
-          {
-              "feeds_entry": feeds_entry, 
-              "sort_by": sort_by, 
-              "order": next_order, 
-              "current_order":current_order,
-              "form": form,
-              "count": count
-            }
-    )
-
-
-@staff_required
-def feed_entry_add(request):
+@method_decorator(staff_required, name='dispatch')
+@method_decorator(permission_required('qgisfeed.add_qgisfeedentry'), name='dispatch')
+class FeedEntryAddView(View):
     """
     View to add a feed entry item
     """
-    msg = None
-    success = False
-    if request.method == 'POST':
-        form = FeedItemForm(request.POST, request.FILES)
+    form_class = FeedItemForm
+    template_name = 'feeds/feed_item_form.html'
+
+    def get(self, request):
+        msg = None
+        success = False
+        user = request.user
+        user_is_approver = user.has_perm("qgisfeed.publish_qgisfeedentry")
+        form = self.form_class()
+
+        args = {
+            "form": form,
+            "msg": msg,
+            "success": success,
+            "published": False,
+            "user_is_approver": user_is_approver,
+        }
+
+        return render(request, self.template_name, args)
+
+    def post(self, request):
+        msg = None
+        success = False
+        user = request.user
+        user_is_approver = user.has_perm("qgisfeed.publish_qgisfeedentry")
+        form = self.form_class(request.POST, request.FILES)
+
         if form.is_valid():
-            new_object = form.save(commit=False)
-            new_object.set_request(request)  # Pass the 'request' to get the user in the model
-            new_object.save()
+            with transaction.atomic():
+                new_object = form.save(commit=False)
+                new_object.set_request(request)  # Pass the 'request' to get the user in the model
+                new_object.save()
+                success = True
+
+                if not request.user.is_superuser:
+                    recipients = [u.email for u in User.objects.filter(is_superuser=True, is_active=True, email__isnull=False).exclude(email='')]
+                    if recipients:
+                        notify_admin(request.user, request, recipients, new_object)
+
+                return redirect('feeds_list')
+        else:
+            success = False
+            msg = "Form is not valid"
+
+        args = {
+            "form": form,
+            "msg": msg,
+            "success": success,
+            "published": False,
+            "user_is_approver": user_is_approver,
+        }
+
+        return render(request, self.template_name, args)
+    
+@method_decorator(staff_required, name='dispatch')
+@method_decorator(permission_required('qgisfeed.change_qgisfeedentry'), name='dispatch')
+class FeedEntryUpdateView(View):
+    """
+    View to update/publish a feed entry item
+    """
+    form_class = FeedItemForm
+    template_name = 'feeds/feed_item_form.html'
+
+    def get(self, request, pk):
+        msg = None
+        success = False
+        feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
+        user = request.user
+        user_is_approver = user.has_perm("qgisfeed.publish_qgisfeedentry")
+        form = self.form_class(instance=feed_entry)
+
+        args = {
+            "form": form,
+            "msg": msg,
+            "success": success,
+            "published": feed_entry.published,
+            "user_is_approver": user_is_approver
+        }
+
+        return render(request, self.template_name, args)
+
+    def post(self, request, pk):
+        msg = None
+        success = False
+        feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
+        user = request.user
+        user_is_approver = user.has_perm("qgisfeed.publish_qgisfeedentry")
+        form = self.form_class(request.POST, request.FILES, instance=feed_entry)
+
+        if form.is_valid():
+            instance = form.save(commit=False)
+            publish = bool(request.POST.get('publish', ''))
+            if publish and user_is_approver:
+                instance.published = True
+
+            instance.save()
             success = True
             return redirect('feeds_list')
         else:
             success = False
             msg = "Form is not valid"
-    else:
-        form = FeedItemForm()
 
-    args = {
-        "form": form,
-        "msg": msg,
-        "success": success,
+        args = {
+            "form": form,
+            "msg": msg,
+            "success": success,
+            "published": feed_entry.published,
+            "user_is_approver": user_is_approver
+        }
 
-    }
-    return render(request, 'feeds/feed_item_form.html', args)
-
-@staff_required
-def feed_entry_update(request, pk):
-    """
-    View to update a feed entry item
-    """
-    msg = None
-    success = False
-    feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
-
-    if request.method == 'POST':
-        form = FeedItemForm(request.POST, request.FILES, instance=feed_entry)
-        if form.is_valid():
-            form.save()
-            success = True
-            return redirect('feeds_list')
-        else:
-            success = False
-            msg = "Form is not valid"
-    else:
-        form = FeedItemForm(instance=feed_entry)
-
-    args = {
-        "form": form,
-        "msg": msg,
-        "success": success,
-
-    }
-    return render(request, 'feeds/feed_item_form.html', args)
+        return render(request, self.template_name, args)

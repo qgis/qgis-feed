@@ -25,6 +25,13 @@ class FeedEntryFilterForm(forms.Form):
         widget=forms.Select()
     )
 
+    need_review = forms.ChoiceField(
+        required=False,
+        widget=forms.Select(),
+        choices=[('', 'Select an option'), (1, 'Yes'), (0, 'No')]
+    )
+
+
     publish_from = forms.CharField(
         required=False,
         widget=forms.DateInput(
