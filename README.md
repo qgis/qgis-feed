@@ -85,6 +85,8 @@ Users with `staff` flag can enter the control panel at `/admin` and add feed ent
 
 Users with `superadmin` flag will be notified by email when an entry is added to the feed and will be able to publish the entry.
 
+For content field, a hard limit on the number of characters allowed is configurable in administration page (Character limit configurations). If not set, max characters value for this field is 500. If you want to add a custom max characters for this field, the field name value should be `content`.
+
 ## Endpoint and accepted parameters
 
 The application has a single endpoint available at the web server root `/` the reponse is in JSON format.

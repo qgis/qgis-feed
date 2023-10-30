@@ -1,50 +1,58 @@
 // Capture user input in real-time
-var titleField = document.getElementById("id_title");
-var contentField = document.getElementById("id_content");
-var imageField = document.getElementById("id_image");
-var urlField = document.getElementById("id_url");
-var stickyField = document.getElementById("id_sticky");
-var sortingField = document.getElementById("id_sorting");
-var languageField = document.getElementById("id_language_filter");
-var spatialFilterField = document.getElementById("id_spatial_filter");
-var publishFromField = document.getElementById("id_publish_from");
-var publishToField = document.getElementById("id_publish_to");
+let titleField = document.getElementById("id_title");
+let contentField = document.getElementById("id_content");
+let imageField = document.getElementById("id_image");
+let urlField = document.getElementById("id_url");
+let stickyField = document.getElementById("id_sticky");
+let sortingField = document.getElementById("id_sorting");
+let languageField = document.getElementById("id_language_filter");
+let spatialFilterField = document.getElementById("id_spatial_filter");
+let publishFromField = document.getElementById("id_publish_from");
+let publishToField = document.getElementById("id_publish_to");
 
-var contentPreview = document.getElementsByName("contentPreview");
-var titlePreview = document.getElementsByName("titlePreview");
-var imagePreview = document.getElementsByName("imagePreview");
-var urlPreview = document.getElementById("urlPreview");
-var stickyPreview = document.getElementById("stickyPreview");
-var sortingPreview = document.getElementById("sortingPreview");
-var languagePreview = document.getElementById("languagePreview");
-var spatialFilterPreview = document.getElementById("spatialFilterPreview");
-var publishFromPreview = document.getElementById("publishFromPreview");
-var publishToPreview = document.getElementById("publishToPreview");
+let contentPreview = document.getElementsByName("contentPreview");
+let titlePreview = document.getElementsByName("titlePreview");
+let imagePreview = document.getElementsByName("imagePreview");
+let urlPreview = document.getElementsByName("urlPreview");
+let stickyPreview = document.getElementsByName("stickyPreview");
+let sortingPreview = document.getElementsByName("sortingPreview");
+let languagePreview = document.getElementsByName("languagePreview");
+let spatialFilterPreview = document.getElementsByName("spatialFilterPreview");
+let publishFromPreview = document.getElementsByName("publishFromPreview");
+let publishToPreview = document.getElementsByName("publishToPreview");
 
-var imageFileName = document.getElementById("imageFileName");
+let imageFileName = document.getElementById("imageFileName");
+let urlError = document.getElementById("urlError");
+let formConfirmationBtn = document.getElementById("formConfirmationBtn");
+
+let fields = [
+  titleField,
+  contentField,
+  imageField,
+  urlField,
+  stickyField,
+  sortingField,
+  languageField,
+  spatialFilterField,
+  publishFromField,
+  publishToField,
+];
 
 // Update title in preview when input change
 titleField.addEventListener("input", function () {
-  var fieldValue = titleField.value;
+  let fieldValue = titleField.value;
   titlePreview.forEach((item) => {
     item.innerText = fieldValue;
   });
-});
-
-// Update content in preview when input change
-contentField.addEventListener("input", function () {
-  var fieldValue = contentField.value;
-  contentPreview.forEach((item) => {
-    item.innerHTML = fieldValue;
-  });
+  checkFormValid();
 });
 
 // Update image in preview when input change
 imageField.addEventListener("change", function () {
-  var selectedImage = imageField.files[0];
+  let selectedImage = imageField.files[0];
   imagePreview.forEach((item) => {
     if (selectedImage) {
-      var imageURL = URL.createObjectURL(selectedImage);
+      let imageURL = URL.createObjectURL(selectedImage);
       item.innerHTML =
         '<img src="' + imageURL + '" style="border-radius:20px;">';
       imageFileName.innerHTML = selectedImage.name;
@@ -54,21 +62,148 @@ imageField.addEventListener("change", function () {
         "<i>No image chosen. Click here to add an image.</i>";
     }
   });
+  checkFormValid();
 });
 
+// Update URL in preview when input change
+urlField.addEventListener("input", function () {
+  urlPreview.forEach((item) => {
+    item.innerHTML = urlField.value
+      ? '<a href="' +
+        urlField.value +
+        '" target="_blank">' +
+        urlField.value +
+        "</a>"
+      : "<i>-</i>";
+  });
+  checkFormValid();
+});
+
+// Update sticky in preview when change
+stickyField.addEventListener("change", function () {
+  stickyPreview.forEach((item) => {
+    item.innerHTML = stickyField.checked
+      ? '<span class="icon has-text-success">' +
+        '<i class="fa-solid fa-circle-check"></i>' +
+        "</span>"
+      : '<span class="icon has-text-danger">' +
+        '<i class="fa-solid fa-circle-xmark"></i>' +
+        "</span>";
+  });
+  checkFormValid();
+});
+
+// Update sorting in preview when input change
+sortingField.addEventListener("input", function () {
+  sortingPreview.forEach((item) => {
+    item.innerText = sortingField.value ? sortingField.value : "-";
+  });
+  checkFormValid();
+});
+
+// Update language filter in preview when input change
+languageField.addEventListener("change", function () {
+  languagePreview.forEach((item) => {
+    item.innerText = languageField.value
+      ? // ? languageField.options[languageField.selectedIndex].text
+        languageField.value
+      : "-";
+  });
+  checkFormValid();
+});
+
+// Update spatial filter
+function refreshSpatialFilter() {
+  spatialFilterPreview.forEach((item) => {
+    item.classList.remove("is-success");
+    item.classList.remove("is-danger");
+    item.classList.add(spatialFilterField.value ? "is-success" : "is-danger");
+    item.innerText = spatialFilterField.value
+      ? "Spatial filter set."
+      : "Spatial filter not set.";
+  });
+  checkFormValid();
+}
+
+function refreshDates() {
+  publishFromPreview.forEach((item) => {
+    item.innerText = publishFromField.value
+      ? new Date(publishFromField.value).toString()
+      : "-";
+  });
+  publishToPreview.forEach((item) => {
+    item.innerText = publishToField.value
+      ? new Date(publishToField.value).toString()
+      : "-";
+  });
+  checkFormValid();
+}
+
+// Update publish from in preview when input change
+publishFromField.addEventListener("change", function () {
+  publishFromPreview.forEach((item) => {
+    item.innerText = publishFromField.value
+      ? new Date(publishFromField.value).toString()
+      : "-";
+  });
+  checkFormValid();
+});
+
+// Update publish to in preview when input change
+publishToField.addEventListener("change", function () {
+  publishToPreview.forEach((item) => {
+    item.innerText = publishToField.value
+      ? new Date(publishToField.value).toString()
+      : "-";
+  });
+  checkFormValid();
+});
+
+function isURLValid(url) {
+  // Regular expression to match a URL
+  const urlPattern = /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/\S*)?$/i;
+  const isValid = urlPattern.test(url);
+
+  urlError.innerText = isValid ? "" : "This URL is not valid.";
+  urlField.classList.toggle("is-success", isValid);
+  urlField.classList.toggle("is-danger", !isValid);
+
+  return isValid;
+}
+
+
+function checkFormValid() {
+
+  const isFormValid = fields.every((field) => {
+    const isFieldRequired = field.hasAttribute("required");
+    const value = field.value;
+    return !isFieldRequired || value; // Field is not required or has a value
+  });
+  formConfirmationBtn.disabled = !isFormValid || !isURLValid(urlField.value);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  // Refresh some fieds on start
+  refreshSpatialFilter();
+  refreshDates();
+  isURLValid(urlField.value);
+  checkFormValid();
+
   // Functions to open and close the review modal
   function openModal($el) {
     $el.classList.add("is-active");
+    refreshSpatialFilter();
   }
 
   function closeModal($el) {
     $el.classList.remove("is-active");
+    refreshSpatialFilter();
   }
 
   function closeAllModals() {
     (document.querySelectorAll(".modal") || []).forEach(($modal) => {
       closeModal($modal);
+      refreshSpatialFilter();
     });
   }
 
@@ -79,42 +214,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     $trigger.addEventListener("click", () => {
       openModal($target);
-
-      // Update all data in the review modal table
-      urlPreview.innerHTML = urlField.value
-        ? '<a href="' +
-          urlField.value +
-          '" target="_blank">' +
-          urlField.value +
-          "</a>"
-        : "<i>-</i>";
-
-      stickyPreview.innerHTML = stickyField.checked
-        ? '<span class="icon has-text-success">' +
-          '<i class="fa-solid fa-circle-check"></i>' +
-          "</span>"
-        : '<span class="icon has-text-danger">' +
-          '<i class="fa-solid fa-circle-xmark"></i>' +
-          "</span>";
-
-      spatialFilterPreview.classList.add(
-        spatialFilterField.value ? "is-success" : "is-danger"
-      );
-      spatialFilterPreview.innerHTML = spatialFilterField.value
-        ? "Spatial filter defined."
-        : "Spatial filter not defined.";
-
-      sortingPreview.innerText = sortingField.value ? sortingField.value : "-";
-      languagePreview.innerText = languageField.value
-        ? languageField.options[languageField.selectedIndex].text
-        : "-";
-      publishFromPreview.innerText = publishFromField.value
-        ? new Date(publishFromField.value).toString()
-        : "-";
-      publishToPreview.innerText = publishToField.value
-        ? new Date(publishToField.value).toString()
-        : "-";
-
     });
   });
 

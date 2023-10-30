@@ -53,20 +53,34 @@
     <div class="columns">
         <div class="column is-6">
             {% include 'feeds/feed_item_form_widgets.html' %}
-            <button class="button is-block is-success js-modal-trigger mt-5" data-target="form-review-modal">
-                <span class="icon">
-                    <i class="fa fa-floppy-disk" aria-hidden="true"></i>
-                </span>
-                {% if user_is_approver and not published and form.instance.pk%}
-                <span>Review and publish</span>
-                {% else %}
-                <span>Review and save changes</span>
-                {% endif %}
-            </button>
         </div>
         <div class="column is-6">
-            <h5 class="title is-5 has-text-centered">Preview</h5>
-            {% include 'feeds/feed_item_preview.html' %}
+            <div style="border: solid #e5e5e5 1px; border-radius: 10px;">
+                <h5 class="title is-5 has-text-centered mt-3">Preview</h5>
+                {% include 'feeds/feed_item_preview.html' %}
+            </div>
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column is-6 is-flex is-justify-content-end">
+            <button id="formConfirmationBtn" class="button is-block is-success js-modal-trigger" data-target="form-review-modal">
+                {% if published %}
+                    <span class="icon">
+                        <i class="fa fa-floppy-disk" aria-hidden="true"></i>
+                    </span>
+                    <span>Save changes</span>
+                {% elif not published and user_is_approver and form.instance.pk %}
+                    <span class="icon">
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                    </span>
+                    <span>Approve and publish</span>
+                {% else %}
+                    <span class="icon">
+                        <i class="fa fa-floppy-disk" aria-hidden="true"></i>
+                    </span>
+                    <span>Submit for review</span>
+                {% endif %}
+            </button>
         </div>
     </div>
 </section>
@@ -76,5 +90,38 @@
 {% endblock content %}
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
+<script type="text/javascript" src="{% static 'tinymce/tinymce.min.js' %}"></script>
 <script src="{% static 'js/feed_item_form.js' %}"></script>
+<script>
+    tinymce.init({
+        selector: 'textarea#id_content',
+        menubar: false,
+        plugins: "preview searchreplace visualblocks code fullscreen insertdatetime paste help wordcount spellchecker",
+        toolbar: "undo redo | bold italic | searchreplace | code preview ",
+        valid_elements: "p,strong,i",
+        formats: {
+          italic: { inline: 'i' }
+        },
+        setup: function (editor) {
+            editor.on('change', function () {
+                // Update content in preview when change
+                const content = editor.getContent();
+                contentPreview.forEach((item) => {
+                item.innerHTML = content;
+                });
+                tinymce.triggerSave();
+        
+            });
+            editor.on('input', function () {
+                // Update content in preview when input change
+                const content = editor.getContent();
+                contentPreview.forEach((item) => {
+                item.innerHTML = content;
+                });
+                tinymce.triggerSave();
+            });
+        }
+    });
+  
+</script>
 {% endblock javascripts %}

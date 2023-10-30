@@ -14,3 +14,61 @@
         </div>
     </div>
 </div>
+
+<div class="form-preview columns p-2 box-container has-text-dark m-5">
+    <table class="table is-fullwidth">
+        <tbody>
+            <tr>
+                <th>Url:</th>
+                <td name="urlPreview">
+                    {% if form.url.value %}
+                        <a href="{{ form.url.value }}" target="_blank">{{ form.url.value }}</a>
+                    {% else %}
+                        <i>-</i>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Sticky:</th>
+                <td name="stickyPreview">
+                    {% if form.sticky.value %}
+                        <span class="icon has-text-success">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </span>
+                    {% else %}
+                        <span class="icon has-text-danger">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Sorting order:</th>
+                <td name="sortingPreview">
+                    {{ form.sorting.value|default:"-" }}
+                </td>
+            </tr>
+            <tr>
+                <th>Language filter:</th>
+                <td name="languagePreview">
+                    {{ form.language_filter.value|default:"-" }}
+                </td>
+            </tr>
+            <tr>
+                <th>Spatial filter:</th>
+                <td name="spatialFilterPreview" class="notification is-light">
+                </td>
+            </tr>
+            <tr>
+                <th>Publication start:</th>
+                <td name="publishFromPreview">
+                </td>
+            </tr>
+            <tr>
+                <th>Publication end:</th>
+                <td name="publishToPreview">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
