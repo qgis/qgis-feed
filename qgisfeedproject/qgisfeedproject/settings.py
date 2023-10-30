@@ -164,7 +164,7 @@ except ImportError as ex:
 
 
 LOGIN_REDIRECT_URL = "/manage"
-LOGOUT_REDIRECT_URL = "/accounts/login"
+LOGOUT_REDIRECT_URL = "/"
 
 
 # Webpack

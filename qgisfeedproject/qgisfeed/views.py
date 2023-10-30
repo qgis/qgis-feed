@@ -110,7 +110,15 @@ class QgisEntriesView(View):
                 record['image'] = request.build_absolute_uri(settings.MEDIA_URL + record['image'])
             data.append(record)
 
-        return HttpResponse(json.dumps(data, indent=(2 if settings.DEBUG else 0)),content_type='application/json')
+
+        user_agent = request.META.get('HTTP_USER_AGENT')
+        if "qgis" in str(user_agent).lower():
+            return HttpResponse(json.dumps(data, indent=(2 if settings.DEBUG else 0)),content_type='application/json')
+        else:
+            args = {
+                "data": data
+            }
+            return render(request, 'feeds/feed_home_page.html', args)
 
 @method_decorator(staff_required, name='dispatch')
 @method_decorator(permission_required('qgisfeed.view_qgisfeedentry'), name='dispatch')
