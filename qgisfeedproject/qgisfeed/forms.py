@@ -1,6 +1,7 @@
 from django.contrib.gis import forms
+from django.forms import ValidationError
 
-from .models import QgisFeedEntry
+from .models import CharacterLimitConfiguration, QgisFeedEntry
 from .languages import LANGUAGES
 from django.utils import timezone
 
@@ -102,6 +103,20 @@ class FeedItemForm(forms.ModelForm):
                 }
         )
         self.fields['publish_to'].initial = timezone.now() + timezone.timedelta(days=30)
+
+    def clean_content(self):
+        content = self.cleaned_data['content']
+        try:
+            config = CharacterLimitConfiguration.objects.get(field_name="content")
+            content_max_length = config.max_characters
+        except CharacterLimitConfiguration.DoesNotExist:
+            content_max_length = 500
+        
+        if len(content) > content_max_length:
+            raise ValidationError(
+                f"Ensure this value has at most {str(content_max_length)} characters (it has {str(len(content))})."
+            )
+        return content
 
 
     sticky = forms.BooleanField(

@@ -85,8 +85,7 @@ Users with `staff` flag can enter the control panel at `/admin` and add feed ent
 
 Users with `superadmin` flag will be notified by email when an entry is added to the feed and will be able to publish the entry.
 
-For title and content fields, a hard limit on the number of characters allowed is configurable in administration page (Character limit configurations). The field name values are `title_field` or `content_field`.
-***Currently, the Django server requires a reload after each modification to the character limit configuration for the changes to take effect.***
+For content field, a hard limit on the number of characters allowed is configurable in administration page (Character limit configurations). If not set, max characters value for this field is 500. If you want to add a custom max characters for this field, the field name value should be `content`.
 
 ## Endpoint and accepted parameters
 

@@ -21,7 +21,7 @@ from django.utils.translation import gettext as _
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
 from user_visit.models import UserVisit
-
+from django.core.exceptions import ValidationError
 
 class QgisLanguageField(models.CharField):
     """
@@ -71,9 +71,9 @@ class QgisFeedEntry(models.Model):
     """A feed entry for QGIS welcome page
     """
 
-    title = ConfigurableCharField(_('Title'), max_length=255, field_name='title_field')
+    title = models.CharField(_('Title'), max_length=255)
     image = ProcessedImageField([ResizeToFill(500, 354)], 'JPEG', {'quality': 60}, _('Image'),upload_to='feedimages/%Y/%m/%d/', height_field='image_height', width_field='image_width', max_length=None, blank=True, null=True, help_text=_('Landscape orientation, image will be cropped and scaled automatically to 500x354 px') )
-    content = ConfigurableCharField(max_length=500, field_name='content_field')
+    content = models.TextField()
     url = models.URLField(_('URL'), max_length=200, help_text=_('URL for more information link'))
 
     # Auto fields
@@ -128,6 +128,17 @@ class QgisFeedEntry(models.Model):
 
         if self.published and self.publish_from is None:
             self.publish_from = timezone.now()
+
+        try:
+            config = CharacterLimitConfiguration.objects.get(field_name="content")
+            content_max_length = config.max_characters
+        except CharacterLimitConfiguration.DoesNotExist:
+            content_max_length = 500
+        
+        if len(self.content) > content_max_length:
+            raise ValidationError(
+                f"Ensure content value has at most {str(content_max_length)} characters (it has {str(len(self.content))})."
+            )
 
         super(QgisFeedEntry, self).save(*args, **kwargs)
 
