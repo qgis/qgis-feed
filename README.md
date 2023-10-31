@@ -169,6 +169,7 @@ $ python manage.py test qgisfeed
 ```sh
 $ python manage.py test qgisfeed.tests.QgisFeedEntryTestCase
 $ python manage.py test qgisfeed.tests.QgisUserVisitTestCase
+$ python manage.py test qgisfeed.tests.HomePageTestCase
 $ python manage.py test qgisfeed.tests.LoginTestCase
 $ python manage.py test qgisfeed.tests.FeedsItemFormTestCase
 $ python manage.py test qgisfeed.tests.FeedsListViewTestCase
