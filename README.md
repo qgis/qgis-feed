@@ -5,8 +5,10 @@
 This application is the backend part that manages and serves news for the QGIS welcome page.
 
 
-## Installation
-
+<details>
+    <summary><strong>Installation</strong></summary>
+    </br>
+    
 - create a virtual env
 
     `$ virtualenv qgisfeedvenv`
@@ -61,9 +63,11 @@ $ npm run build
 # If you want to run the webpack server
 $ npx webpack --config webpack.config.js --watch 
 ```
+</details>
 
-## Settings
-
+<details>
+    <summary><strong>Settings</strong></summary>
+    </br>
 To prevent DDOS attacks there is limit in the number of returned records (defaults to 20): it can be configured by overriding the settings in `settings_local.py` with:
 
 ```python
@@ -78,16 +82,22 @@ QGISFEED_FROM_EMAIL='noreply@qgis.org'`  # default value is 'noreply@qgis.org'
 
 See https://docs.djangoproject.com/en/2.2/topics/email/#module-django.core.mail for further email configuration.
 
+</details>
 
-## Control panel and permissions
-
+<details>
+    <summary><strong>Control panel and permissions</strong></summary>
+    </br>
 Users with `staff` flag can enter the control panel at `/admin` and add feed entries, by default entries are not published.
 
 Users with `superadmin` flag will be notified by email when an entry is added to the feed and will be able to publish the entry.
 
 For content field, a hard limit on the number of characters allowed is configurable in administration page (Character limit configurations). If not set, max characters value for this field is 500. If you want to add a custom max characters for this field, the field name value should be `content`.
+</details>
 
-## Endpoint and accepted parameters
+
+<details>
+    <summary><strong>Endpoint and accepted parameters</strong></summary>
+    </br>
 
 The application has a single endpoint available at the web server root `/` the reponse is in JSON format.
 
@@ -156,8 +166,12 @@ When `lat` **and** `lon` are passed, the records that have a location filter set
 Accepted values: `ESPG:4326` latitude and longitude
 
 Example call: http://localhost:8000/?lat=44.5&lon=9.23
+</details>
 
-## Runing test cases
+
+<details>
+    <summary><strong>Runing test cases</strong></summary>
+    </br>
 Run test cases, from the `qgisfeedproject` directory:
 You can run unit tests using the following comands:
 ### Run all tests
@@ -181,11 +195,12 @@ For example, to run login test case using docker-compose:
 ```sh
 $ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/manage.py test qgisfeed.tests.LoginTestCase 
 ```
+</details>
 
 
-
-## Docker for testing
-
+<details>
+    <summary><strong>Docker for testing</strong></summary>
+    </br>
 For development purposes only, you can run this application in debug mode with docker compose:
 
 ```bash
@@ -199,9 +214,12 @@ To enter the control panel http://localhost:8000/admin, two test users are avail
 
 - Super Admin: the credentials are `admin`/`admin`
 - Staff (News Entry Author): the credentials are `staff`/`staff`
+</details>
 
-## Docker for production
 
+<details>
+    <summary><strong>Docker for production</strong></summary>
+    </br>
 For production, you can run this application  with docker compose:
 
 Docker configuration should be present in `.env` file in the main directory,
@@ -262,8 +280,11 @@ nginx -s reload
 
 5. To enable a cronjob to automatically renew ssl cert, add `scripts/renew_ssl.sh` to crontab file.
 
+</details>
 
-## Troubleshooting SSL in production
+<details>
+    <summary><strong>Troubleshooting SSL in production</strong></summary>
+    </br>
 
 Sometimes it seems our cron does not refresh the certificate. We can fix like this:
 
@@ -288,7 +309,11 @@ docker-compose -f docker-compose-production-ssl.yml restart nginx
 
 Now check if your browser is showing the site opening with no SSL errors: https://feed.qgis.org
 
-## Backups
+</details>
+
+<details>
+    <summary><strong>Backups</strong></summary>
+    </br>
 
 If something goes terribly wrong, we keep 7 nights of backups on hetzner
 
@@ -296,7 +321,11 @@ If those are also not useful there are a collection of snapshot backups on hetzn
 
 Last resort: Tim makes backups to his local machine on a semi-regular basis.
 
-## Deploying on Rancher
+</details>
+
+<details>
+    <summary><strong>Deploying on Rancher</strong></summary>
+    </br>
 
 This repository contains a rancher template directory (the ``template`` folder in the root of the repo)
 which can be used to deploy this site onto a host using [Rancher](https://rancher.com). Currently ony Rancher v1.6 
@@ -304,7 +333,12 @@ which can be used to deploy this site onto a host using [Rancher](https://ranche
 
 This guide serves as a quick setup guide to spin up a one of our Rancher catalogue packages.
 
-## Prerequisites
+</details>
+
+
+<details>
+    <summary><strong>Prerequisites</strong></summary>
+    </br>
 
 This guide assumes that the following steps have been done:
 
@@ -365,3 +399,4 @@ QGIS-Feed listed there.
 
 Now you can add items from the QGIS catalogue to your stack.
 
+</details>
