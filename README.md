@@ -176,9 +176,9 @@ nginx -s reload
     <summary><strong>Home page</strong></summary>
     </br>
 
-A home page that displays feeds as they are rendered in QGIS is now available at the root of the web server '/'. Feeds are filterable using the fiter widget on the left side. You can directly pass the filter parameters in the url according to this section: [Available parameters for filters](####available-parameters-for-filters)
+A home page that displays feeds as they are rendered in QGIS is now available at the root of the web server `/`. Feeds are filterable using the filter widget on the left side. You can directly pass the filter parameters in the url according to the section **Available parameters for filters** in **Endpoint and accepted parameters**
 
-***Note: When calling the root url from QGIS, the response data is in JSON format. See the section [Response data for QGIS](###response-data-for-qgis) for more details.***
+***Note: When calling the root url from QGIS, the response data is in JSON format. See the section Response data for QGIS in the Endpoint and accepted parameters***
 </details>
 
 <details>
