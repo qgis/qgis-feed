@@ -74,7 +74,7 @@ class QgisFeedEntry(models.Model):
     title = models.CharField(_('Title'), max_length=255)
     image = ProcessedImageField([ResizeToFill(500, 354)], 'JPEG', {'quality': 60}, _('Image'),upload_to='feedimages/%Y/%m/%d/', height_field='image_height', width_field='image_width', max_length=None, blank=True, null=True, help_text=_('Landscape orientation, image will be cropped and scaled automatically to 500x354 px') )
     content = models.TextField()
-    url = models.URLField(_('URL'), max_length=200, help_text=_('URL for more information link'))
+    url = models.URLField(_('URL'), max_length=200, help_text=_('URL for more information link'), blank=True, null=True)
 
     # Auto fields
     author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, editable=False)

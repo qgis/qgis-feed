@@ -8,8 +8,9 @@
         max-width: 1200px;
     }
 
-    .box-container :hover {
+    .hoverable-preview:hover {
         cursor: pointer;
+        background: #d4d4d4  !important;
     }
 </style>
 {% endblock stylesheets %}
@@ -100,8 +101,14 @@
         <div class="column is-9">
             {% if data|length > 0 %}
                 {% for feed in data %}
-                <div class="form-preview columns has-background-light p-2 box-container has-text-dark mt-5"
+
+                {% if feed.url %}
+                <div class="box-container hoverable-preview form-preview columns has-background-light p-2 has-text-dark mt-5"
                     onclick="window.open('{{feed.url}}');">
+                {% else %}
+                <div class="box-container form-preview columns has-background-light p-2 has-text-dark mt-5">
+                {% endif %}
+                
                     <div class="column is-4 is-flex is-flex-direction-column is-align-items-center" name="imagePreview">
                         {% if feed.image %}
                         <img src="{{ feed.image }}" style="border-radius:20px;">

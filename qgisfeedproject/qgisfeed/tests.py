@@ -601,7 +601,6 @@ class FeedsItemFormTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         form = response.context['form']
         self.assertIn('title', form.errors, "This field is required.")
-        self.assertIn('url', form.errors, "This field is required.")
         self.assertIn('content', form.errors, "Ensure this value has at most 10 characters (it has 104).")
 
 
