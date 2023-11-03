@@ -30,9 +30,9 @@ class HomePageFilterForm(forms.Form):
 
     publish_from = forms.CharField(
         required=False,
-        widget=forms.DateTimeInput(
+        widget=forms.DateInput(
             attrs={
-                'type': 'datetime-local', 
+                'type': 'date', 
                 'class': 'input', 
                 }
             )

@@ -82,7 +82,7 @@ class QgisEntriesView(View):
             try:
                 filters['after'] = timezone.make_aware(
                     timezone.datetime.strptime(
-                        request.GET.get('publish_from'), "%Y-%m-%dT%H:%M"
+                        request.GET.get('publish_from'), "%Y-%m-%d"
                         )
                 )
             except ValueError:
