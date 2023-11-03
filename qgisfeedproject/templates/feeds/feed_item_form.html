@@ -23,10 +23,8 @@
        background-size: cover;">
 
     <div class="hero-body">
-        <div class="columns">
-            <div class="column is-1">
-            </div>
-            <div class="column is-5 is-align-items-center" style="display: flex">
+        <div class="columns is-justify-content-space-between">
+            <div class="column is-6 is-align-items-center" style="display: flex">
                 <div class="container has-text-left">
                     <p class="title hero-title pr-3">
                         {% if form.title.value %}
@@ -35,12 +33,9 @@
                         New feed item
                         {% endif %}
                     </p>
-                    <p class="subtitle is-size-2 hero-subtitle">
-
-                    </p>
                 </div>
             </div>
-            <div class="column is-5 is-justify-content-center" style="display: flex">
+            <div class="column is-6 is-justify-content-end" style="display: flex">
                 <figure class="image">
                     <img src="{% static "images/large-logo.svg" %}" style="width: 8vw">
                 </figure>
