@@ -252,7 +252,7 @@ class HomePageTestCase(TestCase):
             'lang': 'en',
             'lat': -19,
             'lon': 47,
-            'publish_from': '2023-12-31T11:30',
+            'publish_from': '2023-12-31',
         }
         response = self.client.get(reverse('all'), data)
 
