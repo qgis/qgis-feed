@@ -1,6 +1,6 @@
 <div id="form-review-modal" class="modal">
     <div class="modal-background"></div>
-    <div class="modal-card" style="width:60% !important">
+    <div class="modal-card" style="width:60% !important; max-height:80% !important;">
         <header class="modal-card-head">
             <p class="modal-card-title">Review changes</p>
             <button class="delete" aria-label="close"></button>
@@ -8,6 +8,17 @@
         <section class="modal-card-body">
             {% include 'feeds/feed_item_preview.html' %}
         </section>
+
+        {% if not published and user_is_approver and form.instance.pk %}
+        <div>
+            <p class="notification is-danger">
+                Please note: When you publish this item it will be cached on the QGIS client side. 
+                Any subsequent changes you make to this posting will not be propagated to clients 
+                that have already cached this post. So double check everything one more time before 
+                publishing please!
+            </p>
+        </div>
+        {% endif %}
         <footer class="modal-card-foot is-justify-content-flex-end">
             <button class="button">
                 <span class="icon">
