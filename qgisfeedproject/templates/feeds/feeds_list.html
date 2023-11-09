@@ -20,20 +20,15 @@ style="background: url({% static "images/banner4.png" %});
 >
 
     <div class="hero-body">
-        <div class="columns">
-            <div class="column is-1">
-            </div>
-            <div class="column is-5 is-align-items-center" style="display: flex">
+        <div class="columns is-justify-content-space-between">
+            <div class="column is-6 is-align-items-center" style="display: flex">
                 <div class="container has-text-left">
                     <p class="title hero-title pr-3">
                         QGIS Feed
                     </p>
-                    <p class="subtitle is-size-2 hero-subtitle">
-                        
-                    </p>
                 </div>
             </div>
-            <div class="column is-5 is-justify-content-center" style="display: flex">
+            <div class="column is-6 is-justify-content-end" style="display: flex">
                 <figure class="image">
                     <img src="{% static "images/large-logo.svg" %}" style="width: 8vw">
                 </figure>
@@ -51,7 +46,7 @@ style="background: url({% static "images/banner4.png" %});
                 value="add" 
                 onclick="window.location.href='{% url 'feed_entry_add'%}';"
             >
-                Add an entry <i class="fa fa-plus" aria-hidden="true"></i>
+                New feed item <i class="fa fa-plus" aria-hidden="true"></i>
             </button>
             <hr/>
           {% endif %}
@@ -79,7 +74,7 @@ style="background: url({% static "images/banner4.png" %});
                 
                 <div class="field">
                     <label class="label">Language filter:</label>
-                  <div class="select">
+                  <div class="select is-fullwidth">
                     {{form.language_filter}}
                   </div>
                 </div>
@@ -109,7 +104,7 @@ style="background: url({% static "images/banner4.png" %});
                     <label class="label">
                       Need review:
                     </label>
-                    <div class="select">
+                    <div class="select is-fullwidth">
                       {{form.need_review}}
                     </div>
                   </div>

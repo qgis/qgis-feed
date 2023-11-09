@@ -23,24 +23,19 @@
        background-size: cover;">
 
     <div class="hero-body">
-        <div class="columns">
-            <div class="column is-1">
-            </div>
-            <div class="column is-5 is-align-items-center" style="display: flex">
+        <div class="columns is-justify-content-space-between">
+            <div class="column is-6 is-align-items-center" style="display: flex">
                 <div class="container has-text-left">
                     <p class="title hero-title pr-3">
                         {% if form.title.value %}
-                        Edit an entry
+                        Edit feed item
                         {% else %}
-                        Add an entry
+                        New feed item
                         {% endif %}
-                    </p>
-                    <p class="subtitle is-size-2 hero-subtitle">
-
                     </p>
                 </div>
             </div>
-            <div class="column is-5 is-justify-content-center" style="display: flex">
+            <div class="column is-6 is-justify-content-end" style="display: flex">
                 <figure class="image">
                     <img src="{% static "images/large-logo.svg" %}" style="width: 8vw">
                 </figure>
@@ -63,24 +58,40 @@
     </div>
     <div class="columns">
         <div class="column is-6 is-flex is-justify-content-end">
-            <button id="formConfirmationBtn" class="button is-block is-success js-modal-trigger" data-target="form-review-modal">
-                {% if published %}
-                    <span class="icon">
-                        <i class="fa fa-floppy-disk" aria-hidden="true"></i>
-                    </span>
-                    <span>Save changes</span>
-                {% elif not published and user_is_approver and form.instance.pk %}
-                    <span class="icon">
-                        <i class="fa fa-check" aria-hidden="true"></i>
-                    </span>
-                    <span>Approve and publish</span>
-                {% else %}
-                    <span class="icon">
-                        <i class="fa fa-floppy-disk" aria-hidden="true"></i>
-                    </span>
-                    <span>Submit for review</span>
+            <div class="columns">
+                {% if not published and user_is_approver and form.instance.pk %}
+                <div class="column is-5">
+                    <button id="formConfirmationBtn" class="button is-block is-info" type="submit" form="feedItemForm">
+                        <span class="icon">
+                            <i class="fa fa-floppy-disk" aria-hidden="true"></i>
+                        </span>
+                        <span>Save changes</span>
+                    </button>
+                </div>
                 {% endif %}
-            </button>
+
+                <div class="column is-7">
+                    <button id="formConfirmationBtn" class="button is-block is-success js-modal-trigger"
+                        data-target="form-review-modal">
+                        {% if published %}
+                        <span class="icon">
+                            <i class="fa fa-floppy-disk" aria-hidden="true"></i>
+                        </span>
+                        <span>Save changes</span>
+                        {% elif not published and user_is_approver and form.instance.pk %}
+                        <span class="icon">
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                        </span>
+                        <span>Approve and publish</span>
+                        {% else %}
+                        <span class="icon">
+                            <i class="fa fa-floppy-disk" aria-hidden="true"></i>
+                        </span>
+                        <span>Submit for review</span>
+                        {% endif %}
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -100,28 +111,29 @@
         toolbar: "undo redo | bold italic | searchreplace | code preview ",
         valid_elements: "p,strong,i",
         formats: {
-          italic: { inline: 'i' }
+            italic: {
+                inline: 'i'
+            }
         },
         setup: function (editor) {
             editor.on('change', function () {
                 // Update content in preview when change
                 const content = editor.getContent();
                 contentPreview.forEach((item) => {
-                item.innerHTML = content;
+                    item.innerHTML = content;
                 });
                 tinymce.triggerSave();
-        
+
             });
             editor.on('input', function () {
                 // Update content in preview when input change
                 const content = editor.getContent();
                 contentPreview.forEach((item) => {
-                item.innerHTML = content;
+                    item.innerHTML = content;
                 });
                 tinymce.triggerSave();
             });
         }
     });
-  
 </script>
 {% endblock javascripts %}

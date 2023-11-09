@@ -5,9 +5,43 @@ from .models import CharacterLimitConfiguration, QgisFeedEntry
 from .languages import LANGUAGES
 from django.utils import timezone
 
+class HomePageFilterForm(forms.Form):
+    """
+    Form for feed entry filter on the home page
+    """
+    empty_lang = ('', 'Select a language')
+    LANG_CHOICES = (empty_lang,) + LANGUAGES
+
+    lang = forms.ChoiceField(
+        choices=LANG_CHOICES,
+        required=False, 
+        widget=forms.Select()
+    )
+
+    lat = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={'class': 'input', 'placeholder': 'Latitude'})
+    )
+
+    lon = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(attrs={'class': 'input', 'placeholder': 'Longitude'})
+    )
+
+    publish_from = forms.CharField(
+        required=False,
+        widget=forms.DateInput(
+            attrs={
+                'type': 'date', 
+                'class': 'input', 
+                }
+            )
+    )
+
+
 class FeedEntryFilterForm(forms.Form):
     """
-    Form for feed entry filter
+    Form for feed entry filter on the feed list
     """
     empty_lang = ('', 'Select a language')
     LANG_CHOICES = (empty_lang,) + LANGUAGES

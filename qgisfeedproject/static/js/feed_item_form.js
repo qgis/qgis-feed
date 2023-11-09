@@ -161,25 +161,26 @@ publishToField.addEventListener("change", function () {
 
 function isURLValid(url) {
   // Regular expression to match a URL
-  const urlPattern = /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/\S*)?$/i;
-  const isValid = urlPattern.test(url);
-
+  let isValid = true // We return this if the value is empty
+  if (url != '') {
+    const urlPattern = /^(https?:\/\/)[\w.-]+\.[a-z]{2,}(\/\S*)?$/i;
+    isValid = urlPattern.test(url);
+  }
   urlError.innerText = isValid ? "" : "This URL is not valid.";
   urlField.classList.toggle("is-success", isValid);
   urlField.classList.toggle("is-danger", !isValid);
-
   return isValid;
 }
 
 
 function checkFormValid() {
-
+  const isURLValueValid = isURLValid(urlField.value);
   const isFormValid = fields.every((field) => {
     const isFieldRequired = field.hasAttribute("required");
     const value = field.value;
     return !isFieldRequired || value; // Field is not required or has a value
   });
-  formConfirmationBtn.disabled = !isFormValid || !isURLValid(urlField.value);
+  formConfirmationBtn.disabled = !isFormValid || !isURLValueValid
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -188,7 +189,6 @@ document.addEventListener("DOMContentLoaded", () => {
   refreshDates();
   isURLValid(urlField.value);
   checkFormValid();
-
   // Functions to open and close the review modal
   function openModal($el) {
     $el.classList.add("is-active");

@@ -28,7 +28,7 @@ from django.utils.decorators import method_decorator
 from django.db import transaction
 from django.contrib.auth.models import User
 
-from .forms import FeedEntryFilterForm, FeedItemForm
+from .forms import FeedEntryFilterForm, FeedItemForm, HomePageFilterForm
 from .utils import notify_admin
 from .models import QgisFeedEntry
 from .languages import LANGUAGE_KEYS
@@ -53,6 +53,9 @@ class QgisEntriesView(View):
     - lang=[2 letter iso code for the language]
     """
 
+    form_class = HomePageFilterForm
+    template_name = 'feeds/feed_home_page.html'
+
     def get_filters(self, request):
         """Extract filters from the request and checks validity
 
@@ -62,27 +65,41 @@ class QgisEntriesView(View):
         :rtype: dict
         """
         filters = {}
-        if request.GET.get('lang') is not None:
+        if request.GET.get('lang'):
             lang = request.GET.get('lang')
             if not lang in LANGUAGE_KEYS:
                 raise BadRequestException("Invalid language parameter.")
             filters['lang'] = lang
-        if request.GET.get('lat') is not None and request.GET.get('lon') is not None:
+        if request.GET.get('lat') and request.GET.get('lon'):
             try:
                 location = 'point(%s %s)' % (request.GET.get('lon'), request.GET.get('lat'))
                 GEOSGeometry(location)
                 filters['location'] = location
             except ValueError:
                 raise BadRequestException("Invalid lat/lon parameters.")
+            
+        if request.GET.get('publish_from'):
+            try:
+                filters['after'] = timezone.make_aware(
+                    timezone.datetime.strptime(
+                        request.GET.get('publish_from'), "%Y-%m-%d"
+                        )
+                )
+            except ValueError:
+                raise BadRequestException("Invalid after parameter.")
+            
         if request.GET.get('after') is not None:
             try:
                 filters['after'] = timezone.make_aware(timezone.datetime.fromtimestamp(float(request.GET.get('after'))))
             except ValueError:
                 raise BadRequestException("Invalid after parameter.")
+            
+        
         return filters
 
 
     def get(self, request):
+        form = self.form_class(request.GET)
         data = []
         qs = QgisFeedEntry.published_entries.all()
 
@@ -110,7 +127,16 @@ class QgisEntriesView(View):
                 record['image'] = request.build_absolute_uri(settings.MEDIA_URL + record['image'])
             data.append(record)
 
-        return HttpResponse(json.dumps(data, indent=(2 if settings.DEBUG else 0)),content_type='application/json')
+
+        user_agent = request.META.get('HTTP_USER_AGENT')
+        if "qgis" in str(user_agent).lower():
+            return HttpResponse(json.dumps(data, indent=(2 if settings.DEBUG else 0)),content_type='application/json')
+        else:
+            args = {
+                "data": data,
+                "form": form
+            }
+            return render(request, self.template_name, args)
 
 @method_decorator(staff_required, name='dispatch')
 @method_decorator(permission_required('qgisfeed.view_qgisfeedentry'), name='dispatch')
