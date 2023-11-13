@@ -1,6 +1,7 @@
-FROM python:3
+FROM python:3.8-slim
+
 ENV PYTHONUNBUFFERED 1
-RUN apt-get update && apt install -y libgdal20 wait-for-it
+RUN apt-get update && apt install -y libgdal32 wait-for-it
 RUN mkdir /code
 WORKDIR /code
 COPY REQUIREMENTS.txt /code/
