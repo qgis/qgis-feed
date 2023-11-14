@@ -1,4 +1,4 @@
 -r REQUIREMENTS.txt
 
 # For production only
-gunicorn
+gunicorn==19.9.0
