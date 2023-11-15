@@ -1,7 +1,11 @@
-FROM python:3.8-slim
-
+FROM python:3
 ENV PYTHONUNBUFFERED 1
-RUN apt-get update && apt install -y libgdal32 wait-for-it
+
+RUN echo "Installing GDAL dependencies" && \
+    apt-get update && apt install -y libgdal20 wait-for-it && \
+    echo "Install C library for geoip2" && \
+    apt-get install -y libmaxminddb0 libmaxminddb-dev mmdb-bin
+
 RUN mkdir /code
 WORKDIR /code
 COPY REQUIREMENTS.txt /code/
@@ -17,3 +21,5 @@ COPY . /code/
 RUN npm install -g npm@10.2.1 && npm install -g webpack@5.89.0 && npm install -g webpack-cli@5.1.4 && npm install
 COPY ./settings_docker_production.py /code/qgisfeedproject/qgisfeedproject/settings_local.py
 COPY ./entrypoint_production.sh /code/
+
+ENV GEOIP_PATH=/var/opt/maxmind/
