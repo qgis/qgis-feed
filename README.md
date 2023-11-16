@@ -8,7 +8,7 @@ This application is the backend part that manages and serves news for the QGIS w
 <details>
     <summary><strong>Installation</strong></summary>
     </br>
-    
+
 - create a virtual env
 
     `$ virtualenv qgisfeedvenv`
@@ -29,7 +29,8 @@ This application is the backend part that manages and serves news for the QGIS w
 
     `$ psql qgisfeed -c 'CREATE EXTENSION postgis;'`
 
-- create `settings_local.py` and put your DB configuration as in the example below:
+- create `settings_local.py` int the `qgisfeedproject` directory
+  and put your DB configuration as in the example below:
 
     ```python
     DATABASES = {
@@ -61,7 +62,7 @@ This application is the backend part that manages and serves news for the QGIS w
 $ npm install
 $ npm run build
 # If you want to run the webpack server
-$ npx webpack --config webpack.config.js --watch 
+$ npx webpack --config webpack.config.js --watch
 ```
 </details>
 
@@ -184,7 +185,7 @@ A home page that displays feeds as they are rendered in QGIS is now available at
 <details>
     <summary><strong>Control panel and permissions</strong></summary>
     </br>
-    
+
 Users with `staff` flag can enter the control panel at `/admin` and add feed entries, by default entries are not published.
 
 Users with `superadmin` flag will be notified by email when an entry is added to the feed and will be able to publish the entry.
@@ -217,7 +218,7 @@ The feed item form page is displayed when clicking the **New feed** item button 
 - In the content widget only the following html tags are allowed: p, strong, italics. A hard limit on the number of characters allowed is configurable in administration page in the model `Character limit configurations`.
 - Once a feed item is created or modified, there will be a review step where the user is asked to confirm that they have checked everything carefully.
 - The form is placed in the column **Need review** in the list before final submission.
-- The form must be approved by someone the permission `qgisfeed | Can publish QGIS feed` before it is published. 
+- The form must be approved by someone the permission `qgisfeed | Can publish QGIS feed` before it is published.
 
 </details>
 
@@ -300,9 +301,9 @@ Example call: http://localhost:8000/?lat=44.5&lon=9.23
     <summary><strong>Run all tests</strong></summary>
     </br>
 
-To run all tests cases in the qgisfeed app:
+To run all tests cases in the qgisfeed app, from the main directory:
 ```sh
-$ python manage.py test qgisfeed
+$  python3 qgisfeedproject/manage.py test qgisfeed
 ```
 </details>
 
@@ -329,7 +330,7 @@ $ python manage.py test qgisfeed.tests.FeedsListViewTestCase
 If you are using docker, you can run tests by adding `docker-compose -f <docker-compose-file> exec <service-name>` before the command.
 For example, to run login test case using docker-compose:
 ```sh
-$ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/manage.py test qgisfeed.tests.LoginTestCase 
+$ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/manage.py test qgisfeed.tests.LoginTestCase
 ```
 </details>
 
@@ -381,7 +382,7 @@ Last resort: Tim makes backups to his local machine on a semi-regular basis.
     </br>
 
 This repository contains a rancher template directory (the ``template`` folder in the root of the repo)
-which can be used to deploy this site onto a host using [Rancher](https://rancher.com). Currently ony Rancher v1.6 
+which can be used to deploy this site onto a host using [Rancher](https://rancher.com). Currently ony Rancher v1.6
 (i.e. not v2) is supported.
 
 This guide serves as a quick setup guide to spin up a one of our Rancher catalogue packages.
@@ -420,7 +421,7 @@ url>/settings/env/add``.
 4. **Set up the Hetzner Machine Driver**: This only applies if you are using
 Hetzner Cloud as your hosting provider. You can automatically manage and deploy
 hosts on Hetzner using the Admin -> Machine Drivers menu and then enable the
-Hetzner driver.  
+Hetzner driver.
 
 5. **Add a host:** You need to add a host to the environment has been set up to
 actually run the instance (the agent could be on the same host as the rancher
@@ -445,8 +446,8 @@ Rancher catalogue using this URL:
 
 https://github.com/qgis/qgis-feed
 
-Once your settings are saved open a Rancher environment and set up a 
-stack from the catalogue's 'QGIS' section - you will see 
+Once your settings are saved open a Rancher environment and set up a
+stack from the catalogue's 'QGIS' section - you will see
 QGIS-Feed listed there.
 
 

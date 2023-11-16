@@ -24,6 +24,7 @@ from django.urls import reverse
 from django.contrib.gis.geos import Polygon
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
+from django.db import connection
 
 from .models import (
     CharacterLimitConfiguration, QgisFeedEntry, QgisUserVisit, DailyQgisUserVisit, aggregate_user_visit_data
@@ -147,6 +148,23 @@ class QgisFeedEntryTestCase(TestCase):
         titles = [d['title'] for d in data]
         self.assertFalse("Null Island QGIS Meeting" in titles)
         self.assertTrue("QGIS Italian Meeting" in titles)
+
+        # Check that an updated entry is added to the feed even if
+        # expired, but only with QGIS >= 3.36
+        with connection.cursor() as cursor:
+            cursor.execute("UPDATE qgisfeed_qgisfeedentry SET publish_to='2019-04-09', modified = '2019-05-10', title='Null Island QGIS Hackfest' WHERE title='Null Island QGIS Meeting'")
+
+        response = c.get('/?after=%s' % timezone.datetime(2019, 5, 9).timestamp())
+        titles = [d['title'] for d in data]
+        self.assertFalse("Null Island QGIS Meeting" in titles)
+
+        c = Client(HTTP_USER_AGENT='Mozilla/5.0 QGIS/33600/Fedora '
+                                   'Linux (Workstation Edition)')
+        response = c.get('/?after=%s' % timezone.datetime(2019, 5, 9).timestamp())
+        data = json.loads(response.content)
+        null_island = [d for d in data if d['title'] == "Null Island QGIS Hackfest"][0]
+        self.assertTrue(timezone.datetime(2019, 5, 9).timestamp() > null_island['publish_to'])
+
 
     def test_invalid_parameters(self):
         c = Client(HTTP_USER_AGENT='Mozilla/5.0 QGIS/32400/Fedora '
@@ -349,7 +367,7 @@ class FeedsListViewTestCase(TestCase):
         # Check if the user is redirected to the login page
         self.assertRedirects(response, reverse('login') + '?next=' + reverse('feeds_list'))
 
-    
+
     def test_nonstaff_user_redirect_to_login(self):
         user = User.objects.create_user(username='testuser', password='testpassword')
         self.client.login(username='testuser', password='testpassword')
@@ -423,7 +441,7 @@ class FeedsItemFormTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('login') + '?next=' + reverse('feed_entry_update', args=[3]))
         self.assertIsNone(response.context)
-    
+
     def test_nonstaff_user_redirect_to_login(self):
         user = User.objects.create_user(username='testuser', password='testpassword')
         self.client.login(username='testuser', password='testpassword')
@@ -447,15 +465,15 @@ class FeedsItemFormTestCase(TestCase):
         image_path = join(settings.MEDIA_ROOT, "feedimages", "rust.png")
 
         post_data = {
-            'title': 'QGIS core will be rewritten in Rust', 
-            'image': open(image_path, "rb"), 
-            'content': '<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>Rust</strong>', 
-            'url': 'https://www.null.com', 
-            'sticky': False, 
-            'sorting': 0, 
-            'language_filter': 'en', 
-            'spatial_filter': str(spatial_filter), 
-            'publish_from': '2023-10-18 14:46:00+00', 
+            'title': 'QGIS core will be rewritten in Rust',
+            'image': open(image_path, "rb"),
+            'content': '<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>Rust</strong>',
+            'url': 'https://www.null.com',
+            'sticky': False,
+            'sorting': 0,
+            'language_filter': 'en',
+            'spatial_filter': str(spatial_filter),
+            'publish_from': '2023-10-18 14:46:00+00',
             'publish_to': '2023-10-29 14:46:00+00'
         }
 
@@ -471,23 +489,23 @@ class FeedsItemFormTestCase(TestCase):
         image_path = join(settings.MEDIA_ROOT, "feedimages", "rust.png")
 
         post_data = {
-            'title': 'QGIS core will be rewritten in Rust', 
+            'title': 'QGIS core will be rewritten in Rust',
             'image': open(image_path, "rb"),
-            'content': '<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>Rust</strong>', 
-            'url': 'https://www.null.com', 
-            'sticky': False, 
-            'sorting': 0, 
-            'language_filter': 'en', 
+            'content': '<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>Rust</strong>',
+            'url': 'https://www.null.com',
+            'sticky': False,
+            'sorting': 0,
+            'language_filter': 'en',
             'spatial_filter': str(spatial_filter),
-            'publish_from': '2023-10-18 14:46:00+00', 
+            'publish_from': '2023-10-18 14:46:00+00',
             'publish_to': '2023-10-29 14:46:00+00'
         }
-        
+
         response = self.client.post(reverse('feed_entry_update', args=[3]), data=post_data)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('feeds_list'))
 
-    
+
     def test_not_allowed_user_update_feed(self):
         # Update a feed entry with a non allowed user
         self.client.login(username='staff', password='staff')
@@ -495,18 +513,18 @@ class FeedsItemFormTestCase(TestCase):
         image_path = join(settings.MEDIA_ROOT, "feedimages", "rust.png")
 
         post_data = {
-            'title': 'QGIS core will be rewritten in Rust', 
+            'title': 'QGIS core will be rewritten in Rust',
             'image': open(image_path, "rb"),
-            'content': '<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>Rust</strong>', 
-            'url': 'https://www.null.com', 
-            'sticky': False, 
-            'sorting': 0, 
-            'language_filter': 'en', 
+            'content': '<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>Rust</strong>',
+            'url': 'https://www.null.com',
+            'sticky': False,
+            'sorting': 0,
+            'language_filter': 'en',
             'spatial_filter': str(spatial_filter),
-            'publish_from': '2023-10-18 14:46:00+00', 
+            'publish_from': '2023-10-18 14:46:00+00',
             'publish_to': '2023-10-29 14:46:00+00',
         }
-        
+
         response = self.client.post(reverse('feed_entry_update', args=[7]), data=post_data)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('login') + '?next=' + reverse('feed_entry_update', args=[7]))
@@ -519,26 +537,26 @@ class FeedsItemFormTestCase(TestCase):
         image_path = join(settings.MEDIA_ROOT, "feedimages", "rust.png")
 
         post_data = {
-            'title': 'QGIS core will be rewritten in Rust', 
+            'title': 'QGIS core will be rewritten in Rust',
             'image': open(image_path, "rb"),
-            'content': '<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>Rust</strong>', 
-            'url': 'https://www.null.com', 
-            'sticky': False, 
-            'sorting': 0, 
-            'language_filter': 'en', 
+            'content': '<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>Rust</strong>',
+            'url': 'https://www.null.com',
+            'sticky': False,
+            'sorting': 0,
+            'language_filter': 'en',
             'spatial_filter': str(spatial_filter),
-            'publish_from': '2023-10-18 14:46:00+00', 
+            'publish_from': '2023-10-18 14:46:00+00',
             'publish_to': '2023-10-29 14:46:00+00',
             'publish': 'true'
         }
-        
+
         response = self.client.post(reverse('feed_entry_update', args=[7]), data=post_data)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('feeds_list'))
 
         updated_data = QgisFeedEntry.objects.get(pk=7)
         self.assertTrue(updated_data.published)
-    
+
     def test_allowed_staff_publish_feed(self):
         # Update a feed entry with an allowed staff user
         user = User.objects.get(username='staff')
@@ -551,27 +569,27 @@ class FeedsItemFormTestCase(TestCase):
         image_path = join(settings.MEDIA_ROOT, "feedimages", "rust.png")
 
         post_data = {
-            'title': 'QGIS core will be rewritten in Rust', 
+            'title': 'QGIS core will be rewritten in Rust',
             'image': open(image_path, "rb"),
-            'content': '<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>Rust</strong>', 
-            'url': 'https://www.null.com', 
-            'sticky': False, 
-            'sorting': 0, 
-            'language_filter': 'en', 
+            'content': '<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>Rust</strong>',
+            'url': 'https://www.null.com',
+            'sticky': False,
+            'sorting': 0,
+            'language_filter': 'en',
             'spatial_filter': str(spatial_filter),
-            'publish_from': '2023-10-18 14:46:00+00', 
+            'publish_from': '2023-10-18 14:46:00+00',
             'publish_to': '2023-10-29 14:46:00+00',
             'publish': 'true'
         }
-        
+
         response = self.client.post(reverse('feed_entry_update', args=[7]), data=post_data)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('feeds_list'))
 
         updated_data = QgisFeedEntry.objects.get(pk=7)
         self.assertTrue(updated_data.published)
-    
-    
+
+
     def test_authenticated_user_add_invalid_data(self):
         # Add a feed entry that contains invalid data
         self.client.login(username='staff', password='staff')
@@ -585,15 +603,15 @@ class FeedsItemFormTestCase(TestCase):
         )
 
         post_data = {
-            'title': '', 
-            'image': open(image_path, "rb"), 
-            'content': '<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>Rust</strong>', 
-            'url': '', 
-            'sticky': False, 
-            'sorting': 0, 
-            'language_filter': 'en', 
-            'spatial_filter': str(spatial_filter), 
-            'publish_from': '', 
+            'title': '',
+            'image': open(image_path, "rb"),
+            'content': '<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>Rust</strong>',
+            'url': '',
+            'sticky': False,
+            'sorting': 0,
+            'language_filter': 'en',
+            'spatial_filter': str(spatial_filter),
+            'publish_from': '',
             'publish_to': ''
         }
 
