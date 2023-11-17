@@ -174,3 +174,14 @@ WEBPACK_LOADER = {
         'STATS_FILE': os.path.join(os.path.dirname(BASE_DIR), 'webpack-stats.json'),
     }
 }
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "file": {
+            "class": "logging.FileHandler",
+            "filename": "django.log",
+        },
+    },
+}
