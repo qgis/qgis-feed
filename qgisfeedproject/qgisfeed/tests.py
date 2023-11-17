@@ -299,7 +299,7 @@ class QgisUserVisitTestCase(TestCase):
         daily_visit = DailyQgisUserVisit.objects.first()
         self.assertTrue(daily_visit.platform['Windows 10'] == 1)
         self.assertTrue(daily_visit.qgis_version['32400'] == 2)
-        self.assertTrue(daily_visit.country['Indonesia'] == 3)
+        self.assertTrue(daily_visit.country['ID'] == 3)
 
 
 class LoginTestCase(TestCase):
