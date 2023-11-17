@@ -53,7 +53,7 @@ class CharacterLimitConfiguration(models.Model):
 
     def __str__(self):
         return self.field_name
-    
+
 
 class ConfigurableCharField(models.CharField):
     """
@@ -82,8 +82,8 @@ class QgisFeedEntry(models.Model):
     author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, editable=False)
     image_height = models.IntegerField(_('Image height'), blank=True, null=True, editable=False)
     image_width = models.IntegerField(_('Image width'), blank=True, null=True, editable=False)
-    created = models.DateField(_('Creation date'), auto_now=False, auto_now_add=True, editable=False)
-    modified = models.DateField(_('Modification date'), auto_now=True, editable=False)
+    created = models.DateTimeField(_('Creation date'), auto_now=False, auto_now_add=True, editable=False)
+    modified = models.DateTimeField(_('Modification date'), auto_now=True, editable=False, db_index=True)
 
     # Options
     published = models.BooleanField(_('Published'), default=False, db_index=True)
@@ -96,7 +96,7 @@ class QgisFeedEntry(models.Model):
 
     # Dates
     publish_from = models.DateTimeField(_('Publication start'), auto_now=False, auto_now_add=False, blank=True, null=True, db_index=True)
-    publish_to = models.DateTimeField(_('Publication end'), auto_now=False, auto_now_add=False, blank=True, null=True, db_index=True)
+    publish_to = models.DateTimeField(_('Publication end'), auto_now=False, auto_now_add=False, blank=True, null=True, db_index=True, help_text=_('The entry will be hidden to users after this date. You can set this in the past to temove the entry from the users listing.'))
 
     # Managers
     objects = models.Manager()
@@ -136,7 +136,7 @@ class QgisFeedEntry(models.Model):
             content_max_length = config.max_characters
         except CharacterLimitConfiguration.DoesNotExist:
             content_max_length = 500
-        
+
         if len(self.content) > content_max_length:
             raise ValidationError(
                 f"Ensure content value has at most {str(content_max_length)} characters (it has {str(len(self.content))})."
@@ -146,7 +146,7 @@ class QgisFeedEntry(models.Model):
 
 
 class QgisUserVisit(models.Model):
-    
+
     user_visit = models.OneToOneField(
         UserVisit,
         on_delete=models.CASCADE,

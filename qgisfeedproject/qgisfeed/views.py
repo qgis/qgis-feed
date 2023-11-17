@@ -77,7 +77,7 @@ class QgisEntriesView(View):
                 filters['location'] = location
             except ValueError:
                 raise BadRequestException("Invalid lat/lon parameters.")
-            
+
         if request.GET.get('publish_from'):
             try:
                 filters['after'] = timezone.make_aware(
@@ -87,36 +87,63 @@ class QgisEntriesView(View):
                 )
             except ValueError:
                 raise BadRequestException("Invalid after parameter.")
-            
+
         if request.GET.get('after') is not None:
             try:
                 filters['after'] = timezone.make_aware(timezone.datetime.fromtimestamp(float(request.GET.get('after'))))
             except ValueError:
                 raise BadRequestException("Invalid after parameter.")
-            
-        
+
+
         return filters
 
 
     def get(self, request):
         form = self.form_class(request.GET)
         data = []
-        qs = QgisFeedEntry.published_entries.all()
 
         try:
             filters = self.get_filters(request)
         except BadRequestException as ex:
             return HttpResponseBadRequest("%s" % ex)
 
-        # Get filters for lang and lat/lon and after
+        user_agent = request.META.get('HTTP_USER_AGENT')
+        qgis_version = None
+        if "QGIS/" in str(user_agent):
+            try:
+                qgis_pos = user_agent.find('QGIS/')
+                if qgis_pos >= 0:
+                    qgis_version = int(int(user_agent[qgis_pos + 5: qgis_pos + 10]))
+            except ValueError:
+                pass
+
+        # "after" is only set by QGIS client on requests after the first one.
+        # The logic here is for QGIS >= 3.36 to send anything "published=True"
+        # that has been modified since the last feed check, we also need to
+        # send expired items because setting the "publish_to" publication end
+        # time in the past is the way to remove them from the cient cache and
+        # because entries might have been updated.
+        # For older QGIS < 3.36 we only send published items, optionally filtered
+        # by >= `after`.
+
+        after = filters.get('after')
+        if after is None:
+            qs = QgisFeedEntry.published_entries.all()
+        else:
+            # For update capabilities require QGIS >= 3.36
+            if qgis_version is None or qgis_version < 33600:
+                qs = QgisFeedEntry.published_entries.all()
+                qs = qs.filter(publish_from__gte=filters.get('after'))
+            else:  # fallback to original behavior for QGIS < 3.36
+                qs = QgisFeedEntry.objects.all()
+                qs = qs.filter(modified__gte=after, published=True)
+
+        # Get filters for lang and lat/lon
         if filters.get('lang') is not None:
             qs = qs.filter(Q(language_filter__isnull=True) | Q(language_filter=filters.get('lang')))
 
         if filters.get('location') is not None:
             qs = qs.filter(spatial_filter__contains=filters.get('location'))
-
-        if filters.get('after') is not None:
-            qs = qs.filter(publish_from__gte=filters.get('after'))
 
         for record in qs.values('pk', 'publish_from', 'publish_to', 'title','image', 'content', 'url', 'sticky')[:QGISFEED_MAX_RECORDS]:
             if record['publish_from']:
@@ -128,8 +155,7 @@ class QgisEntriesView(View):
             data.append(record)
 
 
-        user_agent = request.META.get('HTTP_USER_AGENT')
-        if "qgis" in str(user_agent).lower():
+        if "qgis" in str(user_agent).lower() or request.GET.get('json', '') == '1':
             return HttpResponse(json.dumps(data, indent=(2 if settings.DEBUG else 0)),content_type='application/json')
         else:
             args = {
@@ -285,7 +311,7 @@ class FeedEntryAddView(View):
         }
 
         return render(request, self.template_name, args)
-    
+
 @method_decorator(staff_required, name='dispatch')
 @method_decorator(permission_required('qgisfeed.change_qgisfeedentry'), name='dispatch')
 class FeedEntryUpdateView(View):
