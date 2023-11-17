@@ -1,0 +1,140 @@
+{% extends 'layouts/base-fullscreen.html' %}
+{% block title %} QGIS Home Page News Feed {% endblock title %} {% load static %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<style>
+    .box-container {
+        max-width: 1200px;
+    }
+
+    .hoverable-preview:hover {
+        cursor: pointer;
+        background: #d4d4d4  !important;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<section class="hero is-dark is-small has-bg-img" style="background: url({% static "images/banner4.png" %});
+       background-position: center;
+       background-size: cover;">
+
+       <div class="hero-body">
+        <div class="columns is-justify-content-space-between">
+            <div class="column is-6 is-align-items-center" style="display: flex">
+                <div class="container has-text-left">
+                    <p class="title hero-title pr-3">
+                        QGIS Feed
+                    </p>
+                </div>
+            </div>
+            <div class="column is-6 is-justify-content-end" style="display: flex">
+                <figure class="image">
+                    <img src="{% static "images/large-logo.svg" %}" style="width: 8vw">
+                </figure>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="section is-flex is-flex-direction-column is-align-items-center">
+    <div class="columns" style="width:100%;">
+        <div class="column is-3">
+            <div class="box has-background-light box-container mt-5">
+                <h5 class="title is-5">Filter by</h5>
+                <form method="GET">
+                    <div class="field">
+                        <label class="label">Language filter:</label>
+                        <div class="select is-fullwidth">
+                            {{form.lang}}
+                        </div>
+                    </div>
+    
+                    <div class="field">
+                        <label class="label">Latitude:</label>
+                        <div class="control has-icons-left">
+                            {{form.lat}}
+                            <span class="icon is-small is-left">
+                              <i class="fas fa-map-pin"></i>
+                            </span>
+                        </div>
+                    </div>
+    
+                    <div class="field">
+                        <label class="label">Longitude:</label>
+                        <div class="control has-icons-left">
+                            {{form.lon}}
+                            <span class="icon is-small is-left">
+                              <i class="fas fa-map-pin"></i>
+                            </span>
+                        </div>
+                    </div>
+    
+                    <div class="field">
+                        <label class="label">Date published from:</label>
+                        <div class="control has-icons-left">
+                          {{form.publish_from}}
+                          <span class="icon is-small is-left">
+                            <i class="fas fa-calendar"></i>
+                          </span>
+                        </div>
+                      </div>
+                      <button 
+                          class="button is-block is-info is-fullwidth"
+                          type="submit" 
+                          value="filter" 
+                          id="submit-button"
+                      >
+                          Filter <i class="fa fa-filter" aria-hidden="true"></i>
+                      </button>
+                      <button 
+                          type="button"
+                          class="button is-block is-danger is-fullwidth mt-2"
+                          value="clear" 
+                          onclick="window.location.href='?';"
+                      >
+                          Clear filter <i class="fa fa-delete-left" aria-hidden="true"></i>
+                      </button>
+                </form>
+            </div>
+        </div>
+        <div class="column is-9">
+            {% if data|length > 0 %}
+                {% for feed in data %}
+
+                {% if feed.url %}
+                <div class="box-container hoverable-preview form-preview columns has-background-light p-2 has-text-dark mt-5"
+                    onclick="window.open('{{feed.url}}');">
+                {% else %}
+                <div class="box-container form-preview columns has-background-light p-2 has-text-dark mt-5">
+                {% endif %}
+                
+                    <div class="column is-4 is-flex is-flex-direction-column is-align-items-center" name="imagePreview">
+                        {% if feed.image %}
+                        <img src="{{ feed.image }}" style="border-radius:20px;">
+                        {% else %}
+                        {% endif %}
+                    </div>
+                    <div class="column is-8">
+                        <h5 name="titlePreview" class="title is-5">
+                            {{feed.title | default:""}}
+                        </h5>
+                        <div name="contentPreview">
+                            {{feed.content | default:"" | safe }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div style="width: 100%; text-align: center;" class="m-5">
+                    No data found
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+{% endblock javascripts %}

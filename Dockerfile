@@ -15,7 +15,7 @@ RUN echo "Installing GDAL dependencies" && \
     echo "Installing other depdencies" && \
     apt-get install -y wait-for-it curl sudo && \
     echo "Install C library for geoip2" && \
-    apt install libmaxminddb0 libmaxminddb-dev mmdb-bin && \
+    apt-get install -y libmaxminddb0 libmaxminddb-dev mmdb-bin && \
     echo "Removing build dependencies and cleaning up" && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf ~/.cache/pip
@@ -28,10 +28,17 @@ RUN apt-get update && apt-get install -y curl && curl -LJO https://github.com/P3
     mkdir /var/opt/maxmind && \
     mv GeoLite2-City.mmdb /var/opt/maxmind/GeoLite2-City.mmdb
     
-ENV GEOIP_PATH=/var/opt/maxmind/
+# Install NodeJS and bulma css webpack
+RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends wget && \
+    wget --no-check-certificate https://deb.nodesource.com/setup_18.x -O /tmp/node.sh && bash /tmp/node.sh && \
+    apt-get -qq update && apt-get -qq install -y nodejs build-essential
 
 WORKDIR /code
-ADD . /code
+COPY . /code
+RUN npm install -g npm@10.2.1 && npm install -g webpack@5.89.0 && npm install -g webpack-cli@5.1.4 && npm install
+
+ENV GEOIP_PATH=/var/opt/maxmind/
+
 
 # Creates a non-root user 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug

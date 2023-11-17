@@ -27,7 +27,7 @@ from django.utils import timezone
 from user_visit.admin import UserVisitAdmin
 from user_visit.models import UserVisit
 
-from .models import QgisFeedEntry, QgisUserVisit, DailyQgisUserVisit
+from .models import CharacterLimitConfiguration, QgisFeedEntry, QgisUserVisit, DailyQgisUserVisit
 
 # Get an instance of a logger
 logger = logging.getLogger('qgisfeed.admin')
@@ -93,6 +93,11 @@ class QgisUserVisitAdmin(admin.StackedInline):
     model = QgisUserVisit
 
 
+class CharacterLimitConfigurationAdmin(admin.ModelAdmin):
+    list_display = ('field_name', 'max_characters')
+    model = CharacterLimitConfiguration
+
+
 class DailyQgisUserVisitAdmin(admin.ModelAdmin):
     list_display = (
         'date',
@@ -146,6 +151,7 @@ class UpdatedUserVisitAdmin(UserVisitAdmin):
 
 
 admin.site.register(QgisFeedEntry, QgisFeedEntryAdmin)
+admin.site.register(CharacterLimitConfiguration, CharacterLimitConfigurationAdmin)
 admin.site.unregister(UserVisit)
 admin.site.register(UserVisit, UpdatedUserVisitAdmin)
 admin.site.register(DailyQgisUserVisit, DailyQgisUserVisitAdmin)

@@ -24,6 +24,22 @@ def setup_group(sender, **kwargs):
     for staff_user in User.objects.filter(is_staff=True, is_superuser=False):
         group.user_set.add(staff_user)
 
+def setup_approver_group(sender, **kwargs):
+    """Create qgisfeedentry_approver group and assign permissions"""
+
+    from django.contrib.auth.models import User, Group, Permission
+    from django.contrib.contenttypes.models import ContentType
+
+    permission, created = Permission.objects.get_or_create(
+        name='Can publish QGIS Feed Entry',
+        content_type=ContentType.objects.get(model='qgisfeedentry'),
+        codename='publish_qgisfeedentry'
+    )
+    group, is_new = Group.objects.get_or_create(name='qgisfeedentry_approver')
+    if is_new:
+        for perm in ('view_qgisfeedentry', 'add_qgisfeedentry', 'publish_qgisfeedentry', 'change_qgisfeedentry'):
+            group.permissions.add(Permission.objects.get(codename=perm))
+
 
 # Post save user visit signals
 def post_save_user_visit(sender, instance, **kwargs):

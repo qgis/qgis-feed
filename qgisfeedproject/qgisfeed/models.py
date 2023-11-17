@@ -23,7 +23,7 @@ from imagekit.processors import ResizeToFill
 from user_visit.models import UserVisit
 
 from qgisfeed.utils import simplify
-
+from django.core.exceptions import ValidationError
 
 class QgisLanguageField(models.CharField):
     """
@@ -44,6 +44,30 @@ class PublishedManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(Q(publish_from__isnull=True) | (Q(publish_from__lte=timezone.now())), Q(publish_to__isnull=True) | (Q(publish_to__gte=timezone.now())) , published=True )
 
+class CharacterLimitConfiguration(models.Model):
+    """
+        Set a hard character limit of a field
+    """
+    field_name = models.CharField(max_length=255, unique=True)
+    max_characters = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.field_name
+    
+
+class ConfigurableCharField(models.CharField):
+    """
+        Customized CharField: the characters limit depends on the configuration
+    """
+    def __init__(self, *args, **kwargs):
+        field_name = kwargs.pop('field_name', None)
+        super(ConfigurableCharField, self).__init__(*args, **kwargs)
+        if field_name:
+            try:
+                config = CharacterLimitConfiguration.objects.get(field_name=field_name)
+                self.max_length = config.max_characters
+            except CharacterLimitConfiguration.DoesNotExist:
+                pass
 
 class QgisFeedEntry(models.Model):
     """A feed entry for QGIS welcome page
@@ -52,7 +76,7 @@ class QgisFeedEntry(models.Model):
     title = models.CharField(_('Title'), max_length=255)
     image = ProcessedImageField([ResizeToFill(500, 354)], 'JPEG', {'quality': 60}, _('Image'),upload_to='feedimages/%Y/%m/%d/', height_field='image_height', width_field='image_width', max_length=None, blank=True, null=True, help_text=_('Landscape orientation, image will be cropped and scaled automatically to 500x354 px') )
     content = models.TextField()
-    url = models.URLField(_('URL'), max_length=200, help_text=_('URL for more information link'))
+    url = models.URLField(_('URL'), max_length=200, help_text=_('URL for more information link'), blank=True, null=True)
 
     # Auto fields
     author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, editable=False)
@@ -95,6 +119,30 @@ class QgisFeedEntry(models.Model):
         verbose_name = _('QGIS Feed Entry')
         verbose_name_plural = _('QGIS Feed Entries')
         ordering = ('-sticky', '-sorting', '-publish_from')
+
+    def set_request(self, request):
+        self._request = request
+
+    def save(self, *args, **kwargs):
+        """Auto-set author and notify superadmin when entry is added"""
+        if self.pk is None and hasattr(self, '_request') and self._request:
+            self.author = self._request.user
+
+        if self.published and self.publish_from is None:
+            self.publish_from = timezone.now()
+
+        try:
+            config = CharacterLimitConfiguration.objects.get(field_name="content")
+            content_max_length = config.max_characters
+        except CharacterLimitConfiguration.DoesNotExist:
+            content_max_length = 500
+        
+        if len(self.content) > content_max_length:
+            raise ValidationError(
+                f"Ensure content value has at most {str(content_max_length)} characters (it has {str(len(self.content))})."
+            )
+
+        super(QgisFeedEntry, self).save(*args, **kwargs)
 
 
 class QgisUserVisit(models.Model):
