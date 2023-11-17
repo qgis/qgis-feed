@@ -1,11 +1,23 @@
+# coding=utf-8
+import logging
+import unicodedata
+
 from django.urls import reverse
 from django.conf import settings
 from django.core.mail import send_mail
-import logging
+
 logger = logging.getLogger('qgisfeed.admin')
 QGISFEED_FROM_EMAIL = getattr(settings, 'QGISFEED_FROM_EMAIL', 'noreply@qgis.org')
 
 
+def simplify(text: str) -> str:
+    try:
+        text = unicodedata.normalize('NFD', text).encode('ascii', 'ignore').decode('utf-8')
+    except:  # noqa
+        pass
+    return str(text)
+
+  
 def notify_admin(author, request, recipients, obj):
     """Send notification emails"""
     body = """

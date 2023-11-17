@@ -4,7 +4,7 @@ from qgisfeed.models import aggregate_user_visit_data
 
 
 class Command(BaseCommand):
-    """Add site codes
+    """Aggregate user visits
     """
 
     def handle(self, *args, **options):

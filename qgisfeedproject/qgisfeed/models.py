@@ -21,6 +21,8 @@ from django.utils.translation import gettext as _
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
 from user_visit.models import UserVisit
+
+from qgisfeed.utils import simplify
 from django.core.exceptions import ValidationError
 
 class QgisLanguageField(models.CharField):
@@ -216,13 +218,13 @@ def aggregate_user_visit_data():
 
         total_country = dict(
             qgis_user_visit.filter(
-                location__country_name__isnull=False
+                location__country_code__isnull=False
             ).values(
-                'location__country_name'
+                'location__country_code'
             ).annotate(
-                total_country=Count('location__country_name')
+                total_country=Count('location__country_code')
             ).values_list(
-                'location__country_name', 'total_country'
+                'location__country_code', 'total_country'
             )
         )
 
@@ -241,6 +243,7 @@ def aggregate_user_visit_data():
         if total_platform_data:
             daily_platform_data = daily_visit.platform
             for platform, value in total_platform_data.items():
+                platform = simplify(platform)
                 if platform not in daily_platform_data:
                     daily_platform_data[platform] = (
                         value
@@ -263,6 +266,7 @@ def aggregate_user_visit_data():
         if total_qgis_version:
             daily_qgis_version = daily_visit.qgis_version
             for qgis_version, value in total_qgis_version.items():
+                qgis_version = simplify(qgis_version)
                 if qgis_version not in daily_qgis_version:
                     daily_qgis_version[qgis_version] = value
                 else:
