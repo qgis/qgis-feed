@@ -18,16 +18,6 @@ class HomePageFilterForm(forms.Form):
         widget=forms.Select()
     )
 
-    lat = forms.FloatField(
-        required=False,
-        widget=forms.NumberInput(attrs={'class': 'input', 'placeholder': 'Latitude'})
-    )
-
-    lon = forms.FloatField(
-        required=False,
-        widget=forms.NumberInput(attrs={'class': 'input', 'placeholder': 'Longitude'})
-    )
-
     publish_from = forms.CharField(
         required=False,
         widget=forms.DateInput(
