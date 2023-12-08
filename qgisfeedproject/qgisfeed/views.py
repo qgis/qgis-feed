@@ -30,7 +30,7 @@ from django.contrib.auth.models import User
 
 from .forms import FeedEntryFilterForm, FeedItemForm, HomePageFilterForm
 from .utils import notify_admin
-from .models import QgisFeedEntry
+from .models import QgisFeedEntry, CharacterLimitConfiguration
 from .languages import LANGUAGE_KEYS
 import json
 
@@ -45,6 +45,13 @@ staff_required = user_passes_test(lambda u: u.is_staff)
 
 class BadRequestException(Exception):
     pass
+
+
+try:
+    config = CharacterLimitConfiguration.objects.get(field_name="content")
+    CONTENT_MAX_LENGTH = config.max_characters
+except CharacterLimitConfiguration.DoesNotExist:
+    CONTENT_MAX_LENGTH = 500
 
 class QgisEntriesView(View):
     """Views for QGIS Welcome Page News Feed, returns JSON data
@@ -274,6 +281,7 @@ class FeedEntryAddView(View):
             "success": success,
             "published": False,
             "user_is_approver": user_is_approver,
+            "content_max_length": CONTENT_MAX_LENGTH
         }
 
         return render(request, self.template_name, args)
@@ -308,6 +316,7 @@ class FeedEntryAddView(View):
             "success": success,
             "published": False,
             "user_is_approver": user_is_approver,
+            "content_max_length": CONTENT_MAX_LENGTH
         }
 
         return render(request, self.template_name, args)
@@ -334,7 +343,8 @@ class FeedEntryUpdateView(View):
             "msg": msg,
             "success": success,
             "published": feed_entry.published,
-            "user_is_approver": user_is_approver
+            "user_is_approver": user_is_approver,
+            "content_max_length": CONTENT_MAX_LENGTH
         }
 
         return render(request, self.template_name, args)
@@ -365,7 +375,8 @@ class FeedEntryUpdateView(View):
             "msg": msg,
             "success": success,
             "published": feed_entry.published,
-            "user_is_approver": user_is_approver
+            "user_is_approver": user_is_approver,
+            "content_max_length": CONTENT_MAX_LENGTH
         }
 
         return render(request, self.template_name, args)

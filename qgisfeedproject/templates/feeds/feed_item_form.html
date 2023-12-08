@@ -61,7 +61,7 @@
             <div class="columns">
                 {% if not published and user_is_approver and form.instance.pk %}
                 <div class="column is-5">
-                    <button id="formConfirmationBtn" class="button is-block is-info" type="submit" form="feedItemForm">
+                    <button name="formConfirmationBtn" class="button is-block is-info" type="submit" form="feedItemForm">
                         <span class="icon">
                             <i class="fa fa-floppy-disk" aria-hidden="true"></i>
                         </span>
@@ -71,7 +71,7 @@
                 {% endif %}
 
                 <div class="column is-7">
-                    <button id="formConfirmationBtn" class="button is-block is-success js-modal-trigger"
+                    <button name="formConfirmationBtn" class="button is-block is-success js-modal-trigger"
                         data-target="form-review-modal">
                         {% if published %}
                         <span class="icon">
@@ -105,6 +105,7 @@
 <script src="{% static 'js/feed_item_form.js' %}"></script>
 <script>
     tinymce.init({
+        max_chars: {{content_max_length}},
         selector: 'textarea#id_content',
         menubar: false,
         plugins: "preview searchreplace visualblocks code fullscreen insertdatetime paste help wordcount spellchecker",
@@ -123,7 +124,7 @@
                     item.innerHTML = content;
                 });
                 tinymce.triggerSave();
-
+                tinymce_updateCharCounter(this, tinymce_getContentLength());
             });
             editor.on('input', function () {
                 // Update content in preview when input change
@@ -132,8 +133,51 @@
                     item.innerHTML = content;
                 });
                 tinymce.triggerSave();
+                tinymce_updateCharCounter(this, tinymce_getContentLength());
             });
+            var allowedKeys = [8, 37, 38, 39, 40, 46]; // backspace, delete and cursor keys
+            editor.on('keydown', function (e) {
+                if (allowedKeys.indexOf(e.keyCode) != -1) return true;
+                if (tinymce_getContentLength() + 1 > this.settings.max_chars) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+                return true;
+            });
+        },
+        init_instance_callback: function () { // initialize counter div
+            $('.tox-statusbar__path').after('<div class="char_count" style="text-align:right"></div>');
+            tinymce_updateCharCounter(this, tinymce_getContentLength());
+        },
+        paste_preprocess: function (plugin, args) {
+            var editor = tinymce.get(tinymce.activeEditor.id);
+            var len = editor.contentDocument.body.innerHTML.length;
+            var text = $(args.content).text();
+            if (len + text.length > editor.settings.max_chars) {
+                alert('Pasting this exceeds the maximum allowed number of ' + editor.settings.max_chars +
+                    ' characters.');
+                args.content = '';
+            } else {
+                tinymce_updateCharCounter(editor, len + text.length);
+            }
         }
     });
+
+    function tinymce_updateCharCounter(el, len) {
+        $('#' + el.id).next().find('.char_count').text(len + '/' + el.settings.max_chars + ' CHARACTERS');
+        let isCharExceed = len > el.settings.max_chars
+
+        checkFormValid(contentExceed = isCharExceed)
+        $('#' + el.id).next().find('.char_count').css(
+            'color', isCharExceed ? 'red' : 'inherit'
+        );
+        contentError.innerText = isCharExceed ?
+            `Ensure this value has at most ${el.settings.max_chars} characters (it has ${len}).` : ''
+    }
+
+    function tinymce_getContentLength() {
+        return contentField.value.length
+    }
 </script>
 {% endblock javascripts %}
