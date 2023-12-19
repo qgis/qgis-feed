@@ -6,10 +6,10 @@ asynctest==0.13.0
 attrs==21.4.0
 certifi==2021.10.8
 charset-normalizer==2.0.12
-Django==3.2.11
+Django==4.2.8
 django-appconf==1.0.3
 django-extensions==3.1.5
-django-imagekit==4.0.2
+django-imagekit==5.0.0
 django-tinymce==3.6.1
 django-user-visit==0.5.1
 django-webpack-loader==2.0.1
@@ -20,7 +20,7 @@ maxminddb==2.2.0
 multidict==6.0.2
 pilkit==2.0
 Pillow==6.1.0
-psycopg2==2.8.3
+psycopg2==2.9.9
 pytz==2019.2
 requests==2.27.1
 six==1.12.0
