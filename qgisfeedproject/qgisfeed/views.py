@@ -154,13 +154,14 @@ class QgisEntriesView(View):
                 record['image'] = request.build_absolute_uri(settings.MEDIA_URL + record['image'])
             data.append(record)
 
-
+        data_json = json.dumps(data, indent=(2 if settings.DEBUG else 0))
         if "qgis" in str(user_agent).lower() or request.GET.get('json', '') == '1':
-            return HttpResponse(json.dumps(data, indent=(2 if settings.DEBUG else 0)),content_type='application/json')
+            return HttpResponse(data_json,content_type='application/json')
         else:
             args = {
                 "data": data,
-                "form": form
+                "form": form,
+                "data_json": data_json
             }
             return render(request, self.template_name, args)
 

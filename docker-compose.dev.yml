@@ -7,6 +7,8 @@ services:
       POSTGRES_USER: docker
       POSTGRES_PASS: docker
       POSTGRES_DBNAME: qgisfeed
+    # ports:
+    # - "5436:5432"
 
   qgisfeed:
     build:
