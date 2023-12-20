@@ -4,6 +4,7 @@ from django.forms import ValidationError
 from .models import CharacterLimitConfiguration, QgisFeedEntry
 from .languages import LANGUAGES
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 class HomePageFilterForm(forms.Form):
     """
@@ -81,6 +82,16 @@ class FeedItemForm(forms.ModelForm):
     """
     Form for feed entry add or update
     """
+
+    sticky = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'checkbox'})
+    )
+
+    approvers = forms.MultipleChoiceField(
+        required=False, 
+        widget=forms.SelectMultiple()
+    )
     class Meta:
         model = QgisFeedEntry
         fields = [
@@ -127,6 +138,7 @@ class FeedItemForm(forms.ModelForm):
                 }
         )
         self.fields['publish_to'].initial = timezone.now() + timezone.timedelta(days=30)
+        self.fields['approvers'].choices = self.get_approvers_choices()
 
     def clean_content(self):
         content = self.cleaned_data['content']
@@ -142,8 +154,11 @@ class FeedItemForm(forms.ModelForm):
             )
         return content
 
+    def get_approvers_choices(self):
 
-    sticky = forms.BooleanField(
-        required=False,
-        widget=forms.CheckboxInput(attrs={'class': 'checkbox'})
-    )
+        return (
+            (u.pk, u.username) for u in User.objects.filter(
+                is_active=True, 
+                email__isnull=False
+            ).exclude(email='') if u.has_perm("qgisfeed.publish_qgisfeedentry")
+        )
