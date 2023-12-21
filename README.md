@@ -4,98 +4,71 @@
 
 This application is the backend part that manages and serves news for the QGIS welcome page.
 
-## Installation guide
+## Installation Guide
 <details>
-    <summary><strong>Installation</strong></summary>
+    <summary><strong>Development Environment Installation</strong></summary>
     </br>
 
-- create a virtual env
+For development purposes only, you can run this application in debug mode with docker compose. Some of the docker compose commands are already configured in the Makefile.
 
-    `$ virtualenv qgisfeedvenv`
-
-- activate the virtual env:
-
-    `$ source qgisfeedvenv/bin/activate`
-
-- install dependencies:
-
-    `$ pip install -r REQUIREMENTS.txt`
-
-- create a postgresql DB:
-
-    `$ createdb qgisfeed`
-
-- enable postgis:
-
-    `$ psql qgisfeed -c 'CREATE EXTENSION postgis;'`
-
-- create `settings_local.py` int the `qgisfeedproject` directory
-  and put your DB configuration as in the example below:
-
-    ```python
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.contrib.gis.db.backends.postgis',
-            'NAME': 'qgisfeed',
-            'USER': 'your_username',
-            'PASSWORD': 'your_password',
-            'HOST': 'localhost',
-            'PORT': '5432'
-        }
-    }
-    ```
-
-- run migrations, from the `qgisfeedproject` directory:
-
-    `python manage.py migrate`
-
-- create an admin user and set a password:
-
-    `$ python manage.py createsuperuser`
-
-- start the development server:
-
-    `python manage.py runserver`
-
-- Build the bundle for bulma CSS:
-```sh
-$ npm install
-$ npm run build
-# If you want to run the webpack server
-$ npx webpack --config webpack.config.js --watch
+- Build the docker the container
+```bash
+$ make dev-build
 ```
-</details>
 
-<details>
-    <summary><strong>Settings</strong></summary>
-    </br>
-To prevent DDOS attacks there is limit in the number of returned records (defaults to 20): it can be configured by overriding the settings in `settings_local.py` with:
+- Create `settings_local.py` int the `qgisfeedproject` directory, configure the email sender variables and DB configuration as in the example below:
+
+```python
+# For email notifications, the sender address can be configured with:
+QGISFEED_FROM_EMAIL='noreply@qgis.org'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'the.email.host'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'noreply@qgis.org'
+EMAIL_HOST_PASSWORD = 'yourpwd'
+
+# The db service in the docker-compose is used by default
+# You can specify the databse with the configuration below
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'qgisfeed',
+        'USER': 'your_username',
+        'PASSWORD': 'your_password',
+        'HOST': 'localhost',
+        'PORT': '5432'
+    }
+}
+```
+See https://docs.djangoproject.com/en/2.2/topics/email/#module-django.core.mail for further email configuration.
+
+- To prevent DDOS attacks there is limit in the number of returned records (defaults to 20): it can be configured by overriding the settings in `settings_local.py` with:
 
 ```python
 QGISFEED_MAX_RECORDS=40  # default value is 20
 ```
 
-For email notifications, the sender address can be configured with:
-
-```python
-QGISFEED_FROM_EMAIL='noreply@qgis.org'`  # default value is 'noreply@qgis.org'
-```
-
-See https://docs.djangoproject.com/en/2.2/topics/email/#module-django.core.mail for further email configuration.
-
-</details>
-
-
-## Using docker for testing/production
-<details>
-    <summary><strong>Docker for testing</strong></summary>
-    </br>
-For development purposes only, you can run this application in debug mode with docker compose:
-
+- Start the docker the container
 ```bash
-$ docker-compose -f docker-compose.dev.yml build
-$ docker-compose -f docker-compose.dev.yml up
+$ make dev-start
 ```
+
+- Run migrations:
+```bash
+$ make dev-migrate
+```
+
+- Create an admin user and set a password:
+```bash
+$ make dev-createsuperuser
+```
+
+- Show the development server logs:
+```bash
+$ make dev-logs
+```
+
 
 A set of test data will be automatically loaded and the application will be available at http://localhost:8000
 
@@ -103,13 +76,13 @@ To enter the control panel http://localhost:8000/admin, two test users are avail
 
 - Super Admin: the credentials are `admin`/`admin`
 - Staff (News Entry Author): the credentials are `staff`/`staff`
+
 </details>
 
-
 <details>
-    <summary><strong>Docker for production</strong></summary>
+    <summary><strong>Production Environment Installation</strong></summary>
     </br>
-For production, you can run this application  with docker compose:
+For production, you can run this application with make commands or docker compose:
 
 Docker configuration should be present in `.env` file in the main directory,
 an example is provided in `env.template`:
@@ -135,7 +108,7 @@ QGISFEED_DOCKER_DBPASSWORD=docker
 ```
 
 ```bash
-$ docker-compose -f docker-compose-production.yml up
+$ make start
 ```
 
 A set of test data will be automatically loaded and the application will be available at http://localhost:80
@@ -152,9 +125,9 @@ To enter the control panel http://localhost:80/admin, two test users are availab
 openssl dhparam -out /home/web/qgis-feed/dhparam/dhparam-2048.pem 2048
 ```
 
-2. Run docker-compose using `docker-compose-production-ssl.yml`
+2. Run the container
 ```bash
-$ docker-compose -f docker-compose-production-ssl.yml up
+$ make start
 ```
 
 3. Update `config/nginx/qgisfeed.conf` to include the new config file in `config/nginx/ssl/qgisfeed.conf`
@@ -303,7 +276,7 @@ Example call: http://localhost:8000/?lat=44.5&lon=9.23
 
 To run all tests cases in the qgisfeed app, from the main directory:
 ```sh
-$  python3 qgisfeedproject/manage.py test qgisfeed
+$ make dev-runtests
 ```
 </details>
 
@@ -313,24 +286,12 @@ $  python3 qgisfeedproject/manage.py test qgisfeed
 
 To run each test case class in the qgisfeed app:
 ```sh
-$ python manage.py test qgisfeed.tests.QgisFeedEntryTestCase
-$ python manage.py test qgisfeed.tests.QgisUserVisitTestCase
-$ python manage.py test qgisfeed.tests.HomePageTestCase
-$ python manage.py test qgisfeed.tests.LoginTestCase
-$ python manage.py test qgisfeed.tests.FeedsItemFormTestCase
-$ python manage.py test qgisfeed.tests.FeedsListViewTestCase
-```
-</details>
-
-
-<details>
-    <summary><strong>Run tests with docker</strong></summary>
-    </br>
-
-If you are using docker, you can run tests by adding `docker-compose -f <docker-compose-file> exec <service-name>` before the command.
-For example, to run login test case using docker-compose:
-```sh
+$ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/manage.py test qgisfeed.tests.QgisFeedEntryTestCase
+$ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/manage.py test qgisfeed.tests.QgisUserVisitTestCase
+$ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/manage.py test qgisfeed.tests.HomePageTestCase
 $ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/manage.py test qgisfeed.tests.LoginTestCase
+$ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/manage.py test qgisfeed.tests.FeedsItemFormTestCase
+$ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/manage.py test qgisfeed.tests.FeedsListViewTestCase
 ```
 </details>
 
