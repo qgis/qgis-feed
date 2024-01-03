@@ -422,7 +422,7 @@ class FeedsItemFormTestCase(TestCase):
         self.assertTrue('form' in response.context)
 
         # Check if the approver has the permission. 
-        # Here, only the the admin user is listed in the list.
+        # Here, only the the admin user is listed.
         approvers = response.context['form']['approvers']
         self.assertEqual(len(approvers), 1)
         approver_id = int(approvers[0].data['value'])
