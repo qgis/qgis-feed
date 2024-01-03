@@ -25,6 +25,7 @@ from django.contrib.gis.geos import Polygon
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
 from django.db import connection
+from django.core import mail
 
 from .models import (
     CharacterLimitConfiguration, QgisFeedEntry, QgisUserVisit, DailyQgisUserVisit, aggregate_user_visit_data
@@ -32,7 +33,6 @@ from .models import (
 from .admin import QgisFeedEntryAdmin
 
 from os.path import join
-
 
 class MockRequest:
 
@@ -421,6 +421,14 @@ class FeedsItemFormTestCase(TestCase):
         self.assertTemplateUsed(response, 'feeds/feed_item_form.html')
         self.assertTrue('form' in response.context)
 
+        # Check if the approver has the permission. 
+        # Here, only the the admin user is listed in the list.
+        approvers = response.context['form']['approvers']
+        self.assertEqual(len(approvers), 1)
+        approver_id = int(approvers[0].data['value'])
+        approver = User.objects.get(pk=approver_id)
+        self.assertTrue(approver.has_perm("qgisfeed.publish_qgisfeedentry"))
+
         # Access the feed_entry_update view after logging in
         response = self.client.get(reverse('feed_entry_update', args=[3]))
         self.assertEqual(response.status_code, 200)
@@ -620,4 +628,32 @@ class FeedsItemFormTestCase(TestCase):
         self.assertIn('content', form.errors, "Ensure this value has at most 10 characters (it has 104).")
 
 
+    def test_add_feed_with_reviewer(self):
+        # Add a feed entry with specified reviewer test
+        self.client.login(username='staff', password='staff')
+        spatial_filter = Polygon(((0, 0), (0, 1), (1, 1), (1, 0), (0, 0)))
+        image_path = join(settings.MEDIA_ROOT, "feedimages", "rust.png")
+
+        post_data = {
+            'title': 'QGIS core will be rewritten in Rust',
+            'image': open(image_path, "rb"),
+            'content': '<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>Rust</strong>',
+            'url': 'https://www.null.com',
+            'sticky': False,
+            'sorting': 0,
+            'language_filter': 'en',
+            'spatial_filter': str(spatial_filter),
+            'publish_from': '2023-10-18 14:46:00+00',
+            'publish_to': '2023-10-29 14:46:00+00',
+            'reviewers': [1]
+        }
+
+        response = self.client.post(reverse('feed_entry_add'), data=post_data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('feeds_list'))
+
+        self.assertEqual(
+            mail.outbox[0].recipients(),
+            ['me@email.com']
+        )
 
