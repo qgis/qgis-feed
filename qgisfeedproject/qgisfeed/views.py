@@ -29,7 +29,7 @@ from django.db import transaction
 from django.contrib.auth.models import User
 
 from .forms import FeedEntryFilterForm, FeedItemForm, HomePageFilterForm
-from .utils import notify_admin
+from .utils import get_field_max_length, notify_admin
 from .models import QgisFeedEntry, CharacterLimitConfiguration
 from .languages import LANGUAGE_KEYS
 import json
@@ -268,19 +268,13 @@ class FeedEntryAddView(View):
         user_is_approver = user.has_perm("qgisfeed.publish_qgisfeedentry")
         form = self.form_class()
 
-        try:
-            config = CharacterLimitConfiguration.objects.get(field_name="content")
-            content_max_length = config.max_characters
-        except CharacterLimitConfiguration.DoesNotExist:
-            content_max_length = 500
-
         args = {
             "form": form,
             "msg": msg,
             "success": success,
             "published": False,
             "user_is_approver": user_is_approver,
-            "content_max_length": content_max_length
+            "content_max_length": get_field_max_length(CharacterLimitConfiguration, field_name="content")
         }
 
         return render(request, self.template_name, args)
@@ -309,12 +303,6 @@ class FeedEntryAddView(View):
             success = False
             msg = "Form is not valid"
 
-        
-        try:
-            config = CharacterLimitConfiguration.objects.get(field_name="content")
-            content_max_length = config.max_characters
-        except CharacterLimitConfiguration.DoesNotExist:
-            content_max_length = 500
 
         args = {
             "form": form,
@@ -322,7 +310,7 @@ class FeedEntryAddView(View):
             "success": success,
             "published": False,
             "user_is_approver": user_is_approver,
-            "content_max_length": content_max_length
+            "content_max_length": get_field_max_length(CharacterLimitConfiguration, field_name="content")
         }
 
         return render(request, self.template_name, args)
@@ -343,19 +331,13 @@ class FeedEntryUpdateView(View):
         user = request.user
         user_is_approver = user.has_perm("qgisfeed.publish_qgisfeedentry")
         form = self.form_class(instance=feed_entry)
-
-        try:
-            config = CharacterLimitConfiguration.objects.get(field_name="content")
-            content_max_length = config.max_characters
-        except CharacterLimitConfiguration.DoesNotExist:
-            content_max_length = 500
         args = {
             "form": form,
             "msg": msg,
             "success": success,
             "published": feed_entry.published,
             "user_is_approver": user_is_approver,
-            "content_max_length": content_max_length
+            "content_max_length": get_field_max_length(CharacterLimitConfiguration, field_name="content")
         }
 
         return render(request, self.template_name, args)
@@ -380,19 +362,13 @@ class FeedEntryUpdateView(View):
         else:
             success = False
             msg = "Form is not valid"
-
-        try:
-            config = CharacterLimitConfiguration.objects.get(field_name="content")
-            content_max_length = config.max_characters
-        except CharacterLimitConfiguration.DoesNotExist:
-            content_max_length = 500
         args = {
             "form": form,
             "msg": msg,
             "success": success,
             "published": feed_entry.published,
             "user_is_approver": user_is_approver,
-            "content_max_length": content_max_length
+            "content_max_length": get_field_max_length(CharacterLimitConfiguration, field_name="content")
         }
 
         return render(request, self.template_name, args)
