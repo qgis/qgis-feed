@@ -161,7 +161,7 @@ class QgisEntriesView(View):
             args = {
                 "data": data,
                 "form": form,
-                "data_json": data_json
+                "data_json": json.dumps(data, indent=2)
             }
             return render(request, self.template_name, args)
 
