@@ -1,6 +1,9 @@
+const hljs = require('highlight.js/lib/core');
+hljs.registerLanguage('json', require('highlight.js/lib/languages/json'));
+hljs.highlightAll();
+
 require('../style/custom.bulma.scss');
 require('../style/style.scss');
-
 
 document.addEventListener('DOMContentLoaded', () => {
 

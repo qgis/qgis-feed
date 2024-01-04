@@ -5,6 +5,8 @@ import unicodedata
 from django.urls import reverse
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
+from django.core.mail import send_mail
+from django.contrib.gis.db.models import Model
 
 logger = logging.getLogger('qgisfeed.admin')
 QGISFEED_FROM_EMAIL = getattr(settings, 'QGISFEED_FROM_EMAIL', 'noreply@qgis.org')
@@ -34,3 +36,10 @@ def notify_reviewers(author, request, recipients, cc, obj):
         cc=cc,
     )
     msg.send(fail_silently=True)
+
+def get_field_max_length(ConfigurationModel: Model, field_name: str):
+    try:
+        config = ConfigurationModel.objects.get(field_name=field_name)
+        return config.max_characters
+    except ConfigurationModel.DoesNotExist:
+        return 500

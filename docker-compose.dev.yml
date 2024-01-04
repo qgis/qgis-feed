@@ -7,8 +7,12 @@ services:
       POSTGRES_USER: docker
       POSTGRES_PASS: docker
       POSTGRES_DBNAME: qgisfeed
+    # ports:
+    # - "5436:5432"
 
   qgisfeed:
+    # Note you cannot scale if you use container_name
+    container_name: qgisfeed
     build:
       context: .
       dockerfile: ./Dockerfile

@@ -10,7 +10,20 @@
 
     .hoverable-preview:hover {
         cursor: pointer;
-        background: #d4d4d4  !important;
+        background: #d4d4d4 !important;
+    }
+
+    #tab-content div.is-active {
+        display: block;
+    }
+
+    #tab-content div.is-inactive {
+        display: none;
+    }
+
+    code {
+        border-radius: 5px;
+        white-space: pre-wrap;
     }
 </style>
 {% endblock stylesheets %}
@@ -20,7 +33,7 @@
        background-position: center;
        background-size: cover;">
 
-       <div class="hero-body">
+    <div class="hero-body">
         <div class="columns is-justify-content-space-between">
             <div class="column is-6 is-align-items-center" style="display: flex">
                 <div class="container has-text-left">
@@ -49,67 +62,78 @@
                             {{form.lang}}
                         </div>
                     </div>
-    
+
                     <div class="field">
                         <label class="label">Date published from:</label>
                         <div class="control has-icons-left">
-                          {{form.publish_from}}
-                          <span class="icon is-small is-left">
-                            <i class="fas fa-calendar"></i>
-                          </span>
+                            {{form.publish_from}}
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-calendar"></i>
+                            </span>
                         </div>
-                      </div>
-                      <button 
-                          class="button is-block is-info is-fullwidth"
-                          type="submit" 
-                          value="filter" 
-                          id="submit-button"
-                      >
-                          Filter <i class="fa fa-filter" aria-hidden="true"></i>
-                      </button>
-                      <button 
-                          type="button"
-                          class="button is-block is-danger is-fullwidth mt-2"
-                          value="clear" 
-                          onclick="window.location.href='?';"
-                      >
-                          Clear filter <i class="fa fa-delete-left" aria-hidden="true"></i>
-                      </button>
+                    </div>
+                    <button class="button is-block is-info is-fullwidth" type="submit" value="filter"
+                        id="submit-button">
+                        Filter <i class="fa fa-filter" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="button is-block is-danger is-fullwidth mt-2" value="clear"
+                        onclick="window.location.href='?';">
+                        Clear filter <i class="fa fa-delete-left" aria-hidden="true"></i>
+                    </button>
                 </form>
             </div>
         </div>
         <div class="column is-9">
-            {% if data|length > 0 %}
-                {% for feed in data %}
-
-                {% if feed.url %}
-                <div class="box-container hoverable-preview form-preview columns has-background-light p-2 has-text-dark mt-5"
-                    onclick="window.open('{{feed.url}}');">
-                {% else %}
-                <div class="box-container form-preview columns has-background-light p-2 has-text-dark mt-5">
-                {% endif %}
-                
-                    <div class="column is-4 is-flex is-flex-direction-column is-align-items-center" name="imagePreview">
-                        {% if feed.image %}
-                        <img src="{{ feed.image }}" style="border-radius:20px;">
-                        {% else %}
-                        {% endif %}
-                    </div>
-                    <div class="column is-8">
-                        <h5 name="titlePreview" class="title is-5">
-                            {{feed.title | default:""}}
-                        </h5>
-                        <div name="contentPreview">
-                            {{feed.content | default:"" | safe }}
+            <div class="tabs is-centered is-boxed" id="tabs">
+                <ul>
+                    <li class="is-active" data-tab="1">
+                        <a>
+                            <span class="icon is-small"><i class="fa fa-image"></i></span>
+                            <span>Preview</span>
+                        </a>
+                    </li>
+                    <li data-tab="2">
+                        <a>
+                            <span class="icon is-small"><i class="fa fa-code"></i></span>
+                            <span>Raw</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div id="tab-content">
+                <div class="tab-content-element is-active" style="padding:0 10px;" data-content="1">
+                    {% if data|length > 0 %}
+                    {% for feed in data %}
+                    <div class="box-container {% if feed.url %} hoverable-preview {% endif %} form-preview columns has-background-light p-2 has-text-dark mt-5"
+                        onclick="{% if feed.url %}window.open('{{feed.url}}');{% endif %}">
+                        <div class="column is-4 is-flex is-flex-direction-column is-align-items-center"
+                            name="imagePreview">
+                            {% if feed.image %}
+                            <img src="{{ feed.image }}" style="border-radius:20px;">
+                            {% endif %}
+                        </div>
+                        <div class="column is-8">
+                            <h5 name="titlePreview" class="title is-5">
+                                {{feed.title | default:""}}
+                            </h5>
+                            <div name="contentPreview">
+                                {{feed.content | default:"" | safe }}
+                            </div>
                         </div>
                     </div>
+                    {% endfor %}
+                    {% else %}
+                    <div style="width: 100%; text-align: center;" class="m-5">
+                        No data found
+                    </div>
+                    {% endif %}
                 </div>
-                {% endfor %}
-            {% else %}
-                <div style="width: 100%; text-align: center;" class="m-5">
-                    No data found
+                <div class="tab-content-element is-inactive" data-content="2">
+                    <pre style="background-color:unset; padding:0;">
+                        <code class="language-json">{{data_json}}</code>
+                    </pre>
                 </div>
-            {% endif %}
+            </div>
         </div>
     </div>
 </section>
@@ -117,4 +141,20 @@
 
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
+<script>
+    $(document).ready(function () {
+        $('#tabs li').on('click', function () {
+            var tab = $(this).data('tab');
+
+            $('#tabs li').removeClass('is-active');
+            $(this).addClass('is-active');
+
+            $('.tab-content-element').removeClass('is-active');
+            $('.tab-content-element').addClass('is-inactive');
+            $('div[data-content="' + tab + '"]').removeClass('is-inactive');
+            $('div[data-content="' + tab + '"]').addClass('is-active');
+        });
+
+    });
+</script>
 {% endblock javascripts %}

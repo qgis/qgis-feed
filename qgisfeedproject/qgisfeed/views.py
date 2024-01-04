@@ -29,8 +29,8 @@ from django.db import transaction
 from django.contrib.auth.models import User
 
 from .forms import FeedEntryFilterForm, FeedItemForm, HomePageFilterForm
-from .utils import notify_reviewers
-from .models import QgisFeedEntry
+from .utils import get_field_max_length, notify_reviewers
+from .models import QgisFeedEntry, CharacterLimitConfiguration
 from .languages import LANGUAGE_KEYS
 import json
 
@@ -154,13 +154,14 @@ class QgisEntriesView(View):
                 record['image'] = request.build_absolute_uri(settings.MEDIA_URL + record['image'])
             data.append(record)
 
-
+        data_json = json.dumps(data, indent=(2 if settings.DEBUG else 0))
         if "qgis" in str(user_agent).lower() or request.GET.get('json', '') == '1':
-            return HttpResponse(json.dumps(data, indent=(2 if settings.DEBUG else 0)),content_type='application/json')
+            return HttpResponse(data_json,content_type='application/json')
         else:
             args = {
                 "data": data,
-                "form": form
+                "form": form,
+                "data_json": json.dumps(data, indent=2)
             }
             return render(request, self.template_name, args)
 
@@ -274,6 +275,7 @@ class FeedEntryAddView(View):
             "success": success,
             "published": False,
             "user_is_approver": user_is_approver,
+            "content_max_length": get_field_max_length(CharacterLimitConfiguration, field_name="content")
         }
 
         return render(request, self.template_name, args)
@@ -324,12 +326,14 @@ class FeedEntryAddView(View):
             success = False
             msg = "Form is not valid"
 
+
         args = {
             "form": form,
             "msg": msg,
             "success": success,
             "published": False,
             "user_is_approver": user_is_approver,
+            "content_max_length": get_field_max_length(CharacterLimitConfiguration, field_name="content")
         }
 
         return render(request, self.template_name, args)
@@ -350,13 +354,13 @@ class FeedEntryUpdateView(View):
         user = request.user
         user_is_approver = user.has_perm("qgisfeed.publish_qgisfeedentry")
         form = self.form_class(instance=feed_entry)
-
         args = {
             "form": form,
             "msg": msg,
             "success": success,
             "published": feed_entry.published,
-            "user_is_approver": user_is_approver
+            "user_is_approver": user_is_approver,
+            "content_max_length": get_field_max_length(CharacterLimitConfiguration, field_name="content")
         }
 
         return render(request, self.template_name, args)
@@ -381,13 +385,13 @@ class FeedEntryUpdateView(View):
         else:
             success = False
             msg = "Form is not valid"
-
         args = {
             "form": form,
             "msg": msg,
             "success": success,
             "published": feed_entry.published,
-            "user_is_approver": user_is_approver
+            "user_is_approver": user_is_approver,
+            "content_max_length": get_field_max_length(CharacterLimitConfiguration, field_name="content")
         }
 
         return render(request, self.template_name, args)

@@ -16,7 +16,7 @@
       </div>
       <p class="help">{{form.title.help_text}}</p>
       {% for error in form.title.errors %}
-        <p class="help is-danger">{{ error }}</p>
+        <p class="help form-error">{{ error }}</p>
       {% endfor %}
     </div>
     <div class="field">
@@ -46,7 +46,7 @@
       </div>
       <p class="help">{{form.image.help_text}}</p>
       {% for error in form.image.errors %}
-        <p class="help is-danger">{{ error }}</p>
+        <p class="help form-error">{{ error }}</p>
       {% endfor %}
     </div>
 
@@ -59,9 +59,7 @@
       </label>
       <div class="control">{{form.content}}</div>
       <p class="help">{{form.content.help_text}}</p>  
-      {% for error in form.content.errors %}
-        <p class="help is-danger">{{ error }}</p>
-      {% endfor %}
+      <p id="contentError" class="help form-error"></p>
     </div>
 
     <div class="columns">
@@ -79,10 +77,7 @@
           </span>
         </div>
         <p class="help">{{form.url.help_text}}</p>
-        <p id="urlError" class="help is-danger"></p>
-        {% for error in form.url.errors %}
-          <p class="help is-danger">{{ error }}</p>
-        {% endfor %}
+        <p id="urlError" class="help form-error"></p>
       </div>
     </div>
     <div class="columns">
@@ -101,7 +96,7 @@
         </div>
         <p class="help">{{form.sorting.help_text}}</p>
         {% for error in form.sorting.errors %}
-          <p class="help is-danger">{{ error }}</p>
+          <p class="help form-error">{{ error }}</p>
         {% endfor %}
       </div>
       <div class="column is-6 field">
@@ -115,7 +110,7 @@
           <label class="checkbox"> {{form.sticky}} Keep this entry on top </label>
         </div>
         {% for error in form.sticky.errors %}
-          <p class="help is-danger">{{ error }}</p>
+          <p class="help form-error">{{ error }}</p>
         {% endfor %}
       </div>
     </div>
@@ -137,7 +132,7 @@
         </button>
         <p class="help">{{form.spatial_filter.help_text}}</p>
         {% for error in form.spatial_filter.errors %}
-          <p class="help is-danger">{{ error }}</p>
+          <p class="help form-error">{{ error }}</p>
         {% endfor %}
       </div>
       <div class="column is-6 field">
@@ -150,7 +145,7 @@
         <div class="select is-fullwidth">{{form.language_filter}}</div>
         <p class="help">{{form.language_filter.help_text}}</p>
         {% for error in form.language_filter.errors %}
-          <p class="help is-danger">{{ error }}</p>
+          <p class="help form-error">{{ error }}</p>
         {% endfor %}
       </div>
     </div>
@@ -170,7 +165,7 @@
         </div>
         <p class="help">{{form.publish_from.help_text}}</p>
         {% for error in form.publish_from.errors %}
-          <p class="help is-danger">{{ error }}</p>
+          <p class="help form-error">{{ error }}</p>
         {% endfor %}
       </div>
 
@@ -187,9 +182,9 @@
             <i class="fas fa-calendar"></i>
           </span>
         </div>
-        <p class="help">{{form.publish_from.help_text}}</p>
-        {% for error in form.publish_from.errors %}
-          <p class="help is-danger">{{ error }}</p>
+        <p class="help">{{form.publish_to.help_text}}</p>
+        {% for error in form.publish_to.errors %}
+          <p class="help form-error">{{ error }}</p>
         {% endfor %}
       </div>
     </div>
@@ -212,7 +207,7 @@
     {% endif %}
   </div>
   {% for error in form.non_field_errors %}
-  <p class="is-danger">{{ error }}</p>
+  <p class="form-error">{{ error }}</p>
   {% endfor %}
   {% include 'feeds/set_spatial_filter_modal.html' %}
 </form>
