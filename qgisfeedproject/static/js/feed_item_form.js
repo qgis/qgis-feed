@@ -23,7 +23,8 @@ let publishToPreview = document.getElementsByName("publishToPreview");
 
 let imageFileName = document.getElementById("imageFileName");
 let urlError = document.getElementById("urlError");
-let formConfirmationBtn = document.getElementById("formConfirmationBtn");
+let contentError = document.getElementById("contentError");
+let formConfirmationBtn = document.getElementsByName("formConfirmationBtn");
 
 let fields = [
   titleField,
@@ -173,14 +174,16 @@ function isURLValid(url) {
 }
 
 
-function checkFormValid() {
+function checkFormValid(contentExceed=false) {
   const isURLValueValid = isURLValid(urlField.value);
   const isFormValid = fields.every((field) => {
     const isFieldRequired = field.hasAttribute("required");
     const value = field.value;
     return !isFieldRequired || value; // Field is not required or has a value
   });
-  formConfirmationBtn.disabled = !isFormValid || !isURLValueValid
+  formConfirmationBtn.forEach((item) => {
+    item.disabled = !isFormValid || !isURLValueValid || contentExceed
+  })
 }
 
 document.addEventListener("DOMContentLoaded", () => {

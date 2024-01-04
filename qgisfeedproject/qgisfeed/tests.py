@@ -26,6 +26,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
 from django.db import connection
 
+from .utils import get_field_max_length
+
 from .models import (
     CharacterLimitConfiguration, QgisFeedEntry, QgisUserVisit, DailyQgisUserVisit, aggregate_user_visit_data
 )
@@ -619,5 +621,15 @@ class FeedsItemFormTestCase(TestCase):
         self.assertIn('title', form.errors, "This field is required.")
         self.assertIn('content', form.errors, "Ensure this value has at most 10 characters (it has 104).")
 
+    def test_get_field_max_length(self):
+        # Test the get_field_max_length function
+        content_max_length = get_field_max_length(CharacterLimitConfiguration, field_name="content")
+        self.assertEqual(content_max_length, 500)
 
+        CharacterLimitConfiguration.objects.create(
+            field_name="content",
+            max_characters=1000
+        )
+        content_max_length = get_field_max_length(CharacterLimitConfiguration, field_name="content")
+        self.assertEqual(content_max_length, 1000)
 
