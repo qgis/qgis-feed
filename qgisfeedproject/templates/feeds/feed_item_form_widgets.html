@@ -188,6 +188,23 @@
         {% endfor %}
       </div>
     </div>
+    {% if not form.instance.pk %}
+      <div class="columns">
+        <div class="column is-12 field">
+          <label class="label">
+            {% if form.approvers.field.required %}
+                <span style="color:red;">*</span>
+            {% endif %}
+            Reviewers
+          </label>
+          <div class="select is-fullwidth">{{form.approvers}}</div>
+          <p class="help">{{form.approvers.help_text}}</p>
+          {% for error in form.approvers.errors %}
+            <p class="help is-danger">{{ error }}</p>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
   </div>
   {% for error in form.non_field_errors %}
   <p class="form-error">{{ error }}</p>

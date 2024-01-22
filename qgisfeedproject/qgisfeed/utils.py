@@ -4,6 +4,7 @@ import unicodedata
 
 from django.urls import reverse
 from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
 from django.core.mail import send_mail
 from django.contrib.gis.db.models import Model
 
@@ -19,27 +20,22 @@ def simplify(text: str) -> str:
     return str(text)
 
   
-def notify_admin(author, request, recipients, obj):
+def notify_reviewers(author, request, recipients, cc, obj):
     """Send notification emails"""
-    body = """
-        User %s added a new entry.\r\n
-        Title: %s\r\n
-        Link: %s\r\n
-        """ % (
-            author.username,
-            obj.title,
-            request.build_absolute_uri(reverse('feed_entry_update', args=(obj.pk,)))
-        )
-    if settings.DEBUG:
-        logger.debug("DEBUG is True: email not sent:\n %s" % body)
-    else:
-        send_mail(
-            'A QGIS News Entry was added: %s' % obj.title,
-            body,
-            QGISFEED_FROM_EMAIL,
-            recipients,
-            fail_silently=True
-        )
+    body = f"""
+        Hi, \r\n
+        {author.username} asked you to review the feed entry available at {request.build_absolute_uri(reverse('feed_entry_update', args=(obj.pk,)))}
+        Title: {obj.title}\r\n
+        Your beloved QGIS Feed bot.
+        """
+    msg = EmailMultiAlternatives(
+        'QGIS feed entry review requested by %s' % author.username,
+        body,
+        QGISFEED_FROM_EMAIL,
+        recipients,
+        cc=cc,
+    )
+    msg.send(fail_silently=True)
 
 def get_field_max_length(ConfigurationModel: Model, field_name: str):
     try:

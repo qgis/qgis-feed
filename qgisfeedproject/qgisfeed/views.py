@@ -29,7 +29,7 @@ from django.db import transaction
 from django.contrib.auth.models import User
 
 from .forms import FeedEntryFilterForm, FeedItemForm, HomePageFilterForm
-from .utils import get_field_max_length, notify_admin
+from .utils import get_field_max_length, notify_reviewers
 from .models import QgisFeedEntry, CharacterLimitConfiguration
 from .languages import LANGUAGE_KEYS
 import json
@@ -294,10 +294,32 @@ class FeedEntryAddView(View):
                 new_object.save()
                 success = True
 
-                if not request.user.is_superuser:
-                    recipients = [u.email for u in User.objects.filter(is_superuser=True, is_active=True, email__isnull=False).exclude(email='')]
-                    if recipients:
-                        notify_admin(request.user, request, recipients, new_object)
+                # If at least one reviewer is specified, 
+                # set the specified reviewers as recipients 
+                # and cc the other reviewers. 
+                # Otherwise, send the email to all reviewers.
+                reviewers = User.objects.filter(
+                    is_active=True, 
+                    email__isnull=False
+                ).exclude(email='')
+
+                recipients = [
+                    u.email for u in reviewers if u.has_perm("qgisfeed.publish_qgisfeedentry")
+                ]
+                cc_list = []
+                if form.cleaned_data.get("approvers") and len(form.cleaned_data.get("approvers")) > 0:
+                    approver_ids = form.cleaned_data.get("approvers")
+                    recipients = [
+                        u.email for u in reviewers.filter(
+                            pk__in=approver_ids
+                        ) if u.has_perm("qgisfeed.publish_qgisfeedentry")
+                    ]
+                    cc_list = [
+                        u.email for u in reviewers.exclude(pk__in=approver_ids) if u.has_perm("qgisfeed.publish_qgisfeedentry")
+                    ]
+
+                if recipients and len(recipients) > 0:
+                    notify_reviewers(request.user, request, recipients, cc_list, new_object)
 
                 return redirect('feeds_list')
         else:

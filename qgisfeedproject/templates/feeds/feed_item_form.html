@@ -10,7 +10,34 @@
             width: 100%;
         }
     }
+
+    .chosen-container-multi .chosen-choices {
+        height: 40px !important;
+        border: unset !important;
+        background-image: unset !important;
+        border-radius: 4px;
+        display: flex;
+    }
+
+    .chosen-container-multi .chosen-choices li.search-field {
+        display: flex;
+        height: 40px;
+        align-items: center;
+    }
+
+    .chosen-container-multi .chosen-choices li.search-choice {
+        display: flex;
+        align-items: center;
+        border: unset !important;
+        background-image: unset !important;
+        margin: 5px 5px 5px 0 !important;
+    }
+
+    .chosen-container-multi .chosen-choices li.search-choice .search-choice-close {
+        top: unset !important;
+    }
 </style>
+<link rel="stylesheet" media="all" type="text/css" href="{% static "js/chosen.min.css" %}">
 
 {% endblock stylesheets %}
 {% block content %}
@@ -61,7 +88,8 @@
             <div class="columns">
                 {% if not published and user_is_approver and form.instance.pk %}
                 <div class="column is-5">
-                    <button name="formConfirmationBtn" class="button is-block is-info" type="submit" form="feedItemForm">
+                    <button name="formConfirmationBtn" class="button is-block is-info" type="submit"
+                        form="feedItemForm">
                         <span class="icon">
                             <i class="fa fa-floppy-disk" aria-hidden="true"></i>
                         </span>
@@ -102,7 +130,8 @@
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
 <script type="text/javascript" src="{% static 'tinymce/tinymce.min.js' %}"></script>
-<script src="{% static 'js/feed_item_form.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/chosen.jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/feed_item_form.js' %}"></script>
 <script>
     tinymce.init({
         max_chars: {{content_max_length}},
@@ -179,5 +208,17 @@
     function tinymce_getContentLength() {
         return contentField.value.length
     }
+
+    // Select reviewers
+    let checkElement = setInterval(function () {
+        let element = document.getElementById('id_approvers');
+        if (element) {
+            $('#id_approvers').chosen({
+                placeholder_text_multiple: "Select Some Reviewers",
+                no_results_text: "Oops, nothing found!"
+            });
+            clearInterval(checkElement);
+        }
+    }, 200);
 </script>
 {% endblock javascripts %}
