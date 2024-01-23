@@ -298,6 +298,22 @@ $ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/
 
 ## Deployment
 <details>
+    <summary><strong>Deploy changes</strong></summary>
+    </br>
+
+- Pull the latest commit: `git pull origin master`
+
+nano docker-compose-production-ssl.yml 
+docker-compose -f docker-compose-production-ssl.yml build qgisfeed
+docker-compose -f docker-compose-production-ssl.yml up -d qgisfeed
+docker-compose -f docker-compose-production-ssl.yml exec qgisfeed /bin/bash
+python manage.py migrate
+qgisfeed:production-1.3
+qgisfeed:production-1.1
+
+</details>
+
+<details>
     <summary><strong>Troubleshooting SSL in production</strong></summary>
     </br>
 
