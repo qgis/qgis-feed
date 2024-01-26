@@ -18,6 +18,7 @@ services:
     restart: always
     volumes:
       - ${QGISFEED_DOCKER_SHARED_VOLUME}:/var/lib/postgresql
+      - ../qgis-feed:/code
     networks:
       internal:
 
