@@ -1,8 +1,8 @@
-FROM python:3
+FROM python:3.8-slim
 ENV PYTHONUNBUFFERED 1
 
 RUN echo "Installing GDAL dependencies" && \
-    apt-get update && apt install -y libgdal20 wait-for-it && \
+    apt-get update && apt install -y libgdal-dev wait-for-it && \
     echo "Install C library for geoip2" && \
     apt-get install -y libmaxminddb0 libmaxminddb-dev mmdb-bin
 

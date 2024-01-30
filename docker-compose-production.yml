@@ -3,7 +3,7 @@ version: "3.7"
 services:
 
   postgis:
-    image: kartoza/postgis:11.0-2.5
+    image: kartoza/postgis:16-3.4
     ports:
     - "5432"
     environment:
@@ -18,6 +18,7 @@ services:
     restart: always
     volumes:
       - ${QGISFEED_DOCKER_SHARED_VOLUME}:/var/lib/postgresql
+      - ../qgis-feed:/code
     networks:
       internal:
 
@@ -47,7 +48,7 @@ services:
   qgisfeed:
     # Note you cannot scale if you use container_name
     container_name: qgisfeed
-    image: qgisfeed:production
+    image: xpirix/qgisfeed:production-1.4
     build:
       context: .
       dockerfile: Dockerfile.production
@@ -84,6 +85,24 @@ services:
       - ${QGISFEED_DOCKER_SHARED_VOLUME}:/shared-volume
       - ./config/nginx:/etc/nginx/conf.d
     restart: always
+    networks:
+      internal:
+
+  dbbackups:
+    image: kartoza/pg-backup:16-3.4
+    environment:
+      DUMPPREFIX: PG_QGIS_FEED
+      POSTGRES_DATABASE: ${QGISFEED_DOCKER_DBNAME}
+      POSTGRES_HOST: postgis
+      POSTGRES_PASS: ${QGISFEED_DOCKER_DBPASSWORD}
+      POSTGRES_PORT: '5432'
+      POSTGRES_USER: ${QGISFEED_DOCKER_DBUSER}
+    volumes:
+    - /mnt/backups/:/backups
+    restart: on-failure
+    depends_on:
+      postgis:
+        condition: service_healthy
     networks:
       internal:
 
