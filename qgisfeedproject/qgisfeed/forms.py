@@ -77,6 +77,9 @@ class FeedEntryFilterForm(forms.Form):
             )
     )
 
+class MapWidget(forms.OSMWidget):
+    class Media:
+        js = ['https://cdn.jsdelivr.net/npm/ol@v7.2.2/dist/ol.js']
 
 class FeedItemForm(forms.ModelForm):
     """
@@ -115,10 +118,8 @@ class FeedItemForm(forms.ModelForm):
         self.fields['content'].widget = forms.Textarea(attrs={'class': 'textarea', 'placeholder': 'Content', 'rows': 5})
         self.fields['url'].widget = forms.TextInput(attrs={'class': 'input', 'placeholder': 'URL for more information link'})
         self.fields['sorting'].widget = forms.NumberInput(attrs={'class': 'input',  'placeholder': 'Increase to show at top of the list'})
-        self.fields['spatial_filter'].widget = forms.OSMWidget(attrs={
-            'geom_type': 'Polygon',
-            'map_width': '100%', 
-            'map_height': 500,
+        self.fields['spatial_filter'].widget = MapWidget(attrs={
+            'geom_type': 'Polygon', 
             'default_lat': 0,
             'default_lon': 0,
             'default_zoom': 2
