@@ -124,3 +124,32 @@ a.is-active > span {
   font-size: 10pt;
   font-weight: 500;
 }
+
+.gradient-row{
+  background: #1D2027;
+  height: 3em;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.context-container{
+  @extend .gradient-row;
+  position: fixed;
+  width: 100%;
+  top: 4rem;
+  z-index: 100;
+  transition: top 0.3s;
+
+  .navbar-item {
+    color: white;
+    border-radius: 5px;
+  }
+
+  a.navbar-item.is-active, .navbar-link.is-active {
+    color: white;
+    &:hover {
+      color: #0a0a0a;
+    }
+  }
+}
+
