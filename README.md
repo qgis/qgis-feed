@@ -297,6 +297,30 @@ $ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/
 
 
 ## Deployment
+
+<details>
+    <summary><strong>Email-sending setup</strong></summary>
+    </br>
+
+Create the file `settings_local.py` from the template:
+
+```sh
+cp settings_local.py.templ settings_local.py
+```
+
+Update the new file with your email settings variables:
+
+```python title="settings_local.py"
+QGISFEED_FROM_EMAIL='automation@qgis.org'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'automation@qgis.org'
+EMAIL_HOST_PASSWORD = 'the_email_app_password'
+```
+</details>
+
 <details>
     <summary><strong>Troubleshooting SSL in production</strong></summary>
     </br>
