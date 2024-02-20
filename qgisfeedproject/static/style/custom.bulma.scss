@@ -17,6 +17,32 @@
     src: url("../webfonts/sevillana.woff2") format("opentype");
 }
 
+
+@font-face 
+  font-family: "Trueno"
+  src: url("../webfonts/TruenoLt.otf") format("opentype")
+  font-weight: 300
+
+@font-face 
+  font-family: "Trueno"
+  src: url("../webfonts/TruenoRg.otf") format("opentype")
+  font-weight: 400
+
+@font-face 
+  font-family: "Trueno"
+  src: url("../webfonts/TruenoSBd.otf") format("opentype")
+  font-weight: 500
+
+@font-face 
+  font-family: "Trueno"
+  src: url("../webfonts/TruenoBd.otf") format("opentype")
+  font-weight: 600 
+             
+@font-face 
+  font-family: "Trueno"
+  src: url("../webfonts/TruenoUltBlk.otf") format("opentype")
+  font-weight: 700
+
 // Set your brand colors
 $primary1: $primary1;
 $primary1-invert: $primary1-invert;
