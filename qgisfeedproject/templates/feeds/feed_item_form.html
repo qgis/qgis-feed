@@ -88,7 +88,7 @@
             <div class="columns">
                 {% if not published and user_is_approver and form.instance.pk %}
                 <div class="column is-5">
-                    <button name="formConfirmationBtn" class="button is-block is-info" type="submit"
+                    <button name="formConfirmationBtn" class="button is-outlined is-primary1" type="submit"
                         form="feedItemForm">
                         <span class="icon">
                             <i class="fa fa-floppy-disk" aria-hidden="true"></i>
@@ -99,7 +99,7 @@
                 {% endif %}
 
                 <div class="column is-7">
-                    <button name="formConfirmationBtn" class="button is-block is-success js-modal-trigger"
+                    <button name="formConfirmationBtn" class="button is-block is-primary1 js-modal-trigger"
                         data-target="form-review-modal">
                         {% if published %}
                         <span class="icon">

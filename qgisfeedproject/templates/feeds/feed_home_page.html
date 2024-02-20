@@ -72,11 +72,11 @@
                             </span>
                         </div>
                     </div>
-                    <button class="button is-block is-info is-fullwidth" type="submit" value="filter"
+                    <button class="button is-block is-primary1 is-fullwidth" type="submit" value="filter"
                         id="submit-button">
                         Filter <i class="fa fa-filter" aria-hidden="true"></i>
                     </button>
-                    <button type="button" class="button is-block is-danger is-fullwidth mt-2" value="clear"
+                    <button type="button" class="button is-block is-fullwidth mt-2" value="clear"
                         onclick="window.location.href='?';">
                         Clear filter <i class="fa fa-delete-left" aria-hidden="true"></i>
                     </button>
@@ -104,7 +104,7 @@
                 <div class="tab-content-element is-active" style="padding:0 10px;" data-content="1">
                     {% if data|length > 0 %}
                     {% for feed in data %}
-                    <div class="box-container {% if feed.url %} hoverable-preview {% endif %} form-preview columns has-background-light p-2 has-text-dark mt-5"
+                    <div class="box-container {% if feed.url %} hoverable-preview {% endif %} form-preview columns has-background-light p-2 mt-5"
                         onclick="{% if feed.url %}window.open('{{feed.url}}');{% endif %}">
                         <div class="column is-4 is-flex is-flex-direction-column is-align-items-center"
                             name="imagePreview">

@@ -1,10 +1,49 @@
 @charset "utf-8";
 @import "../../../node_modules/highlight.js/scss/atom-one-dark.scss";
+@import "custom.bulma.scss";
+
+body {
+  color: $text-primary1;
+  font-weight: 300;
+}
 
 mark {
   background: linear-gradient(-100deg, #93b023, #f0e64a 95%);
   border-radius: 0.25em;
   padding: 0.05rem 0.25em;
+}
+
+.title {
+  color: inherit;
+  font-weight: 500;
+}
+
+.table {
+  color: inherit;
+}
+
+.label {
+  color: inherit;
+  display: block;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+strong {
+  font-weight: 600;
+  color: inherit;
+}
+
+th {
+  font-weight: 500;
+}
+
+p {
+  color: $text-primary2;
+}
+
+.input, .textarea, .select select {
+  color: $text-primary2;
 }
 
 .gradient-row,
