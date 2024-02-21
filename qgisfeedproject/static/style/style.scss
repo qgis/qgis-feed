@@ -168,7 +168,8 @@ a.is-active > span {
 
 .login-container {
   box-shadow: 0 8px 12px 0 rgba(60, 60, 60, 0.75);
-  /* border-radius: 10px; */
+  border-radius: 20px;
+  max-width: 500px;
 }
 
 .login-container hr {

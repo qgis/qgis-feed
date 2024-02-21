@@ -85,7 +85,7 @@
                     {% if data|length > 0 %}
                     {% for feed in data %}
                     <div class="box-container {% if feed.url %} hoverable-preview {% endif %} form-preview columns has-background-light p-2 mt-5"
-                        onclick="{% if feed.url %}window.open('{{feed.url}}');{% endif %}">
+                        onclick="{% if feed.url %}window.open('{{feed.url}}');{% endif %}" style="margin-left: auto;margin-right: auto;">
                         <div class="column is-4 is-flex is-flex-direction-column is-align-items-center"
                             name="imagePreview">
                             {% if feed.image %}
