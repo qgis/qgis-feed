@@ -46,6 +46,13 @@ p {
   color: $text-primary2;
 }
 
+
+@media screen and (max-width: 768px) {
+  .hero-body {
+    height: unset;
+  }
+}
+
 .gradient-row,
 .box-section-footer,
 .news-container {

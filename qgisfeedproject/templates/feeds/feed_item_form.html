@@ -45,31 +45,12 @@
 <head>
     {{ form.media }}
 </head>
-<section class="hero is-dark is-small has-bg-img" style="background: url({% static "images/hegobg1.png" %});
-       background-position: center;
-       background-size: cover;">
 
-    <div class="hero-body">
-        <div class="columns is-justify-content-space-between">
-            <div class="column is-6 is-align-items-center" style="display: flex">
-                <div class="container has-text-left">
-                    <p class="title hero-title pr-3">
-                        {% if form.title.value %}
-                        Edit feed item
-                        {% else %}
-                        New feed item
-                        {% endif %}
-                    </p>
-                </div>
-            </div>
-            <div class="column is-6 is-justify-content-end" style="display: flex">
-                <figure class="image">
-                    <img src="{% static "images/large-logo.svg" %}" style="width: 8vw">
-                </figure>
-            </div>
-        </div>
-    </div>
-</section>
+{% if form.title.value %}
+    {% include "layouts/page-title.html" with page_title='Edit feed item' %}
+{% else %}
+    {% include "layouts/page-title.html" with page_title='New feed item' %}
+{% endif %}
 
 <section class="section">
     <div class="columns">

@@ -11,31 +11,7 @@
 {% endblock stylesheets %} 
 {% block content %}
 
-
-<section class="hero is-dark is-small has-bg-img"
-
-style="background: url({% static "images/hegobg1.png" %});
-       background-position: center;
-       background-size: cover;"
->
-
-    <div class="hero-body">
-        <div class="columns is-justify-content-space-between">
-            <div class="column is-6 is-align-items-center" style="display: flex">
-                <div class="container has-text-left">
-                    <p class="title hero-title pr-3">
-                        QGIS Feed
-                    </p>
-                </div>
-            </div>
-            <div class="column is-6 is-justify-content-end" style="display: flex">
-                <figure class="image">
-                    <img src="{% static "images/large-logo.svg" %}" style="width: 8vw">
-                </figure>
-            </div>
-        </div>
-    </div>
-</section>
+{% include "layouts/page-title.html" with page_title='Feed Management' %}
 
 <section class="section">
     <div class="columns">
@@ -125,7 +101,7 @@ style="background: url({% static "images/hegobg1.png" %});
                 Clear filter <i class="fa fa-delete-left" aria-hidden="true"></i>
             </button>
         </div>
-        <div class="column is-10">
+        <div class="column is-10" style="overflow: auto;">
             <table class="table is-fullwidth is-hoverable">
                 <thead>
                   <tr>
