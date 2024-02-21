@@ -53,6 +53,16 @@ p {
   }
 }
 
+.navbar {
+  background-color: unset;
+}
+.navbar-brand, .navbar-tabs {
+  min-height:unset;
+  a:hover {
+    color: $primary1-invert;
+  }
+}
+
 .gradient-row,
 .box-section-footer,
 .news-container {
@@ -133,13 +143,27 @@ p {
   height: 100vh;
 }
 
+.navbar-burger {
+  color: $primary1-invert;
+}
+
+@media screen and (max-width: 1023px) {
+  .navbar-menu {
+    background-color: #1D2027;
+  }
+  .navbar-menu.is-active {
+      display: block;
+      position: fixed;
+  }
+}
+
 #menu > div > a > span:hover {
   border-bottom: solid 1px;
   color: black;
 }
 
 a.is-active > span {
-  border-bottom: solid gray 1px;
+  border-bottom: solid $primary1-invert 1px;
 }
 
 .login-container {
@@ -193,8 +217,10 @@ a.is-active > span {
 
   a.navbar-item.is-active, .navbar-link.is-active {
     color: white;
+    background-color: unset;
     &:hover {
       color: #0a0a0a;
+      background-color: #fafafa;
     }
   }
 }
