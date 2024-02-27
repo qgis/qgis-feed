@@ -36,7 +36,9 @@
         <qg-top-nav
         breakpoint="1024"
         class="is-highest navbar is-fixed-top"
+        location-prefix="{{ MAIN_WEBSITE_URL }}"
     ></qg-top-nav>
+    {% comment %} The location-prefix will be updated when the QGIS-Hugo site is migrated to qgis.org {% endcomment %}
     {% include 'layouts/header.html' %}
     </section>
     <div>
