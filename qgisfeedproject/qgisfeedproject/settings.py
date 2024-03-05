@@ -156,6 +156,8 @@ MEDIA_URL = '/media/'
 
 GEOIP_PATH='/var/opt/maxmind/'
 
+QGISFEED_FROM_EMAIL='automation@qgis.org'
+EMAIL_HOST_USER = 'automation@qgis.org'
 
 try:
     from .settings_local import *
