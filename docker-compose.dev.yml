@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   postgis:
-    image: kartoza/postgis:11.0-2.5
+    image: kartoza/postgis:16-3.4
     platform: linux/amd64
     environment:
       POSTGRES_USER: docker
@@ -23,6 +23,7 @@ services:
       QGISFEED_DOCKER_DBNAME: ${QGISFEED_DOCKER_DBNAME}
       QGISFEED_DOCKER_DBUSER: ${QGISFEED_DOCKER_DBUSER}
       QGISFEED_DOCKER_DBPASSWORD: ${QGISFEED_DOCKER_DBPASSWORD}
+      QGIS_FEED_PROD_URL: ${QGIS_FEED_PROD_URL}
       QGISFEED_FROM_EMAIL: ${QGISFEED_FROM_EMAIL}
       EMAIL_BACKEND: ${EMAIL_BACKEND}
       EMAIL_HOST: ${EMAIL_HOST}

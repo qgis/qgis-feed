@@ -33,9 +33,9 @@ DATABASES = {
 }
 ```
 
-- Generate the `.env` from `.env.template` and edit it with your email variables:
+- Generate the `.env` from `env.template` and edit it with your email variables:
 ```sh
-cp .env.template .env
+cp env.template .env
 nano .env
 ```
 
@@ -301,9 +301,9 @@ $ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/
     </br>
 
 
-- Generate the `.env` from `.env.template` and edit it with the production email variables:
+- Generate the `.env` from `env.template` and edit it with the production email variables:
 ```sh
-cp .env.template .env
+cp env.template .env
 nano .env
 ```
 

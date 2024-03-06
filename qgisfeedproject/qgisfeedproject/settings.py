@@ -158,11 +158,6 @@ MEDIA_URL = '/media/'
 GEOIP_PATH='/var/opt/maxmind/'
 
 
-try:
-    from .settings_local import *
-except ImportError as ex:
-    pass
-
 QGISFEED_FROM_EMAIL = os.environ.get("QGISFEED_FROM_EMAIL", 'noreply')
 EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", 'django.core.mail.backends.smtp.EmailBackend')
 EMAIL_HOST = os.environ.get("EMAIL_HOST", 'smtp.gmail.com')
@@ -170,6 +165,11 @@ EMAIL_PORT = os.environ.get("EMAIL_PORT", 587)
 EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", True)
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", 'noreply')
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", '')
+
+try:
+    from .settings_local import *
+except ImportError as ex:
+    pass
 
 LOGIN_REDIRECT_URL = "/manage"
 LOGOUT_REDIRECT_URL = "/"
