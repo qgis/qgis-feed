@@ -125,6 +125,7 @@ class FeedItemForm(forms.ModelForm):
             'default_zoom': 2
         })
         self.fields['publish_from'].widget = forms.DateTimeInput(
+            format='%Y-%m-%dT%H:%M',
             attrs={
                 'type': 'datetime-local', 
                 'class': 'input', 
@@ -133,6 +134,7 @@ class FeedItemForm(forms.ModelForm):
         self.fields['publish_from'].initial = timezone.now()
 
         self.fields['publish_to'].widget = forms.DateTimeInput(
+            format='%Y-%m-%dT%H:%M',
             attrs={
                 'type': 'datetime-local', 
                 'class': 'input', 
