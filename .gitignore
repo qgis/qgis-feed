@@ -121,3 +121,4 @@ node_modules
 package-lock.json
 webpack-stats.json
 qgisfeedproject/static/bundles
+!qgisfeedproject/qgisfeedproject/settings_local.py.templ
