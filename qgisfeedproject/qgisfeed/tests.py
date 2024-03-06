@@ -671,6 +671,6 @@ class FeedsItemFormTestCase(TestCase):
 
         self.assertEqual(
             mail.outbox[0].from_email,
-            'automation@qgis.org'
+            settings.QGISFEED_FROM_EMAIL
         )
 
