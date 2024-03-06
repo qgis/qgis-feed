@@ -129,12 +129,12 @@ function refreshSpatialFilter() {
 function refreshDates() {
   publishFromPreview.forEach((item) => {
     item.innerText = publishFromField.value
-      ? new Date(publishFromField.value).toString()
+      ? moment(new Date(publishFromField.value)).format('ddd DD MMM YYYY HH:mm:ss [UTC]')
       : "-";
   });
   publishToPreview.forEach((item) => {
     item.innerText = publishToField.value
-      ? new Date(publishToField.value).toString()
+      ? moment(new Date(publishToField.value)).format('ddd DD MMM YYYY HH:mm:ss [UTC]')
       : "-";
   });
   checkFormValid();
