@@ -16,14 +16,15 @@ services:
         max-size: "200k"
         max-file: "10"
     restart: always
+    healthcheck:
+      test: "POSTGRES_PASS=$${QGISFEED_DOCKER_DBPASSWORD} pg_isready -h 127.0.0.1 -U ${QGISFEED_DOCKER_DBUSER} -d ${QGISFEED_DOCKER_DBNAME}"
     volumes:
       - ${QGISFEED_DOCKER_SHARED_VOLUME}:/var/lib/postgresql
-      - ../qgis-feed:/code
     networks:
       internal:
 
   metabase:
-    image: metabase/metabase:v0.46.6.1
+    image: metabase/metabase:v0.49.0
     hostname: metabase-secrets
     volumes:
       - /dev/urandom:/dev/random:ro
@@ -48,19 +49,28 @@ services:
   qgisfeed:
     # Note you cannot scale if you use container_name
     container_name: qgisfeed
-    image: xpirix/qgisfeed:production-1.4
+    image: qgisfeed:production
     build:
       context: .
       dockerfile: Dockerfile.production
     environment:
-      - QGISFEED_DOCKER_DBNAME
-      - QGISFEED_DOCKER_DBUSER
-      - QGISFEED_DOCKER_DBPASSWORD
+      QGISFEED_DOCKER_DBNAME: ${QGISFEED_DOCKER_DBNAME}
+      QGISFEED_DOCKER_DBUSER: ${QGISFEED_DOCKER_DBUSER}
+      QGISFEED_DOCKER_DBPASSWORD: ${QGISFEED_DOCKER_DBPASSWORD}
+      QGIS_FEED_PROD_URL: ${QGIS_FEED_PROD_URL}
+      QGISFEED_FROM_EMAIL: ${QGISFEED_FROM_EMAIL:-automation}
+      EMAIL_BACKEND: ${EMAIL_BACKEND}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
+      EMAIL_USE_TLS: ${EMAIL_USE_TLS}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER:-automation}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
     command: /code/entrypoint_production.sh
     expose:
     - "8000"
     volumes:
       - ${QGISFEED_DOCKER_SHARED_VOLUME}:/shared-volume
+      - ../qgis-feed:/code
     depends_on:
       - postgis
     logging:
@@ -98,7 +108,7 @@ services:
       POSTGRES_PORT: '5432'
       POSTGRES_USER: ${QGISFEED_DOCKER_DBUSER}
     volumes:
-    - /mnt/backups/:/backups
+    - ${QGISFEED_BACKUP_VOLUME}:/backups
     restart: on-failure
     depends_on:
       postgis:
