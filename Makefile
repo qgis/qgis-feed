@@ -88,6 +88,14 @@ start:
 	@echo "------------------------------------------------------------------"
 	@docker-compose -f docker-compose-production-ssl.yml up -d
 
+dbrestore:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Restore dump from /backups/latest-qgisfeed.dmp and  /backups/latest-metabase.dmp in production mode"
+	@echo "------------------------------------------------------------------"
+	@docker-compose -f docker-compose-production-ssl.yml exec postgis su - postgres -c "pg_restore -c /backups/latest-qgisfeed.dmp -d qgisfeed"
+	@docker-compose -f docker-compose-production-ssl.yml exec postgis su - postgres -c "pg_restore -c /backups/latest-metabase.dmp -d metabase"
+
 updatemigrations:
 	@echo
 	@echo "------------------------------------------------------------------"
