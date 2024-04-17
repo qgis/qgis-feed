@@ -24,7 +24,7 @@ services:
       internal:
 
   metabase:
-    image: metabase/metabase:v0.46.6.1
+    image: metabase/metabase:v0.49.0
     hostname: metabase-secrets
     volumes:
       - /dev/urandom:/dev/random:ro
@@ -34,7 +34,7 @@ services:
       MB_DB_TYPE: postgres
       MB_DB_DBNAME: metabase
       MB_DB_PORT: 5432
-      MB_DB_HOST: db
+      MB_DB_HOST: postgis
       MB_DB_USER: ${QGISFEED_DOCKER_DBUSER}
       MB_DB_PASS: ${QGISFEED_DOCKER_DBPASSWORD}
     logging:
@@ -49,14 +49,22 @@ services:
   qgisfeed:
     # Note you cannot scale if you use container_name
     container_name: qgisfeed
-    image: xpirix/qgisfeed:production-1.4
+    image: qgisfeed:production
     build:
       context: .
       dockerfile: Dockerfile.production
     environment:
-      - QGISFEED_DOCKER_DBNAME
-      - QGISFEED_DOCKER_DBUSER
-      - QGISFEED_DOCKER_DBPASSWORD
+      QGISFEED_DOCKER_DBNAME: ${QGISFEED_DOCKER_DBNAME}
+      QGISFEED_DOCKER_DBUSER: ${QGISFEED_DOCKER_DBUSER}
+      QGISFEED_DOCKER_DBPASSWORD: ${QGISFEED_DOCKER_DBPASSWORD}
+      QGIS_FEED_PROD_URL: ${QGIS_FEED_PROD_URL}
+      QGISFEED_FROM_EMAIL: ${QGISFEED_FROM_EMAIL:-automation}
+      EMAIL_BACKEND: ${EMAIL_BACKEND}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
+      EMAIL_USE_TLS: ${EMAIL_USE_TLS}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER:-automation}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
     command: /code/entrypoint_production.sh
     expose:
       - "8000"
@@ -107,7 +115,7 @@ services:
     command: certonly --webroot --webroot-path=/var/www/webroot --email admin@qgis.org --agree-tos --no-eff-email --force-renewal -d feed.qgis.org
   
   dbbackups:
-    image: kartoza/pg-backup:16-3.4
+    image: kartoza/pg-backup:11.0
     environment:
       DUMPPREFIX: PG_QGIS_FEED
       POSTGRES_DATABASE: ${QGISFEED_DOCKER_DBNAME}
@@ -116,7 +124,7 @@ services:
       POSTGRES_PORT: '5432'
       POSTGRES_USER: ${QGISFEED_DOCKER_DBUSER}
     volumes:
-    - /mnt/backups/:/backups
+    - ${QGISFEED_BACKUP_VOLUME}:/backups
     restart: on-failure
     depends_on:
       postgis:

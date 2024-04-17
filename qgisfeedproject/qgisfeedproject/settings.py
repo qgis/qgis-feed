@@ -28,7 +28,7 @@ SECRET_KEY = 'w*x1d0%17@hd6lx8gq#45#8w(w&a-!vupt41%#^ryyxs3l%hz9'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [os.environ.get('QGIS_FEED_PROD_URL', '')]
 
 
 # Application definition
@@ -101,10 +101,11 @@ WSGI_APPLICATION = 'qgisfeedproject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'YOUR_POSTGIS_DATABASE_NAME',
-        'USER': 'YOUR_DATABASE_USER_NAME',
-        'PASSWORD': 'YOUR_DATABASE_USER_PASSWORD',
-        'HOST': 'localhost',
+        'NAME':  os.getenv('QGISFEED_DOCKER_DBNAME', 'qgisfeed'),
+        'USER': os.getenv('QGISFEED_DOCKER_DBUSER', 'docker'),
+        'PASSWORD': os.getenv('QGISFEED_DOCKER_DBPASSWORD', 'docker'),
+        'HOST': 'postgis',
+        'HOST': 'postgis',
         'PORT': '5432'
     }
 }
@@ -160,11 +161,18 @@ GEOIP_PATH='/var/opt/maxmind/'
 # This can be specified in settings_local
 MAIN_WEBSITE_URL='https://qgis.github.io/QGIS-Hugo'
 
+QGISFEED_FROM_EMAIL = os.environ.get("QGISFEED_FROM_EMAIL", 'noreply')
+EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = os.environ.get("EMAIL_HOST", 'smtp.gmail.com')
+EMAIL_PORT = os.environ.get("EMAIL_PORT", 587)
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", True)
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", 'noreply')
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", '')
+
 try:
     from .settings_local import *
 except ImportError as ex:
     pass
-
 
 LOGIN_REDIRECT_URL = "/manage"
 LOGOUT_REDIRECT_URL = "/"

@@ -31,3 +31,7 @@ if not os.path.exists(STATIC_ROOT):
 # settings for enabling https forwarding
 USE_X_FORWARDED_PORT = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+QGIS_FEED_PROD_URL = os.environ.get('QGIS_FEED_PROD_URL', False)
+CSRF_TRUSTED_ORIGINS = [p + QGIS_FEED_PROD_URL for p in ['http://', 'https://'] if QGIS_FEED_PROD_URL]
+CORS_ORIGIN_WHITELIST = CSRF_TRUSTED_ORIGINS

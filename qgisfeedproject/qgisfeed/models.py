@@ -172,7 +172,6 @@ class QgisUserVisit(models.Model):
 class DailyQgisUserVisit(models.Model):
 
     date = models.DateField(
-        auto_now_add=True,
         blank=True
     )
 
@@ -194,7 +193,7 @@ def aggregate_user_visit_data():
     )
 
     for user_visit_date in user_visit_dates:
-
+        print('Aggretating data for: ', user_visit_date)
         daily_visit, _ = DailyQgisUserVisit.objects.get_or_create(
             date=user_visit_date,
             defaults={
@@ -275,6 +274,9 @@ def aggregate_user_visit_data():
 
         daily_visit.save()
 
+        # We need to delete entries from QgisUserVisit first
+        qgis_user_visit.delete()
+        
         UserVisit.objects.filter(
             timestamp__date=user_visit_date
         ).delete()

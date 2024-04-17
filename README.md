@@ -19,15 +19,6 @@ $ make dev-build
 - Create `settings_local.py` int the `qgisfeedproject` directory, configure the email sender variables and DB configuration as in the example below:
 
 ```python
-# For email notifications, the sender address can be configured with:
-QGISFEED_FROM_EMAIL='noreply@qgis.org'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'the.email.host'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'noreply@qgis.org'
-EMAIL_HOST_PASSWORD = 'yourpwd'
-
 # The db service in the docker-compose is used by default
 # You can specify the databse with the configuration below
 DATABASES = {
@@ -41,6 +32,13 @@ DATABASES = {
     }
 }
 ```
+
+- Generate the `.env` from `env.template` and edit it with your email variables:
+```sh
+cp env.template .env
+nano .env
+```
+
 See https://docs.djangoproject.com/en/2.2/topics/email/#module-django.core.mail for further email configuration.
 
 - To prevent DDOS attacks there is limit in the number of returned records (defaults to 20): it can be configured by overriding the settings in `settings_local.py` with:
@@ -297,6 +295,20 @@ $ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/
 
 
 ## Deployment
+
+<details>
+    <summary><strong>Email-sending setup</strong></summary>
+    </br>
+
+
+- Generate the `.env` from `env.template` and edit it with the production email variables:
+```sh
+cp env.template .env
+nano .env
+```
+
+</details>
+
 <details>
     <summary><strong>Troubleshooting SSL in production</strong></summary>
     </br>
