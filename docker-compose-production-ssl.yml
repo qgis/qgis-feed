@@ -20,6 +20,7 @@ services:
       test: "POSTGRES_PASS=$${QGISFEED_DOCKER_DBPASSWORD} pg_isready -h 127.0.0.1 -U ${QGISFEED_DOCKER_DBUSER} -d ${QGISFEED_DOCKER_DBNAME}"
     volumes:
       - ${QGISFEED_DOCKER_SHARED_VOLUME}:/var/lib/postgresql
+      - ${QGISFEED_BACKUP_VOLUME}:/backups
     networks:
       internal:
 
