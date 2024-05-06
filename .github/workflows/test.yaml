@@ -37,20 +37,23 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    - name: Generate the .env file
+      run: cp env.template .env
+
     - name: Run docker-compose build
-      run: docker-compose -f docker-compose.dev.yml build
+      run: docker compose -f docker-compose.dev.yml build
 
     - name: Run the containers
-      run: docker-compose -f docker-compose.dev.yml up -d postgis qgisfeed webpack
+      run: docker compose -f docker-compose.dev.yml up -d postgis qgisfeed webpack
 
     - name: Wait for the containers to start
       run: sleep 60 
       
     - name: Run test
       run: |
-        docker-compose -f docker-compose.dev.yml exec -T qgisfeed python qgisfeedproject/manage.py makemigrations
-        docker-compose -f docker-compose.dev.yml exec -T qgisfeed python qgisfeedproject/manage.py migrate
-        docker-compose -f docker-compose.dev.yml exec -T qgisfeed python qgisfeedproject/manage.py test qgisfeed
+        docker compose -f docker-compose.dev.yml exec -T qgisfeed python qgisfeedproject/manage.py makemigrations
+        docker compose -f docker-compose.dev.yml exec -T qgisfeed python qgisfeedproject/manage.py migrate
+        docker compose -f docker-compose.dev.yml exec -T qgisfeed python qgisfeedproject/manage.py test qgisfeed
         exit_code=$?
-        docker-compose -f docker-compose.dev.yml down
+        docker compose -f docker-compose.dev.yml down
         exit $exit_code
