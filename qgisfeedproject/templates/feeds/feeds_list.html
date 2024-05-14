@@ -15,14 +15,14 @@
 
 <section class="section">
     <div class="columns">
-        <div class="column is-2 box has-background-light p-3 box-container">
+        <div class="column is-2 box has-background-light p-3 box-container" style="min-width: 250px;">
           {% if user_can_add %}
             <button 
                 class="button is-block is-success is-fullwidth is-large"
                 value="add" 
                 onclick="window.location.href='{% url 'feed_entry_add'%}';"
             >
-                New feed item <i class="fa fa-plus" aria-hidden="true"></i>
+                New feed &nbsp;<i class="fa fa-plus" aria-hidden="true"></i>
             </button>
             <hr/>
           {% endif %}
@@ -90,7 +90,7 @@
                     value="filter" 
                     id="submit-button"
                 >
-                    Filter <i class="fa fa-filter" aria-hidden="true"></i>
+                    Filter &nbsp;<i class="fa fa-filter" aria-hidden="true"></i>
                 </button>
             </form>
             <button 
@@ -98,7 +98,7 @@
                 value="clear" 
                 onclick="window.location.href='?';"
             >
-                Clear filter <i class="fa fa-delete-left" aria-hidden="true"></i>
+                Clear filter &nbsp;<i class="fa fa-delete-left" aria-hidden="true"></i>
             </button>
         </div>
         <div class="column is-10" style="overflow: auto;">
