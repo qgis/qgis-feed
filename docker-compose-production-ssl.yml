@@ -5,7 +5,7 @@ services:
   postgis:
     image: kartoza/postgis:16-3.4
     ports:
-      - "5432"
+    - "5432"
     environment:
       POSTGRES_USER: ${QGISFEED_DOCKER_DBUSER}
       POSTGRES_PASS: ${QGISFEED_DOCKER_DBPASSWORD}
@@ -68,7 +68,7 @@ services:
       EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
     command: /code/entrypoint_production.sh
     expose:
-      - "8000"
+    - "8000"
     volumes:
       - ${QGISFEED_DOCKER_SHARED_VOLUME}:/shared-volume
       - ../qgis-feed:/code
@@ -86,8 +86,8 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "80:8000"
-      - "443:443"
+    - "80:80"
+    - "443:443"
     logging:
       driver: "json-file"
       options:
@@ -114,9 +114,9 @@ services:
     depends_on:
       - nginx
     command: certonly --webroot --webroot-path=/var/www/webroot --email admin@qgis.org --agree-tos --no-eff-email --force-renewal -d feed.qgis.org
-  
+
   dbbackups:
-    image: kartoza/pg-backup:11.0
+    image: kartoza/pg-backup:16-3.4
     environment:
       DUMPPREFIX: PG_QGIS_FEED
       POSTGRES_DATABASE: ${QGISFEED_DOCKER_DBNAME}
