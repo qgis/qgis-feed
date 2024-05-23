@@ -216,8 +216,8 @@ style="background: url({% static "images/banner4.png" %});
                                 {% endif %}
                             </td>
 
-                            <td>{{ feed.publish_from|default:"-" }}</td>
-                            <td>{{ feed.publish_to|default:"-" }}</td>
+                            <td>{{ feed.publish_from|date:"d F Y, H:i"|default:"-" }}</td>
+                            <td>{{ feed.publish_to|date:"d F Y, H:i"|default:"-" }}</td>
                             <td>{{ feed.sorting|default:"-" }}</td>
                         </tr>
                     {% endfor %}
