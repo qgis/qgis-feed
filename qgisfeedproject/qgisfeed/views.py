@@ -372,12 +372,14 @@ class FeedEntryUpdateView(View):
         user = request.user
         user_is_approver = user.has_perm("qgisfeed.publish_qgisfeedentry")
         form = self.form_class(request.POST, request.FILES, instance=feed_entry)
-
         if form.is_valid():
             instance = form.save(commit=False)
-            publish = bool(request.POST.get('publish', ''))
-            if publish and user_is_approver:
-                instance.published = True
+            if request.POST.get('publish') and user_is_approver:
+                try:
+                    publish = bool(int(request.POST.get('publish')))
+                    instance.published = publish
+                except ValueError:
+                    pass
 
             instance.save()
             success = True
