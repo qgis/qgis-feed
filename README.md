@@ -330,8 +330,8 @@ Now check if your browser is showing the site opening with no SSL errors: https:
 ```
 ssh feed.qgis.org
 cd /home/web/qgis-feed
-docker-compose -f docker-compose-production-ssl.yml up certbot
-docker-compose -f docker-compose-production-ssl.yml restart nginx
+make start c=certbot
+make restart c=nginx
 ```
 
 Now check if your browser is showing the site opening with no SSL errors: https://feed.qgis.org

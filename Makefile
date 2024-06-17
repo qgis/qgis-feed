@@ -28,7 +28,7 @@ dev-logs:
 	@echo "------------------------------------------------------------------"
 	@docker logs -f $(CONTAINER_NAME)
 
-dev-updatemigrations:
+dev-update-migrations:
 	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Running makemigrations in development mode"
@@ -84,9 +84,23 @@ build:
 start:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Running in production mode"
+	@echo "Starting all or specific container(s) in production mode."
 	@echo "------------------------------------------------------------------"
-	@docker compose -f docker-compose-production-ssl.yml up -d
+	@docker compose -f docker-compose-production-ssl.yml up -d $(c)
+
+restart:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Restarting all or specific container(s) in production mode."
+	@echo "------------------------------------------------------------------"
+	@docker compose -f docker-compose-production-ssl.yml up -d $(c)
+
+kill:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Killing all or a specific container(s) in production mode"
+	@echo "------------------------------------------------------------------"
+	@docker compose -f docker-compose-production-ssl.yml kill $(c)
 
 dbrestore:
 	@echo
@@ -135,9 +149,52 @@ collectstatic:
 	@echo "------------------------------------------------------------------"
 	@docker compose -f docker-compose-production-ssl.yml exec $(CONTAINER_NAME) python qgisfeedproject/manage.py collectstatic --noinput
 
-stop:
+
+qgisfeed-shell:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Stop the production server"
+	@echo "Shelling into the qgisfeed container"
 	@echo "------------------------------------------------------------------"
-	@docker compose -f docker-compose-production-ssl.yml down
+	@docker compose -f docker-compose-production-ssl.yml exec qgisfeed bash
+
+qgisfeed-logs:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Show the qgisfeed container logs"
+	@echo "------------------------------------------------------------------"
+	@docker compose -f docker-compose-production-ssl.yml logs -f qgisfeed
+
+nginx-shell:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Shelling into the nginx container"
+	@echo "------------------------------------------------------------------"
+	@docker compose -f docker-compose-production-ssl.yml exec nginx bash
+
+nginx-logs:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Show the nginx container logs"
+	@echo "------------------------------------------------------------------"
+	@docker compose -f docker-compose-production-ssl.yml logs -f nginx
+
+logs:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Tailing all logs or a specific container"
+	@echo "------------------------------------------------------------------"
+	@docker compose -f docker-compose-production-ssl.yml logs -f $(c)
+
+shell:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Shelling into a specific container"
+	@echo "------------------------------------------------------------------"
+	@docker compose -f docker-compose-production-ssl.yml exec $(c) bash
+
+exec:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Execute a specific docker command"
+	@echo "------------------------------------------------------------------"
+	@docker compose -f docker-compose-production-ssl.yml $(c)
