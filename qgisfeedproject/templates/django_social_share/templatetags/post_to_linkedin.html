@@ -1,16 +1,9 @@
-{% load i18n social_share %}{% get_current_language as LANGUAGE_CODE %}
-<!-- <div class="linkedin-this {{link_class}}">
-  <script src="https://platform.linkedin.com/in.js" type="text/javascript">
-    lang: {{ LANGUAGE_CODE|linkedin_locale }}
-  </script>
-  <script type="IN/Share" data-url="{{ linkedin_url }}"></script>
-</div> -->
-
 <a
   href="http://www.linkedin.com/shareArticle?url={{ linkedin_url }}"
   target="_blank"
   class="{{link_class}}"
 >
-  <i class="fab fa-linkedin"></i> <span>Post to LinkedIn</span>
+  <span class="icon">
+    <i class="fab fa-linkedin" style="color: #0a66c2; font-size: 30pt"></i>
+  </span>
 </a>
-
