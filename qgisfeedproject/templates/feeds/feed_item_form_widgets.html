@@ -188,6 +188,29 @@
         {% endfor %}
       </div>
     </div>
+
+    {% if published and user_is_approver and form.instance.pk %}
+    <div class="columns">
+      <div class="column is-6 field">
+        <label class="label">
+          Unpublish this entry:
+        </label>
+        <button 
+          name="formConfirmationBtn" 
+          class="button is-block is-danger is-fullwidth js-modal-trigger" 
+          type="button"
+          form="feedItemForm"
+          data-target="confirmation-modal"
+          >
+            <span class="icon">
+                <i class="fa fa-unlink" aria-hidden="true"></i>
+            </span>
+            <span>Unpublish</span>
+        </button>
+      </div>
+    </div>
+    {% endif %}
+
     {% if not form.instance.pk %}
       <div class="columns">
         <div class="column is-12 field">
@@ -210,4 +233,5 @@
   <p class="form-error">{{ error }}</p>
   {% endfor %}
   {% include 'feeds/set_spatial_filter_modal.html' %}
+  {% include 'feeds/confirmation_modal.html' %}
 </form>
