@@ -149,10 +149,10 @@
                 Share this: 
             </span>
             <div>
-                <!--  Note that only telegram and email support content sharing -->
+                <!--  Note that only content sharing is note fully supported for now -->
                 {% post_to_facebook object_or_url link_class="button is-large is-light" %}
                 {% post_to_linkedin object_or_url link_class="button is-large is-light" %}
-                {% post_to_telegram "{{feed_entry.title}} \n {{feed_entry.content}}" object_or_url link_class="button is-large is-light" %}
+                {% post_to_telegram "{{feed_entry.title}}: {{feed_entry.content}}" object_or_url link_class="button is-large is-light" %}
                 {% post_to_reddit feed_entry.title object_or_url link_class="button is-large is-light" %}
                 {% send_email feed_entry.title feed_entry.content object_or_url link_class="button is-large is-light" %}
             </div>

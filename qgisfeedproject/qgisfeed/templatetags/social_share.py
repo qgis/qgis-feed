@@ -30,7 +30,7 @@ TWITTER_ENDPOINT = 'https://twitter.com/intent/tweet?text=%s'
 FACEBOOK_ENDPOINT = 'https://www.facebook.com/sharer/sharer.php?u=%s'
 GPLUS_ENDPOINT = 'https://plus.google.com/share?url=%s'
 MAIL_ENDPOINT = 'mailto:?subject=%s&body=%s'
-LINKEDIN_ENDPOINT = 'https://www.linkedin.com/shareArticle?mini=true&title=%s&url=%s'
+LINKEDIN_ENDPOINT = 'https://www.linkedin.com/shareArticle?mini=true&title=hello&url=%s'
 REDDIT_ENDPOINT = 'https://www.reddit.com/submit?title=%s&url=%s'
 TELEGRAM_ENDPOINT = 'https://t.me/share/url?text=%s&url=%s'
 WHATSAPP_ENDPOINT = 'https://api.whatsapp.com/send?text=%s'
@@ -159,7 +159,7 @@ def linkedin_locale(value):
 def post_to_linkedin_url(context, obj_or_url=None):
     request = context['request']
     url = _build_url(request, obj_or_url)
-    context['linkedin_url'] = url
+    context['linkedin_url'] = LINKEDIN_ENDPOINT % urlencode(url)
     return context
 
 
