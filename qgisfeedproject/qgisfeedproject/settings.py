@@ -53,7 +53,10 @@ INSTALLED_APPS = [
     'user_visit',
 
     # Webpack
-    'webpack_loader'
+    'webpack_loader',
+
+    # Social share
+    'django_social_share'
 ]
 
 # Useful debugging extensions
