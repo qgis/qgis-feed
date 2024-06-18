@@ -1,0 +1,238 @@
+{% extends 'layouts/base-fullscreen.html' %}
+{% load social_share %}
+{% block title %} QGIS Home Page News Feed {% endblock title %} {% load static %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<style>
+    #map {
+        height: 400px;
+        width: 100%;
+    }
+
+    .page-content {
+        max-width: 1200px;
+    }
+</style>
+{% endblock stylesheets %}
+
+
+{% block content %}
+<head>
+    {{ form.media }}
+</head>
+<section class="hero is-dark is-small has-bg-img" style="background: url({% static "images/banner4.png" %});
+       background-position: center;
+       background-size: cover;">
+
+    <div class="hero-body">
+        <div class="columns is-justify-content-space-between">
+            <div class="column is-6 is-align-items-center" style="display: flex">
+                <div class="container has-text-left">
+                    <p class="title pr-3">
+                        {{feed_entry.title | default:""}}
+                    </p>
+                </div>
+            </div>
+            <div class="column is-6 is-justify-content-end" style="display: flex">
+                <figure class="image">
+                    <img src="{% static "images/large-logo.svg" %}" style="width: 8vw">
+                </figure>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section is-flex is-justify-content-center">
+    <div class="rows page-content">
+        <div class="columns m-5 is-justify-content-space-between">
+            <a 
+                class="button is-light mt-2" 
+                href="{% url 'all' %}">
+                <span class="icon">
+                    <i class="fa fa-home" aria-hidden="true"></i>
+                </span>
+                <span class="icon">
+                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                </span>
+                <span>
+                    Back to homepage
+                </span>
+            </a>
+            {% comment %} <a 
+                class="button is-light mt-2" 
+                href="{% url 'all' %}">
+                <span class="icon">
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                </span>
+                <span>
+                    Edit
+                </span>
+            </a> {% endcomment %}
+        </div>
+        <div class="form-preview columns has-background-light p-2 box-container has-text-dark m-5">
+            <div class="column is-4 is-flex is-justify-content-center" name="imagePreview">
+                {% if feed_entry.image %}
+                <img src="{{ feed_entry.image.url }}" style="border-radius:20px;">
+                {% else %}
+                {% endif %}
+            </div>
+            <div class="column is-8">
+                <h5 name="titlePreview" class="title is-5">
+                    {{feed_entry.title | default:""}}
+                </h5>
+                <div name="contentPreview">
+                    {{feed_entry.content | default:"" | safe }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-preview columns p-2 box-container has-text-dark m-5">
+            <table class="table is-fullwidth">
+                <tbody>
+                    <tr>
+                        <th>Url:</th>
+                        <td name="urlPreview">
+                            {% if feed_entry.url %}
+                                <a href="{{ feed_entry.url }}" target="_blank">{{ feed_entry.url }}</a>
+                            {% else %}
+                                <i>-</i>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Sticky:</th>
+                        <td name="stickyPreview">
+                            {% if feed_entry.sticky %}
+                                <span class="icon has-text-success">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                </span>
+                            {% else %}
+                                <span class="icon has-text-danger">
+                                    <i class="fa-solid fa-circle-xmark"></i>
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Sorting order:</th>
+                        <td name="sortingPreview">
+                            {{ feed_entry.sorting|default:"-" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Language filter:</th>
+                        <td name="languagePreview">
+                            {{ feed_entry.language_filter|default:"-" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Publication start:</th>
+                        <td name="publishFromPreview">
+                            {{ feed_entry.publish_from|date:"d F Y, H:i"|default:"-" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Publication end:</th>
+                        <td name="publishToPreview">
+                            {{ feed_entry.publish_to|date:"d F Y, H:i"|default:"-" }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+        <div class="columns p-2 m-5">
+            <div id="map"></div>
+        </div>
+        <div class="columns p-2 m-5 is-align-items-center is-justify-content-end">
+            <span class="mr-3 is-size-5">
+                Share this: 
+            </span>
+            <div>
+                <!--  Note that only telegram and email support content sharing -->
+                {% post_to_facebook object_or_url link_class="button is-large is-light" %}
+                {% post_to_linkedin object_or_url link_class="button is-large is-light" %}
+                {% post_to_telegram "{{feed_entry.title}} \n {{feed_entry.content}}" object_or_url link_class="button is-large is-light" %}
+                {% post_to_reddit feed_entry.title object_or_url link_class="button is-large is-light" %}
+                {% send_email feed_entry.title feed_entry.content object_or_url link_class="button is-large is-light" %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}
+
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+<script>
+    $(document).ready(function() {
+        // Parse the polygon coordinates from the template context
+        const spatialFilterGeojson = {{ spatial_filter_geojson|safe }};
+        if (spatialFilterGeojson) {
+
+            // Transform coordinates to OpenLayers format
+            const coordinates = spatialFilterGeojson.coordinates[0].map(function(coord) {
+                return ol.proj.fromLonLat(coord);
+            });
+            // Create a polygon feature
+            const polygon = new ol.geom.Polygon([coordinates]);
+            const polygonFeature = new ol.Feature({
+                geometry: polygon
+            });
+
+            const vectorSource = new ol.source.Vector({
+                features: [polygonFeature]
+            });
+
+            const polygonLayer = new ol.layer.Vector({
+                source: vectorSource,
+                style: new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: 'blue',
+                        width: 2
+                    }),
+                    fill: new ol.style.Fill({
+                        color: 'rgba(0, 0, 255, 0.1)'
+                    })
+                })
+            });
+
+            // Initialize the map
+            const map = new ol.Map({
+                target: 'map',
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.OSM()
+                    }),
+                    polygonLayer
+                ]
+            });
+
+            // Fit the map view to the polygon's extent
+            map.getView().fit(polygon.getExtent(), {
+                padding: [20, 20, 20, 20],  // Optional padding around the polygon
+                maxZoom: 15,                // Optional max zoom level
+                duration: 1000              // Optional animation duration in milliseconds
+            });
+        }
+
+        else {
+
+            // Initialize a map with default view if no spatial_filter_geojson
+            const map = new ol.Map({
+                target: 'map',
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.OSM()
+                    })
+                ],
+                view: new ol.View({
+                    center: ol.proj.fromLonLat([0, 0]),
+                    zoom: 2
+                })
+            });
+        }
+    });
+</script>
+{% endblock javascripts %}

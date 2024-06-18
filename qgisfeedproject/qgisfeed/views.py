@@ -19,6 +19,7 @@ from django.utils import timezone
 from django.contrib.gis.geos import GEOSGeometry
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views import View
+from django.views.generic import DetailView
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect, get_object_or_404
@@ -28,7 +29,7 @@ from django.utils.decorators import method_decorator
 from django.db import transaction
 from django.contrib.auth.models import User
 
-from .forms import FeedEntryFilterForm, FeedItemForm, HomePageFilterForm
+from .forms import FeedEntryFilterForm, FeedItemForm, HomePageFilterForm, ReadOnlyFeedItemForm
 from .utils import get_field_max_length, notify_reviewers
 from .models import QgisFeedEntry, CharacterLimitConfiguration
 from .languages import LANGUAGE_KEYS
@@ -394,6 +395,28 @@ class FeedEntryUpdateView(View):
             "published": feed_entry.published,
             "user_is_approver": user_is_approver,
             "content_max_length": get_field_max_length(CharacterLimitConfiguration, field_name="content")
+        }
+
+        return render(request, self.template_name, args)
+
+
+class FeedEntryDetailView(DetailView):
+    """
+    View to get a feed entry item
+    """
+    model = QgisFeedEntry
+    template_name = 'feeds/feed_item_detail.html'
+    context_object_name = 'feed_entry'
+    form_class = ReadOnlyFeedItemForm
+
+    def get(self, request, pk):
+        feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
+        form = self.form_class(instance=feed_entry)
+        spatial_filter_geojson = feed_entry.spatial_filter.geojson if feed_entry.spatial_filter else 0
+        args = {
+            "form": form,
+            "feed_entry": feed_entry,
+            "spatial_filter_geojson": spatial_filter_geojson
         }
 
         return render(request, self.template_name, args)

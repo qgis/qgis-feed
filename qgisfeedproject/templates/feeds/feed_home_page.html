@@ -112,12 +112,21 @@
                             <img src="{{ feed.image }}" style="border-radius:20px;">
                             {% endif %}
                         </div>
-                        <div class="column is-8">
+                        <div class="column is-8 is-flex is-flex-direction-column">
                             <h5 name="titlePreview" class="title is-5">
                                 {{feed.title | default:""}}
                             </h5>
                             <div name="contentPreview">
                                 {{feed.content | default:"" | safe }}
+                            </div>
+                            <div class="is-flex  is-justify-content-flex-end is-align-items-end" style="height:100%">
+                                <a class="button is-light mt-2 is-info"
+                                    href="{% url 'feed_entry_detail' feed.pk %}"
+                                    onclick="event.stopPropagation();">
+                                    <span class="icon is-size-5">
+                                        <i class="fa fa-circle-info" aria-hidden="true"></i>
+                                    </span>
+                                </a>
                             </div>
                         </div>
                     </div>
