@@ -5,6 +5,7 @@ from .models import CharacterLimitConfiguration, QgisFeedEntry
 from .languages import LANGUAGES
 from django.utils import timezone
 from django.contrib.auth.models import User
+import json
 
 class HomePageFilterForm(forms.Form):
     """
@@ -165,3 +166,23 @@ class FeedItemForm(forms.ModelForm):
                 email__isnull=False
             ).exclude(email='') if u.has_perm("qgisfeed.publish_qgisfeedentry")
         )
+
+
+class ReadOnlyFeedItemForm(forms.ModelForm):
+    class Meta:
+        model = QgisFeedEntry
+        fields = ['spatial_filter']
+
+    def __init__(self, *args, **kwargs):
+        super(ReadOnlyFeedItemForm, self).__init__(*args, **kwargs)
+        self.fields['spatial_filter'].widget = MapWidget(attrs={
+            'geom_type': 'Polygon',
+            'default_lat': 0,
+            'default_lon': 0,
+            'default_zoom': 2,
+            'map_options': json.dumps({
+                'editable': False,
+                'readonly': True,
+                'draggable': False,
+            })
+        })
