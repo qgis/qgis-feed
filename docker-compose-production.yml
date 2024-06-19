@@ -25,7 +25,7 @@ services:
       internal:
 
   metabase:
-    image: metabase/metabase:v0.49.0
+    image: metabase/metabase:v0.49.10
     hostname: metabase-secrets
     volumes:
       - /dev/urandom:/dev/random:ro
