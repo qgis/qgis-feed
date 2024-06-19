@@ -11,42 +11,18 @@
 {% endblock stylesheets %} 
 {% block content %}
 
-
-<section class="hero is-dark is-small has-bg-img"
-
-style="background: url({% static "images/banner4.png" %});
-       background-position: center;
-       background-size: cover;"
->
-
-    <div class="hero-body">
-        <div class="columns is-justify-content-space-between">
-            <div class="column is-6 is-align-items-center" style="display: flex">
-                <div class="container has-text-left">
-                    <p class="title hero-title pr-3">
-                        QGIS Feed
-                    </p>
-                </div>
-            </div>
-            <div class="column is-6 is-justify-content-end" style="display: flex">
-                <figure class="image">
-                    <img src="{% static "images/large-logo.svg" %}" style="width: 8vw">
-                </figure>
-            </div>
-        </div>
-    </div>
-</section>
+{% include "layouts/page-title.html" with page_title='Feed Management' %}
 
 <section class="section">
     <div class="columns">
-        <div class="column is-2 box has-background-light p-3 box-container">
+        <div class="column is-2 box has-background-light p-3 box-container" style="min-width: 250px;">
           {% if user_can_add %}
             <button 
                 class="button is-block is-success is-fullwidth is-large"
                 value="add" 
                 onclick="window.location.href='{% url 'feed_entry_add'%}';"
             >
-                New feed item <i class="fa fa-plus" aria-hidden="true"></i>
+                New feed &nbsp;<i class="fa fa-plus" aria-hidden="true"></i>
             </button>
             <hr/>
           {% endif %}
@@ -109,23 +85,23 @@ style="background: url({% static "images/banner4.png" %});
                     </div>
                   </div>
                 <button 
-                    class="button is-block is-info is-fullwidth"
+                    class="button is-outlined is-primary1 is-fullwidth"
                     type="submit" 
                     value="filter" 
                     id="submit-button"
                 >
-                    Filter <i class="fa fa-filter" aria-hidden="true"></i>
+                    Filter &nbsp;<i class="fa fa-filter" aria-hidden="true"></i>
                 </button>
             </form>
             <button 
-                class="button is-block is-danger is-fullwidth mt-2"
+                class="button is-outlined is-fullwidth mt-2"
                 value="clear" 
                 onclick="window.location.href='?';"
             >
-                Clear filter <i class="fa fa-delete-left" aria-hidden="true"></i>
+                Clear filter &nbsp;<i class="fa fa-delete-left" aria-hidden="true"></i>
             </button>
         </div>
-        <div class="column is-10">
+        <div class="column is-10" style="overflow: auto;">
             <table class="table is-fullwidth is-hoverable">
                 <thead>
                   <tr>

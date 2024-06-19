@@ -17,6 +17,37 @@
     src: url("../webfonts/sevillana.woff2") format("opentype");
 }
 
+
+@font-face {
+  font-family: "Trueno";
+  src: url("../webfonts/TruenoLt.otf") format("opentype");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "Trueno";
+  src: url("../webfonts/TruenoRg.otf") format("opentype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Trueno";
+  src: url("../webfonts/TruenoSBd.otf") format("opentype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Trueno";
+  src: url("../webfonts/TruenoBd.otf") format("opentype");
+  font-weight: 600;
+}
+             
+@font-face {
+  font-family: "Trueno";
+  src: url("../webfonts/TruenoUltBlk.otf") format("opentype");
+  font-weight: 700;
+}
+
 // Set your brand colors
 $primary1: $primary1;
 $primary1-invert: $primary1-invert;
@@ -118,8 +149,8 @@ $input-shadow: none;
 $box-shadow: none;
 $box-radius: $corner-radius;
 $box-background-color: $complementary1;
-$box-color: $light1;
-$box-link-hover-shadow: none;;
+$box-color: $text-primary1;
+$box-link-hover-shadow: none;
 
 $menu-item-color: $dark2;
 // Not really needed since we will hide it
@@ -150,6 +181,9 @@ $notification-radius: $corner-radius;
 @import "../../../node_modules/bulma/sass/elements/_all.sass";
 @import "../../../node_modules/bulma/sass/components/_all.sass";
 @import "../../../node_modules/bulma/sass/grid/_all.sass";
-@import "../../../node_modules/bulma/sass/layout/_all.sass";
+// @import "../../../node_modules/bulma/sass/layout/_all.sass";
 @import "../../../node_modules/bulma/sass/helpers/_all.sass";
 @import "../../../node_modules/bulma/sass/form/_all.sass";
+
+// @import "footer.sass"
+@import "bulma/layout/_all.sass"

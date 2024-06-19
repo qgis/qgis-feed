@@ -1,6 +1,6 @@
 <form method="POST" enctype="multipart/form-data" id="feedItemForm">
   {% csrf_token %}
-  <div class="box has-background-light p-3 box-container has-text-dark">
+  <div class="box has-background-light p-3 box-container">
     <div class="field">
       <label class="label">
         {% if form.title.field.required %}
@@ -123,7 +123,7 @@
           {% endif %}
           {{ form.spatial_filter.label_tag }}
         </label>
-        <button class="button is-light is-info js-modal-trigger is-fullwidth" data-target="spatial-filter-modal"
+        <button class="button is-outlined is-primary1 js-modal-trigger is-fullwidth" data-target="spatial-filter-modal"
           type="button">
           <span class="icon">
             <i class="fa fa-map" aria-hidden="true"></i>
