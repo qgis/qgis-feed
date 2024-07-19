@@ -159,7 +159,7 @@ MEDIA_URL = '/media/'
 GEOIP_PATH='/var/opt/maxmind/'
 
 # This can be specified in settings_local
-MAIN_WEBSITE_URL='https://qgis.github.io/QGIS-Hugo'
+MAIN_WEBSITE_URL='https://qgis.org'
 
 QGISFEED_FROM_EMAIL = os.environ.get("QGISFEED_FROM_EMAIL", 'noreply')
 EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", 'django.core.mail.backends.smtp.EmailBackend')
