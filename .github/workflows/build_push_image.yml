@@ -29,8 +29,8 @@ jobs:
         file: dockerize/docker/Dockerfile
         push: true
         tags: |
-          ${{ secrets.DOCKER_USERNAME }}/qgis-feed:${{ github.ref_name }}
-          ${{ secrets.DOCKER_USERNAME }}/qgis-feed:latest
+          qgis/qgis-feed:${{ github.ref_name }}
+          qgis/qgis-feed:latest
 
     - name: Log out from Docker Hub
       run: docker logout
