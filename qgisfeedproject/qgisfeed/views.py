@@ -66,8 +66,8 @@ class QgisEntriesView(View):
         """
         filters = {}
         if request.GET.get('lang'):
-            lang = request.GET.get('lang')
-            if not lang in LANGUAGE_KEYS:
+            lang = str(request.GET.get('lang'))[:2]
+            if lang not in LANGUAGE_KEYS:
                 raise BadRequestException("Invalid language parameter.")
             filters['lang'] = lang
         if request.GET.get('lat') and request.GET.get('lon'):
