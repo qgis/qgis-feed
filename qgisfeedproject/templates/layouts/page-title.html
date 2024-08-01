@@ -1,0 +1,16 @@
+{% load static %}
+<section class="hero is-dark is-small has-bg-img" style="background: url({% static "images/hegobg1.png" %});
+       background-position: center;
+       background-size: cover;">
+
+    <div class="hero-body">
+        <div class="columns container is-flex is-align-items-center is-justify-content-space-between">
+            <p class="title hero-title pr-3 mb-0">
+                {{page_title}}
+            </p>
+            <figure>
+                <img src="{% static "images/large-logo.svg" %}" style="width: 8vw">
+            </figure>
+        </div>
+    </div>
+</section>

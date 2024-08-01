@@ -1,10 +1,66 @@
 @charset "utf-8";
 @import "../../../node_modules/highlight.js/scss/atom-one-dark.scss";
+@import "custom.bulma.scss";
+
+body {
+  color: $text-primary1;
+  font-weight: 300;
+}
 
 mark {
   background: linear-gradient(-100deg, #93b023, #f0e64a 95%);
   border-radius: 0.25em;
   padding: 0.05rem 0.25em;
+}
+
+.title {
+  color: inherit;
+  font-weight: 500;
+}
+
+.table {
+  color: inherit;
+}
+
+.label {
+  color: inherit;
+  display: block;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+strong {
+  font-weight: 600;
+  color: inherit;
+}
+
+th {
+  font-weight: 500;
+}
+
+p {
+  color: $text-primary2;
+}
+
+.input, .textarea, .select select {
+  color: $text-primary2;
+}
+
+
+@media screen and (max-width: 768px) {
+  .hero-body {
+    height: unset;
+  }
+}
+
+.navbar {
+  background-color: unset;
+}
+.navbar-brand, .navbar-tabs {
+  min-height:unset;
+  a:hover {
+    color: $primary1-invert;
+  }
 }
 
 .gradient-row,
@@ -87,18 +143,33 @@ mark {
   height: 100vh;
 }
 
+.navbar-burger {
+  color: $primary1-invert;
+}
+
+@media screen and (max-width: 1023px) {
+  .navbar-menu {
+    background-color: #1D2027;
+  }
+  .navbar-menu.is-active {
+      display: block;
+      position: fixed;
+  }
+}
+
 #menu > div > a > span:hover {
   border-bottom: solid 1px;
   color: black;
 }
 
 a.is-active > span {
-  border-bottom: solid gray 1px;
+  border-bottom: solid $primary1-invert 1px;
 }
 
 .login-container {
   box-shadow: 0 8px 12px 0 rgba(60, 60, 60, 0.75);
-  /* border-radius: 10px; */
+  border-radius: 20px;
+  max-width: 500px;
 }
 
 .login-container hr {
@@ -123,4 +194,45 @@ a.is-active > span {
   color: red;
   font-size: 10pt;
   font-weight: 500;
+}
+
+.gradient-row{
+  background: #002033;
+  height: 3em;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.context-container{
+  @extend .gradient-row;
+  position: fixed;
+  width: 100%;
+  top: 4rem;
+  z-index: 100;
+  transition: top 0.3s;
+
+  .navbar-item {
+    color: white;
+    border-radius: 5px;
+  }
+
+  a.navbar-item.is-active, .navbar-link.is-active {
+    color: white;
+    background-color: unset;
+    &:hover {
+      color: #0a0a0a;
+      background-color: #fafafa;
+    }
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  :root {
+      --qg-nav-max-width: 960px;
+  }
+}
+@media screen and (min-width: 1408px) {
+  :root {
+      --qg-nav-max-width: 1344px;
+  }
 }

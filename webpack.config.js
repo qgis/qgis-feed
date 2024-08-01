@@ -8,7 +8,7 @@ console.log(`Webpack mode: ${mode}`);
 let plugins = [
   new BundleTracker({ path: __dirname, filename: 'webpack-stats.json' }),
   new MiniCssExtractPlugin({
-    filename: 'css/style.css',
+    filename: 'css/[name].[contenthash].css',
   }),
 ];
 
@@ -22,7 +22,7 @@ module.exports = {
   entry: './qgisfeedproject/static/js/index',
   output: {
     path: path.resolve('./qgisfeedproject/static/bundles'),
-    filename: "bundle.js"
+    filename: "[name].[contenthash].js"
   },
   plugins: plugins,
   module: {
