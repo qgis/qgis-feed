@@ -5,7 +5,6 @@ import unicodedata
 from django.urls import reverse
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
-from django.core.mail import send_mail
 from django.contrib.gis.db.models import Model
 
 logger = logging.getLogger('qgisfeed.admin')
