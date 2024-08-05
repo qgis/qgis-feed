@@ -50,7 +50,7 @@ services:
   qgisfeed:
     # Note you cannot scale if you use container_name
     container_name: qgisfeed
-    image: qgisfeed:production
+    image: ${QGISFEED_DOCKER_IMAGE}
     build:
       context: .
       dockerfile: Dockerfile.production
@@ -66,6 +66,8 @@ services:
       EMAIL_USE_TLS: ${EMAIL_USE_TLS}
       EMAIL_HOST_USER: ${EMAIL_HOST_USER:-automation}
       EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+      SENTRY_DSN: ${SENTRY_DSN}
+      SENTRY_RATE: ${SENTRY_RATE}
     command: /code/entrypoint_production.sh
     expose:
     - "8000"
