@@ -127,6 +127,12 @@ class QgisFeedEntryTestCase(TestCase):
         self.assertTrue("Null Island QGIS Meeting" in titles)
         self.assertTrue("QGIS acquired by ESRI" in titles)
 
+        response = c.get('/?lang=en_US')
+        data = json.loads(response.content)
+        titles = [d['title'] for d in data]
+        self.assertTrue("Null Island QGIS Meeting" in titles)
+        self.assertTrue("QGIS acquired by ESRI" in titles)
+
     def test_lat_lon_filter(self):
         c = Client(HTTP_USER_AGENT='Mozilla/5.0 QGIS/32400/Fedora '
                                    'Linux (Workstation Edition)')
@@ -174,6 +180,8 @@ class QgisFeedEntryTestCase(TestCase):
         response = c.get('/?lat=ZZ&lon=KK')
         self.assertEqual(response.status_code, 400)
         response = c.get('/?lang=KK')
+        self.assertEqual(response.status_code, 400)
+        response = c.get('/?lang=english')
         self.assertEqual(response.status_code, 400)
 
     def test_image_link(self):

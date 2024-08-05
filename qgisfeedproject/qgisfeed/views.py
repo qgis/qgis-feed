@@ -37,6 +37,8 @@ import json
 from user_visit.models import UserVisit
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+import re
+
 
 QGISFEED_MAX_RECORDS=getattr(settings, 'QGISFEED_MAX_RECORDS', 20)
 
@@ -67,7 +69,14 @@ class QgisEntriesView(View):
         filters = {}
         if request.GET.get('lang'):
             lang = request.GET.get('lang')
-            if not lang in LANGUAGE_KEYS:
+            # Define the regular expression pattern for 'xx' or 'xx_XX'
+            pattern = re.compile(r'^[a-z]{2}(_[A-Z]{2})?$')
+            if pattern.match(lang):
+                # Get the first two letters of the language code
+                lang = lang[:2]
+                if lang not in LANGUAGE_KEYS:
+                    raise BadRequestException("Invalid language parameter.")
+            else:
                 raise BadRequestException("Invalid language parameter.")
             filters['lang'] = lang
         if request.GET.get('lat') and request.GET.get('lon'):
