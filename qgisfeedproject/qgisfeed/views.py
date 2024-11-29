@@ -28,7 +28,7 @@ from django.utils.decorators import method_decorator
 from django.db import transaction
 from django.contrib.auth.models import User
 
-from .forms import FeedEntryFilterForm, FeedItemForm, HomePageFilterForm
+from .forms import FeedEntryFilterForm, FeedItemForm, HomePageFilterForm, FeedItemDetailForm
 from .utils import get_field_max_length, notify_reviewers
 from .models import QgisFeedEntry, CharacterLimitConfiguration
 from .languages import LANGUAGE_KEYS
@@ -406,3 +406,17 @@ class FeedEntryUpdateView(View):
         }
 
         return render(request, self.template_name, args)
+
+
+class FeedEntryDetailView(View):
+    """
+    View to display a feed entry item
+    """
+    template_name = 'feeds/feed_item_detail.html'
+    # For spatial filter
+    form_class = FeedItemDetailForm
+
+    def get(self, request, pk):
+        feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
+        form = self.form_class(instance=feed_entry)
+        return render(request, self.template_name, {"feed_entry": feed_entry, "form": form})

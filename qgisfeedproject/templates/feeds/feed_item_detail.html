@@ -1,0 +1,94 @@
+{% extends 'layouts/base-fullscreen.html' %} 
+{% block title %} QGIS Home Page News Feed {% endblock title %} {% load static %}
+{% block content %}
+
+<div class="m-5">
+    <div class="columns is-centered">
+        <div class="form-preview column is-8 has-background-light p-2 box-container m-5">
+            <div class="columns">
+                <div class="column is-4" name="imagePreview">
+                    {% if feed_entry.image %}
+                    <img src="{{ feed_entry.image.url }}" style="border-radius:20px;">
+                    {% else %}
+                    {% endif %}
+                </div>
+                <div class="column is-8">
+                    <h5 name="titlePreview" class="title is-5">
+                        {{feed_entry.title | default:""}}
+                    </h5>
+                    <div name="contentPreview">
+                        {{feed_entry.content | default:"" | safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <head>
+        {{ form.media }}
+    </head>
+    
+    <div class="columns is-centered">
+        <div class="form-preview column is-8 p-2 box-container m-5">
+            <table class="table is-fullwidth">
+                <tbody>
+                    <tr>
+                        <th>Url:</th>
+                        <td name="urlPreview">
+                            {% if feed_entry.url %}
+                                <a href="{{ feed_entry.url }}" target="_blank">{{ feed_entry.url }}</a>
+                            {% else %}
+                                <i>-</i>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Sticky:</th>
+                        <td name="stickyPreview">
+                            {% if feed_entry.sticky %}
+                                <span class="icon has-text-success">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                </span>
+                            {% else %}
+                                <span class="icon has-text-danger">
+                                    <i class="fa-solid fa-circle-xmark"></i>
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Sorting order:</th>
+                        <td name="sortingPreview">
+                            {{ feed_entry.sorting|default:"-" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Language filter:</th>
+                        <td name="languagePreview">
+                            {{ feed_entry.language_filter|default:"-" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Spatial filter:</th>
+                        <td name="spatialFilterPreview" class="spatial-filter-map">
+                            {{ form.spatial_filter|default:"-" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Publication start:</th>
+                        <td name="publishFromPreview">
+                            {{ feed_entry.publish_from|default:"-" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Publication end:</th>
+                        <td name="publishToPreview">
+                            {{ feed_entry.publish_to|default:"-" }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

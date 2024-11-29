@@ -78,6 +78,13 @@ class FeedEntryFilterForm(forms.Form):
     )
 
 class MapWidget(forms.OSMWidget):
+
+    def __init__(self, attrs=None):
+        default_attrs = {'default_lat': 0, 'default_lon': 0, 'default_zoom': 2}
+        if attrs:
+            default_attrs.update(attrs)
+        super().__init__(default_attrs)
+
     class Media:
         js = ['https://cdn.jsdelivr.net/npm/ol@v7.2.2/dist/ol.js']
 
@@ -165,3 +172,27 @@ class FeedItemForm(forms.ModelForm):
                 email__isnull=False
             ).exclude(email='') if u.has_perm("qgisfeed.publish_qgisfeedentry")
         )
+
+
+class FeedItemDetailForm(forms.ModelForm):
+    """
+    Form for feed entry detail view
+    """
+    class Meta:
+        model = QgisFeedEntry
+        fields = [
+            'language_filter',
+            'spatial_filter'
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super(FeedItemDetailForm, self).__init__(*args, **kwargs)
+        # Custom fields widget
+        self.fields['spatial_filter'].widget = MapWidget(attrs={
+            'geom_type': 'Polygon', 
+            'default_lat': 0,
+            'default_lon': 0,
+            'default_zoom': 2,
+            'disable_draw': True,
+            'disable_add': True
+        })
