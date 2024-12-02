@@ -621,3 +621,22 @@ class FeedsItemFormTestCase(TestCase):
             settings.QGISFEED_FROM_EMAIL
         )
 
+
+class FeedEntryDetailViewTestCase(TestCase):
+    fixtures = ['qgisfeed.json', 'users.json']
+
+    def setUp(self):
+        self.client = Client()
+
+    def test_feed_entry_detail_view(self):
+        # Test accessing a valid feed entry detail
+        feed_entry = QgisFeedEntry.objects.first()
+        response = self.client.get(reverse('feed_detail', args=[feed_entry.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'feeds/feed_item_detail.html')
+        self.assertContains(response, feed_entry.title)
+
+    def test_feed_entry_detail_view_not_found(self):
+        # Test accessing a non-existent feed entry detail
+        response = self.client.get(reverse('feed_detail', args=[9999]))
+        self.assertEqual(response.status_code, 404)

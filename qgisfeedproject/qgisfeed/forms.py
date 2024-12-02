@@ -174,25 +174,3 @@ class FeedItemForm(forms.ModelForm):
         )
 
 
-class FeedItemDetailForm(forms.ModelForm):
-    """
-    Form for feed entry detail view
-    """
-    class Meta:
-        model = QgisFeedEntry
-        fields = [
-            'language_filter',
-            'spatial_filter'
-        ]
-
-    def __init__(self, *args, **kwargs):
-        super(FeedItemDetailForm, self).__init__(*args, **kwargs)
-        # Custom fields widget
-        self.fields['spatial_filter'].widget = MapWidget(attrs={
-            'geom_type': 'Polygon', 
-            'default_lat': 0,
-            'default_lon': 0,
-            'default_zoom': 2,
-            'disable_draw': True,
-            'disable_add': True
-        })
