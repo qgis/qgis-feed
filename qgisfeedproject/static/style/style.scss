@@ -236,3 +236,20 @@ a.is-active > span {
       --qg-nav-max-width: 1344px;
   }
 }
+
+@media screen and (min-width: 1024px) {
+  .box-container {
+      max-width: 960px;
+  }
+}
+@media screen and (min-width: 1408px) {
+  .box-container {
+      max-width: 1200px;
+  }
+}
+
+.spatial-filter-map {
+  .dj_map_wrapper {
+      width: 100%;
+  }
+}

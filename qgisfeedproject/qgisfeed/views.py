@@ -406,3 +406,14 @@ class FeedEntryUpdateView(View):
         }
 
         return render(request, self.template_name, args)
+
+
+class FeedEntryDetailView(View):
+    """
+    View to display a feed entry item
+    """
+    template_name = 'feeds/feed_item_detail.html'
+
+    def get(self, request, pk):
+        feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
+        return render(request, self.template_name, {"feed_entry": feed_entry})

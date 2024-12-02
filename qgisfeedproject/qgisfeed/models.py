@@ -25,13 +25,14 @@ from user_visit.models import UserVisit
 from qgisfeed.utils import simplify
 from django.core.exceptions import ValidationError
 
+from .languages import LANGUAGES
+
 class QgisLanguageField(models.CharField):
     """
     A language field for Django models.
     """
     def __init__(self, *args, **kwargs):
         # Local import so the languages aren't loaded unless they are needed.
-        from .languages import LANGUAGES
         kwargs.setdefault('max_length', 3)
         kwargs.setdefault('choices', LANGUAGES)
         super().__init__(*args, **kwargs)
@@ -112,6 +113,14 @@ class QgisFeedEntry(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def language_filter_text(self):
+        """Return the text value of the language filter"""
+        if self.language_filter:
+            choices_dict = dict(LANGUAGES)
+            return choices_dict.get(self.language_filter, 'English')
+        return None
 
     class Meta:
         db_table = ''
