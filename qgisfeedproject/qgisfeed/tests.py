@@ -133,21 +133,6 @@ class QgisFeedEntryTestCase(TestCase):
         self.assertTrue("Null Island QGIS Meeting" in titles)
         self.assertTrue("QGIS acquired by ESRI" in titles)
 
-    def test_lat_lon_filter(self):
-        c = Client(HTTP_USER_AGENT='Mozilla/5.0 QGIS/32400/Fedora '
-                                   'Linux (Workstation Edition)')
-        response = c.get('/?lat=0&lon=0')
-        data = json.loads(response.content)
-        titles = [d['title'] for d in data]
-        self.assertTrue("Null Island QGIS Meeting" in titles)
-        self.assertFalse("QGIS Italian Meeting" in titles)
-
-        response = c.get('/?lat=44.5&lon=9.5')
-        data = json.loads(response.content)
-        titles = [d['title'] for d in data]
-        self.assertFalse("Null Island QGIS Meeting" in titles)
-        self.assertTrue("QGIS Italian Meeting" in titles)
-
     def test_after(self):
         c = Client(HTTP_USER_AGENT='Mozilla/5.0 QGIS/32400/Fedora '
                                    'Linux (Workstation Edition)')
@@ -177,8 +162,6 @@ class QgisFeedEntryTestCase(TestCase):
     def test_invalid_parameters(self):
         c = Client(HTTP_USER_AGENT='Mozilla/5.0 QGIS/32400/Fedora '
                                    'Linux (Workstation Edition)')
-        response = c.get('/?lat=ZZ&lon=KK')
-        self.assertEqual(response.status_code, 400)
         response = c.get('/?lang=KK')
         self.assertEqual(response.status_code, 400)
         response = c.get('/?lang=english')
@@ -413,6 +396,17 @@ class FeedsListViewTestCase(TestCase):
         self.assertTrue('current_order' in response.context)
         self.assertTrue('form' in response.context)
         self.assertTrue('count' in response.context)
+    
+    def test_geofence_feature(self):
+        c = Client(
+            HTTP_USER_AGENT='Mozilla/5.0 QGIS/32400/Windows 10',
+            REMOTE_ADDR='180.247.213.160'
+        )
+        response = c.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, 'QGIS Italian Meeting')
+        self.assertNotContains(response, 'Null Island QGIS Meeting')
+        self.assertContains(response, 'QGIS acquired by ESRI')
 
 class FeedsItemFormTestCase(TestCase):
     """
