@@ -29,7 +29,7 @@ from django.db import transaction
 from django.contrib.auth.models import User
 
 from .forms import FeedEntryFilterForm, FeedItemForm, HomePageFilterForm
-from .utils import get_field_max_length, notify_reviewers
+from .utils import get_field_max_length, notify_reviewers, parse_remote_addr, get_location
 from .models import QgisFeedEntry, CharacterLimitConfiguration
 from .languages import LANGUAGE_KEYS
 import json
@@ -79,13 +79,16 @@ class QgisEntriesView(View):
             else:
                 raise BadRequestException("Invalid language parameter.")
             filters['lang'] = lang
-        if request.GET.get('lat') and request.GET.get('lon'):
-            try:
-                location = 'point(%s %s)' % (request.GET.get('lon'), request.GET.get('lat'))
+
+        # Build location filter from the request's remote address
+        # as QGIS doesn't send the location in the request
+        # This is used to filter entries by location
+        remote_addr = parse_remote_addr(request)
+        if remote_addr:
+            location = get_location(remote_addr)
+            if location:
                 GEOSGeometry(location)
                 filters['location'] = location
-            except ValueError:
-                raise BadRequestException("Invalid lat/lon parameters.")
 
         if request.GET.get('publish_from'):
             try:
@@ -152,7 +155,9 @@ class QgisEntriesView(View):
             qs = qs.filter(Q(language_filter__isnull=True) | Q(language_filter=filters.get('lang')))
 
         if filters.get('location') is not None:
-            qs = qs.filter(spatial_filter__contains=filters.get('location'))
+            qs = qs.filter(
+                Q(spatial_filter__contains=filters.get('location')) | Q(spatial_filter__isnull=True)
+            )
 
         for record in qs.values('pk', 'publish_from', 'publish_to', 'title','image', 'content', 'url', 'sticky')[:QGISFEED_MAX_RECORDS]:
             if record['publish_from']:
