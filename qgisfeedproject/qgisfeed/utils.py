@@ -7,6 +7,8 @@ from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail import send_mail
 from django.contrib.gis.db.models import Model
+from django.http import HttpRequest
+from django.contrib.gis.geoip2 import GeoIP2
 
 logger = logging.getLogger('qgisfeed.admin')
 QGISFEED_FROM_EMAIL = getattr(settings, 'QGISFEED_FROM_EMAIL', 'noreply@qgis.org')
@@ -43,3 +45,27 @@ def get_field_max_length(ConfigurationModel: Model, field_name: str):
         return config.max_characters
     except ConfigurationModel.DoesNotExist:
         return 500
+
+
+def parse_remote_addr(request: HttpRequest) -> str:
+    """Extract client IP from request."""
+    x_forwarded_for = request.headers.get("X-Forwarded-For", "")
+    if x_forwarded_for:
+        return x_forwarded_for.split(",")[0]
+    return request.META.get("REMOTE_ADDR", "")
+
+def get_location(remote_addr: str) -> str:
+    """
+        Return WKT location for the given remote_addr.
+        This should be used only for the geofence feature
+        and won't be saved in the database.
+    """
+    g = GeoIP2()
+    if remote_addr:
+        try:
+            location = g.city(remote_addr)
+            location_wkt = f"POINT({location['longitude']} {location['latitude']})"
+            return location_wkt
+        except Exception as e:
+            return None
+    return None
