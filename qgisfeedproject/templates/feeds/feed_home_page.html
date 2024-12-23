@@ -84,21 +84,34 @@
                 <div class="tab-content-element is-active" style="padding:0 10px;" data-content="1">
                     {% if data|length > 0 %}
                     {% for feed in data %}
-                    <div class="box-container hoverable-preview form-preview columns has-background-light p-2 mt-5"
-                        onclick="window.location.href='{% url 'feed_detail' feed.pk %}';" style="margin-left: auto;margin-right: auto;">
+                    <div class="box-container form-preview columns has-background-light p-2 mt-5 {% if feed.url %}hoverable-preview{% endif %}"
+                        {% if feed.url %}ondblclick="window.open('{{ feed.url }}', '_blank');"{% endif %} style="margin-left: auto;margin-right: auto;">
                         <div class="column is-4 is-flex is-flex-direction-column is-align-items-center"
                             name="imagePreview">
                             {% if feed.image %}
                             <img src="{{ feed.image }}" style="border-radius:20px;">
                             {% endif %}
                         </div>
-                        <div class="column is-8">
+                        <div class="column is-8 is-flex is-flex-direction-column is-justify-content-space-between">
                             <h5 name="titlePreview" class="title is-5">
                                 {{feed.title | default:""}}
                             </h5>
                             <div name="contentPreview">
                                 {{feed.content | default:"" | safe }}
                             </div>
+                            <div class="is-flex is-justify-content-flex-end mt-3" style="gap: 10px;">
+                                {% if feed.url %}
+                                <a class="button" href="{{ feed.url }}" target="_blank">
+                                    <span class="icon"><i class="fa fa-arrow-up-right-from-square"></i></span>
+                                    <span>Open the URL</span>
+                                </a>
+                                {% endif %}
+                                <a class="button" href="{% url 'feed_detail' feed.pk %}">
+                                    <span class="icon"><i class="fa fa-info-circle"></i></span>
+                                    <span>More details</span>
+                                </a>
+                            </div>
+                                
                         </div>
                     </div>
                     {% endfor %}
