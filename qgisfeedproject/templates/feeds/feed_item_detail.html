@@ -6,7 +6,18 @@
 {% endblock stylesheets %}
 {% block content %}
 
+
 <div class="m-5">
+    <div class="columns is-centered">
+        <div class="column is-8 box-container">
+            <a href="{% url 'all' %}" class="button">
+                <span class="icon">
+                    <i class="fas fa-arrow-left"></i>
+                </span>
+                <span>Back to Feed List</span>
+            </a>
+        </div>
+    </div>
     <div class="columns is-centered">
         <div class="form-preview column is-8 has-background-light p-2 box-container m-5">
             <div class="columns">
@@ -41,28 +52,6 @@
                                 <i>-</i>
                             {% endif %}
                             <p class="help">URL for more information link</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Sticky:</th>
-                        <td name="stickyPreview">
-                            {% if feed_entry.sticky %}
-                                <span class="icon has-text-success">
-                                    <i class="fa-solid fa-circle-check"></i>
-                                </span>
-                            {% else %}
-                                <span class="icon has-text-danger">
-                                    <i class="fa-solid fa-circle-xmark"></i>
-                                </span>
-                            {% endif %}
-                            <p class="help">Keep this entry on top</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Sorting order:</th>
-                        <td name="sortingPreview">
-                            {{ feed_entry.sorting|default:"-" }}
-                            <p class="help">Order to show at top of the list</p>
                         </td>
                     </tr>
                     <tr>
