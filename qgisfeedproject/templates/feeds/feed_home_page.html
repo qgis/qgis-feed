@@ -27,98 +27,96 @@
     }
 </style>
 {% endblock stylesheets %}
-
-{% block content %}
+{% block pagetitle %}
 {% include "layouts/page-title.html" with page_title='QGIS Feed' %}
-<section class="section">
-    <div class="container content">
-        <div class="columns is-multiline is-centered">
-            <div class="column is-3">
-                <div class="box has-background-light box-container mt-5">
-                    <h5 class="title is-5">Filter by</h5>
-                    <form method="GET">
-                        <div class="field">
-                            <label class="label">Language filter:</label>
-                            <div class="select is-fullwidth">
-                                {{form.lang}}
-                            </div>
-                        </div>
+{% endblock %}
+{% block content %}
 
-                        <div class="field">
-                            <label class="label">Date published from:</label>
-                            <div class="control has-icons-left">
-                                {{form.publish_from}}
-                                <span class="icon is-small is-left">
-                                    <i class="fas fa-calendar"></i>
-                                </span>
-                            </div>
-                        </div>
-                        <button class="button is-primary1 is-fullwidth" type="submit" value="filter"
-                            id="submit-button">
-                            Filter <i class="fa fa-filter" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" class="button is-fullwidth mt-2" value="clear"
-                            onclick="window.location.href='?';">
-                            Clear filter <i class="fa fa-delete-left" aria-hidden="true"></i>
-                        </button>
-                    </form>
+<div class="columns is-multiline is-centered">
+    <div class="column is-3">
+        <div class="box has-background-light box-container mt-5">
+            <h5 class="title is-5">Filter by</h5>
+            <form method="GET">
+                <div class="field">
+                    <label class="label">Language filter:</label>
+                    <div class="select is-fullwidth">
+                        {{form.lang}}
+                    </div>
                 </div>
-            </div>
-            <div class="column is-9">
-                <div class="tabs is-centered is-boxed" id="tabs">
-                    <ul>
-                        <li class="is-active" data-tab="1">
-                            <a>
-                                <span class="icon is-small"><i class="fa fa-image"></i></span>
-                                <span>Preview</span>
-                            </a>
-                        </li>
-                        <li data-tab="2">
-                            <a>
-                                <span class="icon is-small"><i class="fa fa-code"></i></span>
-                                <span>Raw</span>
-                            </a>
-                        </li>
-                    </ul>
+
+                <div class="field">
+                    <label class="label">Date published from:</label>
+                    <div class="control has-icons-left">
+                        {{form.publish_from}}
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-calendar"></i>
+                        </span>
+                    </div>
                 </div>
-                <div id="tab-content">
-                    <div class="tab-content-element is-active" style="padding:0 10px;" data-content="1">
-                        {% if data|length > 0 %}
-                        {% for feed in data %}
-                        <div class="box-container hoverable-preview form-preview columns has-background-light p-2 mt-5"
-                            onclick="window.location.href='{% url 'feed_detail' feed.pk %}';" style="margin-left: auto;margin-right: auto;">
-                            <div class="column is-4 is-flex is-flex-direction-column is-align-items-center"
-                                name="imagePreview">
-                                {% if feed.image %}
-                                <img src="{{ feed.image }}" style="border-radius:20px;">
-                                {% endif %}
-                            </div>
-                            <div class="column is-8">
-                                <h5 name="titlePreview" class="title is-5">
-                                    {{feed.title | default:""}}
-                                </h5>
-                                <div name="contentPreview">
-                                    {{feed.content | default:"" | safe }}
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                        {% else %}
-                        <div style="width: 100%; text-align: center;" class="m-5">
-                            No data found
-                        </div>
+                <button class="button is-primary1 is-fullwidth" type="submit" value="filter"
+                    id="submit-button">
+                    Filter <i class="fa fa-filter" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="button is-fullwidth mt-2" value="clear"
+                    onclick="window.location.href='?';">
+                    Clear filter <i class="fa fa-delete-left" aria-hidden="true"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+    <div class="column is-9">
+        <div class="tabs is-centered is-boxed" id="tabs">
+            <ul>
+                <li class="is-active" data-tab="1">
+                    <a>
+                        <span class="icon is-small"><i class="fa fa-image"></i></span>
+                        <span>Preview</span>
+                    </a>
+                </li>
+                <li data-tab="2">
+                    <a>
+                        <span class="icon is-small"><i class="fa fa-code"></i></span>
+                        <span>Raw</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div id="tab-content">
+            <div class="tab-content-element is-active" style="padding:0 10px;" data-content="1">
+                {% if data|length > 0 %}
+                {% for feed in data %}
+                <div class="box-container hoverable-preview form-preview columns has-background-light p-2 mt-5"
+                    onclick="window.location.href='{% url 'feed_detail' feed.pk %}';" style="margin-left: auto;margin-right: auto;">
+                    <div class="column is-4 is-flex is-flex-direction-column is-align-items-center"
+                        name="imagePreview">
+                        {% if feed.image %}
+                        <img src="{{ feed.image }}" style="border-radius:20px;">
                         {% endif %}
                     </div>
-                    <div class="tab-content-element is-inactive" data-content="2">
-                        <pre style="background-color:unset; padding:0;">
-                            <code class="language-json">{{data_json}}</code>
-                        </pre>
+                    <div class="column is-8">
+                        <h5 name="titlePreview" class="title is-5">
+                            {{feed.title | default:""}}
+                        </h5>
+                        <div name="contentPreview">
+                            {{feed.content | default:"" | safe }}
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
+                {% else %}
+                <div style="width: 100%; text-align: center;" class="m-5">
+                    No data found
+                </div>
+                {% endif %}
+            </div>
+            <div class="tab-content-element is-inactive" data-content="2">
+                <pre style="background-color:unset; padding:0;">
+                    <code class="language-json">{{data_json}}</code>
+                </pre>
             </div>
         </div>
     </div>
-</section>
+</div>
 {% endblock content %}
 
 <!-- Specific JS goes HERE -->

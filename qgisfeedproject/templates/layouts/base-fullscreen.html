@@ -39,8 +39,13 @@
         location-prefix="{{ MAIN_WEBSITE_URL }}"
     ></qg-top-nav>
     {% include 'layouts/header.html' %}
+    {% block pagetitle %}{% endblock %}
     
-    {% block content %}{% endblock content %}
+    <section class="section">
+        <div class="container content">
+            {% block content %}{% endblock content %}
+        </div>
+    </section>
 
     {% include 'layouts/footer.html' %}
 
