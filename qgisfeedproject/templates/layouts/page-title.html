@@ -1,16 +1,32 @@
 {% load static %}
-<section class="hero is-dark is-small has-bg-img" style="background: url({% static "images/hegobg1.png" %});
-       background-position: center;
-       background-size: cover;">
-
+<section class="hero is-dark is-medium has-bg-img" style="background: url({% static "images/hegobg1.webp" %});
+background-position: 50%;
+background-size: cover;">
     <div class="hero-body">
-        <div class="columns container is-flex is-align-items-center is-justify-content-space-between">
-            <p class="title hero-title pr-3 mb-0">
-                {{page_title}}
-            </p>
-            <figure>
-                <img src="{% static "images/large-logo.svg" %}" style="width: 8vw">
-            </figure>
+        <div class="columns container">
+            <div class="column is-8 is-flex hero-text has-text-left">
+                <div class="hero-container">
+                    <div class="label">Free and Open Source</div>
+                    <h1 class="title hero-title pr-3">
+                        {{page_title}}
+                    </h1>
+                    <p class="subtitle hero-subtitle">
+                        Explore the latest updates, news, and resources for the QGIS community.
+                    </p>
+                </div>
+                <div class="is-vcentered">
+                    <a class="button is-primary1 is-size-5" href="/manage/">
+                        Manage
+                    </a>
+                    <!-- <p class="subtitle hero-subtitle">Available on Windows, Mac, Linux</p> -->
+                </div>
+    
+            </div>
+            <div class="logo column is-justify-content-center">
+                <figure class="image">
+                    <img src="{% static "images/large-logo.svg" %}">
+                </figure>
+            </div>
         </div>
     </div>
 </section>

@@ -30,7 +30,7 @@ RUN apt-get update && apt-get install -y curl && curl -LJO https://github.com/P3
     
 # Install NodeJS and bulma css webpack
 RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends wget && \
-    wget --no-check-certificate https://deb.nodesource.com/setup_18.x -O /tmp/node.sh && bash /tmp/node.sh && \
+    wget --no-check-certificate https://deb.nodesource.com/setup_20.x -O /tmp/node.sh && bash /tmp/node.sh && \
     apt-get -qq update && apt-get -qq install -y nodejs build-essential
 
 WORKDIR /code

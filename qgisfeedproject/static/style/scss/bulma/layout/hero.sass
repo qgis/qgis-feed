@@ -15,8 +15,8 @@ $hero-colors: $colors !default
   display: flex
   flex-direction: column
   justify-content: space-between
-  padding-top: 100px
-  margin-top: -100px
+  padding-top: 40px
+  margin-top: -40px
   .navbar
     background: none
   .tabs
@@ -116,7 +116,7 @@ $hero-colors: $colors !default
 // Components
 
 .hero-video
-  @extend %overlay
+  @extend %overlay !optional
   overflow: hidden
   video
     left: 50%
@@ -172,8 +172,8 @@ $hero-colors: $colors !default
   padding: $hero-body-padding
   +mobile
     height: 100vh
-    // min-height: 840px
-    // display: flex
+    min-height: 840px
+    display: flex
 
   .container 
     margin: auto
@@ -200,7 +200,7 @@ $hero-colors: $colors !default
   display: flex
   flex-direction: column
   justify-content: space-between
-  padding: 3rem 0;
+  padding: 3rem 0
   
 .hero 
   img 
