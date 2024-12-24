@@ -41,13 +41,14 @@
     {{ form.media }}
 </head>
 
-{% if form.title.value %}
-    {% include "layouts/page-title.html" with page_title='Edit feed item' %}
-{% else %}
-    {% include "layouts/page-title.html" with page_title='New feed item' %}
-{% endif %}
-
 <section class="section">
+    <h1 class="title is-3 has-text-centered">
+        {% if form.title.value %}
+            Edit feed item
+        {% else %}
+            New feed item
+        {% endif %}
+    </h1>
     <div class="columns">
         <div class="column is-6">
             {% include 'feeds/feed_item_form_widgets.html' %}
@@ -75,7 +76,7 @@
                 {% endif %}
 
                 <div class="column is-7">
-                    <button name="formConfirmationBtn" class="button is-block is-primary1 js-modal-trigger"
+                    <button name="formConfirmationBtn" class="button is-primary1 js-modal-trigger"
                         data-target="form-review-modal">
                         {% if published %}
                         <span class="icon">

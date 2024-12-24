@@ -11,14 +11,16 @@
 {% endblock stylesheets %} 
 {% block content %}
 
-{% include "layouts/page-title.html" with page_title='Feed Management' %}
 
 <section class="section">
+  <h1 class="title is-3 has-text-centered">
+      QGIS Feed Management
+  </h1>
     <div class="columns">
         <div class="column is-2 box has-background-light p-3 box-container" style="min-width: 250px;">
           {% if user_can_add %}
             <button 
-                class="button is-block is-success is-fullwidth is-large"
+                class="button is-success is-fullwidth is-large"
                 value="add" 
                 onclick="window.location.href='{% url 'feed_entry_add'%}';"
             >

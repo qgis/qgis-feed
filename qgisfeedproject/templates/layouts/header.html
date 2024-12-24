@@ -1,5 +1,7 @@
+{% load i18n %}
+{% load static %}
 <div class="box mb-0 context-container" id="context">
-    <div class="container is-flex is-justify-content-flex-start">
+    <div class="container">
         <nav class="navbar" role="navigation" aria-label="main navigation">
             <div class="navbar-brand">
                 <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="menu">
@@ -10,34 +12,39 @@
             </div>
             
             <div id="menu" class="navbar-menu">
-                <div class="navbar-end">
-                    <div  class="navbar-item has-text-weight-semibold is-size-10">
-                        <span>QGIS Feed</span>
-                    </div>
-                    {% with request.resolver_match.url_name as url_name %}
-                    {% if user.is_authenticated and not user.username == 'qgis_user' %}
-                    <div class="navbar-item ">
-                        <span>Welcome, {{user.username | upper}}</span>
-                    </div>
-                    <a class="navbar-item has-text-weight-semibold is-size-7 {% if url_name == 'all' %}is-active{% endif %}"
+                <div class="navbar-start">
+                    <a class="navbar-item has-text-weight-semibold is-size-7"
                         href="{% url "all" %}">
-                        <span>Home</span>
+                        QGIS Feed Home
                     </a>
-                    <a class="navbar-item has-text-weight-semibold is-size-7 {% if url_name == 'feeds_list' %}is-active{% endif %}" href="{% url "feeds_list" %}">
-                        <span>Manage</span>
-                    </a>
-                    <a class="navbar-item has-text-weight-semibold is-size-7" href="{% url "logout" %}">
-                        <span>Logout</span>
-                    </a>
-                    {% else %}
-                    <a class="navbar-item has-text-weight-semibold is-size-7 {% if url_name == 'all' %}is-active{% endif %}" href="{% url "all" %}">
-                        <span>Home</span>
-                    </a>
-                    <a class="navbar-item has-text-weight-semibold is-size-7 {% if url_name == 'login' %}is-active{% endif %}" href="{% url "login" %}">
-                        <span>Login</span>
-                    </a>
+                    {% if user.is_authenticated and not user.username == 'qgis_user' %}
+                        <a class="navbar-item has-text-weight-semibold is-size-7" href="{% url "feeds_list" %}">
+                            Manage
+                        </a>
                     {% endif %}
-                    {% endwith %}
+                </div>
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        {% if user.is_authenticated and not user.username == 'qgis_user' %}
+                        <a class="button is-danger is-small is-outlined is-fullwidth" href="{% url "logout" %}">
+                            <span class="icon">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </span>
+                            <span>
+                                {% trans "Logout" %}
+                            </span>
+                        </a>
+                        {% else %}
+                        <a class="button is-info is-small" href="{% url "login" %}">
+                            <span class="icon">
+                                <i class="fas fa-sign-in-alt"></i>
+                            </span>
+                            <span>
+                                {% trans "Login" %}
+                            </span>
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </nav>
