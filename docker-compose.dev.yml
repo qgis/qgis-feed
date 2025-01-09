@@ -6,7 +6,10 @@ services:
     environment:
       POSTGRES_USER: docker
       POSTGRES_PASS: docker
-      POSTGRES_DBNAME: qgisfeed
+      POSTGRES_DBNAME: qgisfeed    
+    volumes:
+      - ${QGISFEED_DOCKER_SHARED_VOLUME}:/var/lib/postgresql
+      - ${QGISFEED_BACKUP_VOLUME}:/backups
     # ports:
     # - "5436:5432"
 
@@ -41,6 +44,7 @@ services:
       - postgis
     volumes:
       - ../qgis-feed:/code
+      - /Users/xpirix/Work/Dev/01-Kartoza/00-Data/feed.qgis.org/media:/code/qgisfeedproject/media
       - ./REQUIREMENTS.txt:/REQUIREMENTS.txt
 
   webpack:

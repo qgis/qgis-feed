@@ -15,9 +15,15 @@ mark {
 }
 
 
-.content p {
-  color: $text-primary2;
+.content {
+  p {
+    color: $text-primary2;
+  }
+  h3 {
+    font-weight: 400;
+  }
 }
+
 
 .box-content {
   background: $white;
@@ -280,4 +286,23 @@ p {
   .dj_map_wrapper {
       width: 100%;
   }
+}
+
+.external-link {
+  padding-right: 20px;
+  &:after {
+    position: absolute;
+    width: 16px;
+    content: "";
+    margin-top: 5px;
+    margin-left: 3px;
+    height: 16px;
+    z-index: 1;
+    mask: url("../../images/external.svg");
+    background-color: #7fa3b9;
+  }
+}
+
+.rounded .rich-right img {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
