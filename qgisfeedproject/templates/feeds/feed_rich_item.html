@@ -1,5 +1,5 @@
 
-<div class="container rich has-right rounded" {% if feed.url %}ondblclick="window.open('{{ feed.url }}', '_blank');"{% endif %}>
+<div class="container rich has-right rounded mt-5" {% if feed.url %}ondblclick="window.open('{{ feed.url }}', '_blank');"{% endif %}>
     <div class="cont coloring-1">
         <h3 name="titlePreview">
             {{feed.title | default:""}}
@@ -8,7 +8,7 @@
             {{feed.content | default:"" | safe }}
         </div>
         {% if show_buttons %}
-            <div class="is-flex is-justify-content-flex-end mt-3" style="gap: 10px;">
+            <div>
                 {% if feed.url %}
                 <a class="button is-primary1 mb-3" href="{{ feed.url }}" target="_blank">
                     <span class="icon"><i class="fa fa-arrow-up-right-from-square"></i></span>
@@ -27,13 +27,7 @@
     <div class="rich-right"
         name="imagePreview">
         {% if feed.image %}
-        <div class="title">
-            <a class="rich-list has-image mr-2 mb-2" {% if feed.url %}href="{{ feed.url }}" target="_blank"{% endif %}>
-                <div class="image">
-                    <img src="{{ feed.image.url | default:feed.image }}" style="border-radius:20px;">
-                </div>
-            </a>
-        </div>
+            <img src="{{ feed.image.url | default:feed.image }}" style="border-radius:20px;">
         {% endif %}
     </div>
 
