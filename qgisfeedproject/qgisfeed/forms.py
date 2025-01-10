@@ -84,9 +84,11 @@ class MapWidget(forms.OSMWidget):
         if attrs:
             default_attrs.update(attrs)
         super().__init__(default_attrs)
-
     class Media:
-        js = ['https://cdn.jsdelivr.net/npm/ol@v7.2.2/dist/ol.js']
+        js = ['ol/ol-7.2.2.js']
+        css = {
+            'all': ['ol/ol-7.2.2.css']
+        }
 
 class FeedItemForm(forms.ModelForm):
     """
