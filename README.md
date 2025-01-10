@@ -4,6 +4,134 @@
 
 This application is the backend part that manages and serves news for the QGIS welcome page.
 
+![Home Page](img/homepage.webp)
+
+
+## User guide
+
+<details>
+    <summary><strong>Home page</strong></summary>
+    </br>
+
+A home page that displays feeds as they are rendered in QGIS is now available at the root of the web server `/`. Feeds are filterable using the filter widget on the left side. You can directly pass the filter parameters in the url according to the section **Available parameters for filters** in **Endpoint and accepted parameters**
+
+***Note: When calling the root url from QGIS, the response data is in JSON format. See the section Response data for QGIS in the Endpoint and accepted parameters***
+</details>
+
+<details>
+    <summary><strong>Control panel and permissions</strong></summary>
+    </br>
+
+Users with `staff` flag can enter the control panel at `/admin` and add feed entries, by default entries are not published.
+
+Users with `superadmin` flag will be notified by email when an entry is added to the feed and will be able to publish the entry.
+
+Appart from `superadmin`, only users with the permission `qgisfeed | Can publish QGIS feed` can publish the entry. Like the group `qgisfeedentry_authors`, the group `qgisfeedentry_approver` with the permission `qgisfeed | Can publish QGIS feed` are created when a `Save` signal from the `User` model is detected.
+
+For content field, a hard limit on the number of characters allowed is configurable in administration page (Character limit configurations). If not set, max characters value for this field is 500. If you want to add a custom max characters for this field, the field name value should be `content`.
+</details>
+
+<details>
+    <summary><strong>Manage feeds page</strong></summary>
+    </br>
+
+***Note: The permissions for this page are the same as described in the Control Panel and permissions.***
+
+After logging in with the login screen at `/accounts/login/` (can be also accessed from the **Login** button on the **Homepage**), users are provided with tools to manage feed items:
+- A list of feed items, sortable and filterable by title, date published, author, language, need review
+- A button to create a new feed item - clicking will take you to a blank feed item form (See **Feed item form** below)
+- Clicking on an item on the list will take you to a feed item form (See **Feed item form** below)
+
+</details>
+
+
+<details>
+    <summary><strong>Feed item form</strong></summary>
+    </br>
+
+The feed item form page is displayed when clicking the **New feed** item button or an item on the list:
+- The feed item form is displayed on the left with all the widgets needed to edit the entry. On the right, a preview of the entry as it will be rendered in QGIS. Any edits made in the form shall immediately update the preview.
+- In the content widget only the following html tags are allowed: p, strong, italics. A hard limit on the number of characters allowed is configurable in administration page in the model `Character limit configurations`.
+- Once a feed item is created or modified, there will be a review step where the user is asked to confirm that they have checked everything carefully.
+- The form is placed in the column **Need review** in the list before final submission.
+- The form must be approved by someone the permission `qgisfeed | Can publish QGIS feed` before it is published.
+
+</details>
+
+<details>
+    <summary><strong>Endpoint and accepted parameters</strong></summary>
+    </br>
+
+### Response data for QGIS
+The application has a single endpoint available at the web server root `/` the reponse is in JSON format.
+
+Example call: http://localhost:8000/
+
+Returned data:
+```json
+[
+  {
+    "pk": 1,
+    "title": "QGIS acquired by ESRI",
+    "image": "http://localhost:8000/media/feedimages/image.png",
+    "content": "<p>QGIS is finally part of the ESRI ecosystem, it has been rebranded as CrashGIS to better integrate with ESRI products line.</p>",
+    "url": "https://www.qgis.com",
+    "sticky": true,
+    "publish_from": 1557419128
+  },
+  {
+    "pk": 2,
+    "title": "Null Island QGIS Meeting",
+    "image": "",
+    "content": "<p>Let's dive in the ocean together!</p>",
+    "url": null,
+    "sticky": false,
+    "publish_from": 1557419128
+  },
+  {
+    "pk": 3,
+    "title": "QGIS Italian Meeting",
+    "image": "",
+    "content": "<p>Ciao from Italy!</p>",
+    "url": null,
+    "sticky": false,
+    "publish_from": 1557419128
+  }
+]
+```
+
+### Available parameters for filters
+
+The following parameters can be passed by the client to filter available records.
+
+Parameters are validated and in case they are not valid a `Bad Request` HTTP error code `400` is returned.
+
+#### after
+
+When `after` is passed, only the records that have been published after the given value will be returned.
+
+Accepted values: unix timestamp (UTC)
+
+Example call: http://localhost:8000/?after=1557419013
+
+
+#### lang
+
+When `lang` is passed, the records that have a different `lang` will be excluded from the results. Only the records with `null` `lang` and the records with a matching `lang` will be returned.
+
+Accepted values: `ISO-939-1` two letters language code
+
+Example call: http://localhost:8000/?lang=de
+
+#### lat lon (location)
+
+When `lat` **and** `lon` are passed, the records that have a location filter set will be returned only if the point defined by `lat` and `lon` is within record's location.
+
+Accepted values: `ESPG:4326` latitude and longitude
+
+Example call: http://localhost:8000/?lat=44.5&lon=9.23
+</details>
+
 ## Installation Guide
 <details>
     <summary><strong>Development Environment Installation</strong></summary>
@@ -140,131 +268,6 @@ nginx -s reload
 
 5. To enable a cronjob to automatically renew ssl cert, add `scripts/renew_ssl.sh` to crontab file.
 
-</details>
-
-## User guide
-
-<details>
-    <summary><strong>Home page</strong></summary>
-    </br>
-
-A home page that displays feeds as they are rendered in QGIS is now available at the root of the web server `/`. Feeds are filterable using the filter widget on the left side. You can directly pass the filter parameters in the url according to the section **Available parameters for filters** in **Endpoint and accepted parameters**
-
-***Note: When calling the root url from QGIS, the response data is in JSON format. See the section Response data for QGIS in the Endpoint and accepted parameters***
-</details>
-
-<details>
-    <summary><strong>Control panel and permissions</strong></summary>
-    </br>
-
-Users with `staff` flag can enter the control panel at `/admin` and add feed entries, by default entries are not published.
-
-Users with `superadmin` flag will be notified by email when an entry is added to the feed and will be able to publish the entry.
-
-Appart from `superadmin`, only users with the permission `qgisfeed | Can publish QGIS feed` can publish the entry. Like the group `qgisfeedentry_authors`, the group `qgisfeedentry_approver` with the permission `qgisfeed | Can publish QGIS feed` are created when a `Save` signal from the `User` model is detected.
-
-For content field, a hard limit on the number of characters allowed is configurable in administration page (Character limit configurations). If not set, max characters value for this field is 500. If you want to add a custom max characters for this field, the field name value should be `content`.
-</details>
-
-<details>
-    <summary><strong>Manage feeds page</strong></summary>
-    </br>
-
-***Note: The permissions for this page are the same as described in the Control Panel and permissions.***
-
-After logging in with the login screen at `/accounts/login/` (can be also accessed from the **Login** button on the **Homepage**), users are provided with tools to manage feed items:
-- A list of feed items, sortable and filterable by title, date published, author, language, need review
-- A button to create a new feed item - clicking will take you to a blank feed item form (See **Feed item form** below)
-- Clicking on an item on the list will take you to a feed item form (See **Feed item form** below)
-
-</details>
-
-
-<details>
-    <summary><strong>Feed item form</strong></summary>
-    </br>
-
-The feed item form page is displayed when clicking the **New feed** item button or an item on the list:
-- The feed item form is displayed on the left with all the widgets needed to edit the entry. On the right, a preview of the entry as it will be rendered in QGIS. Any edits made in the form shall immediately update the preview.
-- In the content widget only the following html tags are allowed: p, strong, italics. A hard limit on the number of characters allowed is configurable in administration page in the model `Character limit configurations`.
-- Once a feed item is created or modified, there will be a review step where the user is asked to confirm that they have checked everything carefully.
-- The form is placed in the column **Need review** in the list before final submission.
-- The form must be approved by someone the permission `qgisfeed | Can publish QGIS feed` before it is published.
-
-</details>
-
-<details>
-    <summary><strong>Endpoint and accepted parameters</strong></summary>
-    </br>
-
-### Response data for QGIS
-The application has a single endpoint available at the web server root `/` the reponse is in JSON format.
-
-Example call: http://localhost:8000/
-
-Returned data:
-```json
-[
-  {
-    "pk": 1,
-    "title": "QGIS acquired by ESRI",
-    "image": "http://localhost:8000/media/feedimages/image.png",
-    "content": "<p>QGIS is finally part of the ESRI ecosystem, it has been rebranded as CrashGIS to better integrate with ESRI products line.</p>",
-    "url": "https://www.qgis.com",
-    "sticky": true,
-    "publish_from": 1557419128
-  },
-  {
-    "pk": 2,
-    "title": "Null Island QGIS Meeting",
-    "image": "",
-    "content": "<p>Let's dive in the ocean together!</p>",
-    "url": null,
-    "sticky": false,
-    "publish_from": 1557419128
-  },
-  {
-    "pk": 3,
-    "title": "QGIS Italian Meeting",
-    "image": "",
-    "content": "<p>Ciao from Italy!</p>",
-    "url": null,
-    "sticky": false,
-    "publish_from": 1557419128
-  }
-]
-```
-
-### Available parameters for filters
-
-The following parameters can be passed by the client to filter available records.
-
-Parameters are validated and in case they are not valid a `Bad Request` HTTP error code `400` is returned.
-
-#### after
-
-When `after` is passed, only the records that have been published after the given value will be returned.
-
-Accepted values: unix timestamp (UTC)
-
-Example call: http://localhost:8000/?after=1557419013
-
-
-#### lang
-
-When `lang` is passed, the records that have a different `lang` will be excluded from the results. Only the records with `null` `lang` and the records with a matching `lang` will be returned.
-
-Accepted values: `ISO-939-1` two letters language code
-
-Example call: http://localhost:8000/?lang=de
-
-#### lat lon (location)
-
-When `lat` **and** `lon` are passed, the records that have a location filter set will be returned only if the point defined by `lat` and `lon` is within record's location.
-
-Accepted values: `ESPG:4326` latitude and longitude
-
-Example call: http://localhost:8000/?lat=44.5&lon=9.23
 </details>
 
 ## Runing tests
