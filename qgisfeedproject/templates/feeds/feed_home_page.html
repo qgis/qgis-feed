@@ -30,81 +30,15 @@
 {% block content %}
 
 <div>
-    <h2>QGIS News Feed</h2>
+    <h1 class="title">QGIS News Feed</h1>
     <p>You can also access the QGIS News Feed in <a href="/?json=1" target="_blank" rel="noopener" class="external-link">JSON</a> format.</p>
     {% if data|length > 0 %}
     {% for feed in data %}
-    <div class="container rich has-right rounded" {% if feed.url %}ondblclick="window.open('{{ feed.url }}', '_blank');"{% endif %}>
-        <div class="cont coloring-1">
-            <h3 name="titlePreview">
-                {{feed.title | default:""}}
-            </h5>
-            <div name="contentPreview">
-                {{feed.content | default:"" | safe }}
-            </div>
-            <div class="is-flex is-justify-content-flex-end mt-3" style="gap: 10px;">
-                {% if feed.url %}
-                <a class="button is-primary1 mb-3" href="{{ feed.url }}" target="_blank">
-                    <span class="icon"><i class="fa fa-arrow-up-right-from-square"></i></span>
-                    <span>Open the URL</span>
-                </a>
-                {% endif %}
-                <a class="button is-primary1 is-outlined mb-3" href="{% url 'feed_detail' feed.pk %}">
-                    <span class="icon"><i class="fa fa-info-circle"></i></span>
-                    <span>More details</span>
-                </a>
-            </div>
-                
-        </div>
-
-        <div class="rich-right"
-            name="imagePreview">
-            {% if feed.image %}
-            <div class="title">
-                <a class="rich-list has-image mr-2 mb-2" {% if feed.url %}href="{{ feed.url }}" target="_blank"{% endif %}>
-                    <div class="image">
-                        <img src="{{ feed.image }}" style="border-radius:20px;">
-                    </div>
-                </a>
-            </div>
-            {% endif %}
-        </div>
-
-    </div>
-    {% comment %} <div class="box-container form-preview columns p-2 mt-5 {% if feed.url %}hoverable-preview{% endif %}"
-        {% if feed.url %}ondblclick="window.open('{{ feed.url }}', '_blank');"{% endif %} style="margin-left: auto;margin-right: auto;">
-        <div class="column is-4 is-flex is-flex-direction-column is-align-items-center"
-            name="imagePreview">
-            {% if feed.image %}
-            <img src="{{ feed.image }}" style="border-radius:20px;">
-            {% endif %}
-        </div>
-        <div class="column is-8 is-flex is-flex-direction-column is-justify-content-space-between">
-            <h3 name="titlePreview">
-                {{feed.title | default:""}}
-            </h5>
-            <div name="contentPreview">
-                {{feed.content | default:"" | safe }}
-            </div>
-            <div class="is-flex is-justify-content-flex-end mt-3" style="gap: 10px;">
-                {% if feed.url %}
-                <a class="button is-primary1 mb-3" href="{{ feed.url }}" target="_blank">
-                    <span class="icon"><i class="fa fa-arrow-up-right-from-square"></i></span>
-                    <span>Open the URL</span>
-                </a>
-                {% endif %}
-                <a class="button is-primary1 is-outlined mb-3" href="{% url 'feed_detail' feed.pk %}">
-                    <span class="icon"><i class="fa fa-info-circle"></i></span>
-                    <span>More details</span>
-                </a>
-            </div>
-                
-        </div>
-    </div> {% endcomment %}
+        {% include "feeds/feed_rich_item.html" with feed=feed show_buttons=1 %}
     {% endfor %}
     {% else %}
     <div style="width: 100%; text-align: center;" class="m-5">
-        No data found
+        No news found
     </div>
     {% endif %}
 </div>
