@@ -44,7 +44,6 @@ services:
       - postgis
     volumes:
       - ../qgis-feed:/code
-      - /Users/xpirix/Work/Dev/01-Kartoza/00-Data/feed.qgis.org/media:/code/qgisfeedproject/media
       - ./REQUIREMENTS.txt:/REQUIREMENTS.txt
 
   webpack:
