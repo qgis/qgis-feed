@@ -18,8 +18,9 @@
     QGIS Feed Management
 </h1>
 
-{% if user_can_add %}
+
   <div class="is-flex is-justify-content-space-between" style="gap: 10px;">
+    {% if user_can_add %}
     <button 
         class="button is-primary1"
         value="add" 
@@ -31,6 +32,8 @@
     <span>New feed</span>
          
     </button>
+
+{% endif %}
     <button 
         id="filter-button"
         class="button is-primary1 is-outlined"
@@ -43,10 +46,8 @@
       </span>
     </button>
   </div>
-  <hr/>
-{% endif %}
 
-<div id="filter-container" class="has-background-light p-3">
+<div id="filter-container" class="has-background-light p-3 mt-3">
   <form method="GET" id="filter-form">
   <div class="columns is-multiline is-centered">
         <div class="column is-6">
@@ -82,7 +83,7 @@
           <div class="field">
             <label class="label">Date published from:</label>
             <div class="control has-icons-left">
-              {{form.publish_from}}
+                {{ form.publish_from }}
               <span class="icon is-small is-left">
                 <i class="fas fa-calendar"></i>
               </span>
@@ -136,6 +137,8 @@
     </button>
   </div>
 </div>
+
+<hr/>
 
 <div>
   <table class="table is-fullwidth is-hoverable">
@@ -228,8 +231,8 @@
                       {% endif %}
                   </td>
 
-                  <td>{{ feed.publish_from|date:"d F Y, H:i"|default:"-" }}</td>
-                  <td>{{ feed.publish_to|date:"d F Y, H:i"|default:"-" }}</td>
+                  <td>{{ feed.publish_from|date:"Y-m-d, H:i"|default:"-" }}</td>
+                  <td>{{ feed.publish_to|date:"Y-m-d, H:i"|default:"-" }}</td>
                   <td>{{ feed.sorting|default:"-" }}</td>
               </tr>
           {% endfor %}

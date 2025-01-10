@@ -37,19 +37,22 @@
 {% endblock stylesheets %}
 {% block content %}
 
-<head>
-    {{ form.media }}
-</head>
 
-<h1 class="title is-3 has-text-centered">
+<h1 class="title">
     {% if form.title.value %}
         Edit feed item
     {% else %}
         New feed item
     {% endif %}
 </h1>
+<a href="{% url 'feeds_list' %}" class="button">
+    <span class="icon">
+        <i class="fas fa-arrow-left"></i>
+    </span>
+    <span>Back to Feed List</span>
+</a>
 
-<div class="columns is-multiline is-centered">
+<div class="columns is-multiline is-centered mt-3 ">
     <div class="column is-6">
         {% include 'feeds/feed_item_form_widgets.html' %}
     </div>
