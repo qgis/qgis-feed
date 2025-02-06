@@ -132,6 +132,13 @@ Accepted values: `ESPG:4326` latitude and longitude
 Example call: http://localhost:8000/?lat=44.5&lon=9.23
 </details>
 
+## Tech stack
+
+![image](./img/Docker_Services.png)
+
+This application is based on Django, written in Python and deployed on the server using
+docker-compose.
+
 ## Installation Guide
 <details>
     <summary><strong>Development Environment Installation</strong></summary>
@@ -341,92 +348,13 @@ Now check if your browser is showing the site opening with no SSL errors: https:
 
 </details>
 
-<details>
-    <summary><strong>Backups</strong></summary>
-    </br>
+Please visit the private Sysadmin documentation for more details about the deployment of https://feed.qgis.org
 
-If something goes terribly wrong, we keep 7 nights of backups on hetzner
 
-If those are also not useful there are a collection of snapshot backups on hetzner
+## Backups
+
+If something goes terribly wrong, we keep 7 nights of backups on hetzner and daily backups on a storage box.
+
+If those are also not useful there are a collection of snapshot backups on hetzner and on a storage box
 
 Last resort: Tim makes backups to his local machine on a semi-regular basis.
-
-</details>
-
-<details>
-    <summary><strong>Deploying on Rancher</strong></summary>
-    </br>
-
-This repository contains a rancher template directory (the ``template`` folder in the root of the repo)
-which can be used to deploy this site onto a host using [Rancher](https://rancher.com). Currently ony Rancher v1.6
-(i.e. not v2) is supported.
-
-This guide serves as a quick setup guide to spin up a one of our Rancher catalogue packages.
-
-</details>
-
-
-<details>
-    <summary><strong>Prerequisites</strong></summary>
-    </br>
-
-This guide assumes that the following steps have been done:
-
-1. **Install Docker:** Docker is installed on your server. Use Ubuntu 16.04 for the best results
-because that is what we are testing on. For quick installation, use the
-[convenience scripts](http://rancher.com/docs/rancher/v1.6/en/hosts/#supported-docker-versions)
-provided by Rancher (make sure you choose a supported version).
-
-
-2. **Install Rancher:** The **stable** version of Rancher v1 Server has been set up.
-
-If it's not, refer to [Rancher quickstart
-guide](http://rancher.com/docs/rancher/v1.6/en/installing-rancher/installing-server/).
-Here is an example of how to run the latest stable release with a persistent
-mysql database stored on the file system:
-
-```
-mkdir /home/mysql
-docker run -d -v /home/mysql:/var/lib/mysql --restart=unless-stopped -p 8080:8080 rancher/server:stable
-```
-
-3. **Create an environment:** Once rancher server has been set up. Create an
-environment. You can create an Rancher environment ``<rancher
-url>/settings/env/add``.
-
-4. **Set up the Hetzner Machine Driver**: This only applies if you are using
-Hetzner Cloud as your hosting provider. You can automatically manage and deploy
-hosts on Hetzner using the Admin -> Machine Drivers menu and then enable the
-Hetzner driver.
-
-5. **Add a host:** You need to add a host to the environment has been set up to
-actually run the instance (the agent could be on the same host as the rancher
-server but it is not recommended). You can do this by ensuring your chosen
-environment is active and then from the menu do ``Environment -> Hosts``. If you
-running on hetzner cloud, choose the Hetzner machine driver and then enter the
-API key for your Hetzner Cloud project (you can get this key from the Hetzner
-Cloud admin ui). Alternatively manually set up a linux host with docker on it
-and then use the manual host setup as directed by the ``Infrastructure -> Hosts
--> Add Host`` page in Rancher. The process is quite logical and simple and
-involves pasting a single line of code onto the host that will run the agent.
-Once the host is set up with a running agent, you should see it join the
-environment as shown below:
-
-
-![screen shot 2017-11-02 at 19 03 32](https://user-images.githubusercontent.com/178003/32339631-0bbb10f6-c001-11e7-9218-37074d7feafc.png)
-
-
-6. ** Installing from the catalogue:** Once Rancher is installed, your
-environment and host are set up, use the Admin -> Settings menu to add our
-Rancher catalogue using this URL:
-
-https://github.com/qgis/qgis-feed
-
-Once your settings are saved open a Rancher environment and set up a
-stack from the catalogue's 'QGIS' section - you will see
-QGIS-Feed listed there.
-
-
-Now you can add items from the QGIS catalogue to your stack.
-
-</details>
