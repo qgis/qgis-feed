@@ -26,7 +26,7 @@
                 <div class="navbar-end">
                     <div class="navbar-item">
                         {% if user.is_authenticated and not user.username == 'qgis_user' %}
-                        <a class="button is-danger is-small is-outlined is-fullwidth" href="{% url "logout" %}">
+                        <a class="button is-warning is-small is-fullwidth" href="{% url "logout" %}">
                             <span class="icon">
                                 <i class="fas fa-sign-out-alt"></i>
                             </span>
