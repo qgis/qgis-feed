@@ -6,98 +6,62 @@
 {% endblock stylesheets %}
 {% block content %}
 
-<div class="m-5">
-    <div class="columns is-centered">
-        <div class="form-preview column is-8 has-background-light p-2 box-container m-5">
-            <div class="columns">
-                <div class="column is-4" name="imagePreview">
-                    {% if feed_entry.image %}
-                    <img src="{{ feed_entry.image.url }}" style="border-radius:20px;">
-                    {% else %}
-                    {% endif %}
-                </div>
-                <div class="column is-8">
-                    <h5 name="titlePreview" class="title is-5">
-                        {{feed_entry.title | default:""}}
-                    </h5>
-                    <div name="contentPreview">
-                        {{feed_entry.content | default:"" | safe }}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<h1 class="title">Feed details</h1>
+
+<a href="{% url 'all' %}" class="button">
+    <span class="icon">
+        <i class="fas fa-arrow-left"></i>
+    </span>
+    <span>Back to Feed List</span>
+</a>
+
+    {% include "feeds/feed_rich_item.html" with feed=feed_entry show_buttons=0 %}
     
-    <div class="columns is-centered">
-        <div class="form-preview column is-8 p-2 box-container m-5">
-            <table class="table is-fullwidth">
-                <tbody>
-                    <tr>
-                        <th>Url:</th>
-                        <td name="urlPreview">
-                            {% if feed_entry.url %}
-                                <a href="{{ feed_entry.url }}" target="_blank">{{ feed_entry.url }}</a>
-                            {% else %}
-                                <i>-</i>
-                            {% endif %}
-                            <p class="help">URL for more information link</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Sticky:</th>
-                        <td name="stickyPreview">
-                            {% if feed_entry.sticky %}
-                                <span class="icon has-text-success">
-                                    <i class="fa-solid fa-circle-check"></i>
-                                </span>
-                            {% else %}
-                                <span class="icon has-text-danger">
-                                    <i class="fa-solid fa-circle-xmark"></i>
-                                </span>
-                            {% endif %}
-                            <p class="help">Keep this entry on top</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Sorting order:</th>
-                        <td name="sortingPreview">
-                            {{ feed_entry.sorting|default:"-" }}
-                            <p class="help">Order to show at top of the list</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Language filter:</th>
-                        <td name="languagePreview">
-                            {{ feed_entry.language_filter_text|default:"-" }}
-                            <p class="help">The entry is hidden to users who have not set a matching language filter</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Spatial filter:</th>
-                        <td name="spatialFilterPreview" class="spatial-filter-map">
-                            <div id="map" style="width: 100%; height: 400px;"></div>
-                            <p class="help">The entry is hidden to users who have set a location that does not match</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Publication start:</th>
-                        <td name="publishFromPreview">
-                            {{ feed_entry.publish_from|default:"-" }}
-                            <p class="help">The start date for the publication</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Publication end:</th>
-                        <td name="publishToPreview">
-                            {{ feed_entry.publish_to|default:"-" }}
-                            <p class="help">The entry will be hidden to users after this date. You can set this in the past to remove the entry from the users listing.</p>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+<table class="table is-fullwidth">
+    <tbody>
+        <tr>
+            <th>Url:</th>
+            <td name="urlPreview" style="word-break: break-all;">
+                {% if feed_entry.url %}
+                    <a href="{{ feed_entry.url }}" target="_blank">{{ feed_entry.url }}</a>
+                {% else %}
+                    <i>-</i>
+                {% endif %}
+                <p class="help">URL for more information link</p>
+            </td>
+        </tr>
+        <tr>
+            <th>Language filter:</th>
+            <td name="languagePreview">
+                {{ feed_entry.language_filter_text|default:"-" }}
+                <p class="help">The entry is hidden to users who have not set a matching language filter</p>
+            </td>
+        </tr>
+        {% if feed_entry.spatial_filter %}
+            <tr>
+                <th>Spatial filter:</th>
+                <td name="spatialFilterPreview" class="spatial-filter-map">
+                    <div id="map" style="width: 100%; height: 400px;"></div>
+                    <p class="help">The entry is hidden to users who have set a location that does not match</p>
+                </td>
+            </tr>
+        {% endif %}
+        <tr>
+            <th>Publication start:</th>
+            <td name="publishFromPreview">
+                {{ feed_entry.publish_from|default:"-" }}
+                <p class="help">The start date for the publication</p>
+            </td>
+        </tr>
+        <tr>
+            <th>Publication end:</th>
+            <td name="publishToPreview">
+                {{ feed_entry.publish_to|default:"-" }}
+                <p class="help">The entry will be hidden to users after this date. You can set this in the past to remove the entry from the users listing.</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
 
 {% endblock content %}
 
@@ -105,22 +69,22 @@
 <script src="{% static 'ol/ol.js' %}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        var map = new ol.Map({
-            target: 'map',
-            layers: [
-                new ol.layer.Tile({
-                    source: new ol.source.OSM()
-                })
-            ],
-            view: new ol.View({
-                center: ol.proj.fromLonLat([0, 0]),
-                zoom: 1
-            })
-        });
 
         var spatialFilter = "{{ feed_entry.spatial_filter|escapejs|default:'' }}";
         spatialFilter = spatialFilter.replace('SRID=4326;', '');
         if (spatialFilter && spatialFilter.toLowerCase() !== 'none') {
+            var map = new ol.Map({
+                target: 'map',
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.OSM()
+                    })
+                ],
+                view: new ol.View({
+                    center: ol.proj.fromLonLat([0, 0]),
+                    zoom: 1
+                })
+            });
             var format = new ol.format.WKT();
             var feature = format.readFeature(spatialFilter, {
                 dataProjection: 'EPSG:4326',

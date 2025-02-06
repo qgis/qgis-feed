@@ -7,277 +7,334 @@
   .pointer :hover{
     cursor: pointer;
   }
+  #filter-container {
+    display: none;
+  }
 </style>
 {% endblock stylesheets %} 
 {% block content %}
 
-{% include "layouts/page-title.html" with page_title='Feed Management' %}
+<h1 class="title">
+    QGIS Feed Management
+</h1>
 
-<section class="section">
-    <div class="columns">
-        <div class="column is-2 box has-background-light p-3 box-container" style="min-width: 250px;">
-          {% if user_can_add %}
-            <button 
-                class="button is-block is-success is-fullwidth is-large"
-                value="add" 
-                onclick="window.location.href='{% url 'feed_entry_add'%}';"
-            >
-                New feed &nbsp;<i class="fa fa-plus" aria-hidden="true"></i>
-            </button>
-            <hr/>
-          {% endif %}
-            <h5 class="title is-5">Filter by</h5>
-            <form method="GET">
-                <div class="field">
-                <label class="label">Title:</label>
-                  <div class="control has-icons-left">
-                    {{form.title}}
-                    <span class="icon is-small is-left">
-                      <i class="fas fa-quote-right"></i>
-                    </span>
-                  </div>
-                </div>
 
-                <div class="field">
-                    <label class="label">Author:</label>
-                  <div class="control has-icons-left">
-                    {{form.author}}
-                    <span class="icon is-small is-left">
-                      <i class="fas fa-user"></i>
-                    </span>
-                  </div>
-                </div>
-                
-                <div class="field">
-                    <label class="label">Language filter:</label>
-                  <div class="select is-fullwidth">
-                    {{form.language_filter}}
-                  </div>
-                </div>
-                
-                <div class="field">
-                    <label class="label">Date published from:</label>
-                    <div class="control has-icons-left">
-                      {{form.publish_from}}
-                      <span class="icon is-small is-left">
-                        <i class="fas fa-calendar"></i>
-                      </span>
-                    </div>
-                  </div>
+  <div class="is-flex is-justify-content-space-between" style="gap: 10px;">
+    {% if user_can_add %}
+    <button 
+        class="button is-primary1"
+        value="add" 
+        onclick="window.location.href='{% url 'feed_entry_add'%}';"
+    >
+    <span class="icon">
+      <i class="fas fa-plus" aria-hidden="true"></i>
+    </span>
+    <span>New feed</span>
+         
+    </button>
 
-                  <div class="field">
-                      <label class="label">Date published to:</label>
-                      <div class="control has-icons-left">
-                        {{form.publish_to}}
-                        <span class="icon is-small is-left">
-                          <i class="fas fa-calendar"></i>
-                        </span>
-                      </div>
-                    </div>
+{% endif %}
+    <button 
+        id="filter-button"
+        class="button is-primary1 is-outlined"
+    >
+      <span>
+        Filter
+        <span id="filter-count" class="tag is-info ml-1">
+          0
+        </span>
+      </span>
+    </button>
+  </div>
 
-                  
-                  <div class="field">
-                    <label class="label">
-                      Need review:
-                    </label>
-                    <div class="select is-fullwidth">
-                      {{form.need_review}}
-                    </div>
-                  </div>
-                <button 
-                    class="button is-outlined is-primary1 is-fullwidth"
-                    type="submit" 
-                    value="filter" 
-                    id="submit-button"
-                >
-                    Filter &nbsp;<i class="fa fa-filter" aria-hidden="true"></i>
-                </button>
-            </form>
-            <button 
-                class="button is-outlined is-fullwidth mt-2"
-                value="clear" 
-                onclick="window.location.href='?';"
-            >
-                Clear filter &nbsp;<i class="fa fa-delete-left" aria-hidden="true"></i>
-            </button>
-        </div>
-        <div class="column is-10" style="overflow: auto;">
-            <table class="table is-fullwidth is-hoverable">
-                <thead>
-                  <tr>
-                    <th>
-                        <a href="?page={{ feeds_entry.number }}&sort_by=title&order={{ order|lower|default:"asc" }}">
-                            {% if sort_by == "title" and order == "desc" %}
-                            &uarr;
-                            {% elif sort_by == "title" and order == "asc"%}
-                            &darr;
-                            {% else %}
-                            
-                            {% endif %}
-                            Title
-                        </a>
-                    </th>
-                    <th>
-                        <a href="?page={{ feeds_entry.number }}&sort_by=author&order={{ order|lower|default:"asc" }}">
-                            {% if sort_by == "author" and order == "desc" %}
-                            &uarr;
-                            {% elif sort_by == "author" and order == "asc"%}
-                            &darr;
-                            {% else %}
-                            
-                            {% endif %}
-                            Author
-                        </a>
-                    </th>
-                    <th>
-                        <a href="?page={{ feeds_entry.number }}&sort_by=language_filter&order={{ order|lower|default:"asc" }}">
-                            {% if sort_by == "language_filter" and order == "desc" %}
-                            &uarr;
-                            {% elif sort_by == "language_filter" and order == "asc"%}
-                            &darr;
-                            {% else %}
-                            
-                            {% endif %}
-                            Language filter
-                        </a>
-                    </th>
-                    <th>Need review</th>
-                    <th>Published</th>
-                    <th>
-                        <a href="?page={{ feeds_entry.number }}&sort_by=publish_from&order={{ order|lower|default:"asc" }}">
-                            {% if sort_by == "publish_from" and order == "desc" %}
-                            &uarr;
-                            {% elif sort_by == "publish_from" and order == "asc"%}
-                            &darr;
-                            {% else %}
-                            
-                            {% endif %}
-                            Publication Start
-                        </a>
-                    </th>
-                    <th>Publication End</th>
-                    <th>Sorting Order</th>
-                  </tr>
-                </thead>
-        
-                <tbody>
-                    {% for feed in feeds_entry %}
-
-                      {% if user_can_change %}
-                        <tr onclick="window.location.href='{% url 'feed_entry_update' feed.pk %}';" class="pointer">
-                      {% else %}
-                        <tr>
-                      {% endif %}
-                            <td>{{ feed.title|default:"-" }}</td>
-                            <td>{{ feed.author|default:"-" }}</td>
-                            <td>{{ feed.get_language_filter_display|default:"-" }}</td>
-                            <td class="has-text-centered">
-                                {% if not feed.published %}
-                                    <span class="icon has-text-danger">
-                                        <i class="fa-solid fa-circle-exclamation"></i>
-                                    </span>
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
-                            <td class="has-text-centered">
-                                {% if feed.published %}
-                                    <span class="icon has-text-success">
-                                        <i class="fa-solid fa-circle-check"></i>
-                                    </span>
-                                {% else %}
-                                    <span class="icon has-text-danger">
-                                        <i class="fa-solid fa-circle-xmark"></i>
-                                    </span>
-                                {% endif %}
-                            </td>
-
-                            <td>{{ feed.publish_from|date:"d F Y, H:i"|default:"-" }}</td>
-                            <td>{{ feed.publish_to|date:"d F Y, H:i"|default:"-" }}</td>
-                            <td>{{ feed.sorting|default:"-" }}</td>
-                        </tr>
-                    {% endfor %}
-        
-                </tbody>
-            </table>
-    
-            <div class="columns">
-              <div class="field has-addons column is-6">
-                  <p class="control">
-      
-                      <button class="button" 
-                          {% if feeds_entry.has_previous  %}
-                          onclick="window.location.href='?page=1&sort_by={{sort_by}}&order={{current_order}}';"
-                          {% else %}
-                          disabled
-                          {% endif %}
-                      >
-                          <span class="icon is-small">
-                          <i class="fas fa-backward-fast"></i>
-                          </span>
-                          <span>First</span>
-                      </button>
-      
-                  </p>
-                  <p class="control">
-                    <button class="button" 
-                      {% if feeds_entry.has_previous  %}
-                      onclick="window.location.href='?page={{ feeds_entry.previous_page_number }}&sort_by={{sort_by}}&order={{current_order}}';"
-                      {% else %}
-                      disabled
-                      {% endif %}
-                    >
-                      <span class="icon is-small">
-                        <i class="fas fa-backward-step"></i>
-                      </span>
-                      <span>Prev</span>
-                    </button>
-                  </p>
-                  <p class="control">
-                    <button class="button" disabled>
-                      <span>{{ feeds_entry.number }}</span>
-                    </button>
-                  </p>
-                  <p class="control">
-                    <button class="button"
-                    {% if feeds_entry.has_next  %}
-                    onclick="window.location.href='?page={{ feeds_entry.next_page_number }}&sort_by={{sort_by}}&order={{current_order}}';"
-                    {% else %}
-                    disabled
-                    {% endif %}
-                    >
-                    <span>Next</span>
-                    <span class="icon is-small">
-                      <i class="fas fa-forward-step"></i>
-                    </span>
-                    </button>
-                  </p>
-                  <p class="control">
-                    <button class="button"
-                    {% if feeds_entry.has_next  %}
-                    onclick="window.location.href='?page={{ feeds_entry.paginator.num_pages }}&sort_by={{sort_by}}&order={{current_order}}';"
-                    {% else %}
-                    disabled
-                    {% endif %}
-                    >
-                    <span>Last</span>
-                    <span class="icon is-small">
-                      <i class="fas fa-forward-fast"></i>
-                    </span>
-                    </button>
-                  </p>
-              </div>
-              <div class="column is-6 is-flex is-align-items-center is-justify-content-end">
-  
-                <p class="is-small"><strong>{{count}}</strong> records found</p>
-              </div>
+<div id="filter-container" class="has-background-light p-3 mt-3">
+  <form method="GET" id="filter-form">
+  <div class="columns is-multiline is-centered">
+        <div class="column is-6">
+          <div class="field">
+            <label class="label">Title:</label>
+            <div class="control has-icons-left">
+              {{form.title}}
+              <span class="icon is-small is-left">
+                <i class="fas fa-quote-right"></i>
+              </span>
             </div>
           </div>
-
+  
+          <div class="field">
+            <label class="label">Author:</label>
+            <div class="control has-icons-left">
+              {{form.author}}
+              <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+              </span>
+            </div>
+          </div>
+          
+          <div class="field">
+              <label class="label">Language filter:</label>
+            <div class="select is-fullwidth">
+              {{form.language_filter}}
+            </div>
+          </div>
+        </div>
+        <div class="column is-6">
+  
+          <div class="field">
+            <label class="label">Date published from:</label>
+            <div class="control has-icons-left">
+                {{ form.publish_from }}
+              <span class="icon is-small is-left">
+                <i class="fas fa-calendar"></i>
+              </span>
+            </div>
+          </div>
+  
+          <div class="field">
+              <label class="label">Date published to:</label>
+              <div class="control has-icons-left">
+                {{form.publish_to}}
+                <span class="icon is-small is-left">
+                  <i class="fas fa-calendar"></i>
+                </span>
+              </div>
+            </div>
+  
+          
+          <div class="field">
+            <label class="label">
+              Need review:
+            </label>
+            <div class="select is-fullwidth">
+              {{form.need_review}}
+            </div>
+          </div>
+        </div>
     </div>
-</section>
+  </form>
+
+  <div class="is-flex is-justify-content-flex-end mt-3" style="gap: 10px;">
+    <button 
+        class="button is-primary1"
+        type="submit"
+        form="filter-form"
+    >
+
+      <span class="icon">
+        <i class="fas fa-filter" aria-hidden="true"></i>
+      </span>
+      <span>Apply filter</span>
+    </button>
+    <button 
+        class="button is-primary1 is-outlined"
+        id="clear-button"
+        onclick="window.location.href='?';"
+    >
+      <span class="icon">
+        <i class="fas fa-eraser" aria-hidden="true"></i>
+      </span>
+      <span>Clear filter</span>
+    </button>
+  </div>
+</div>
+
+<hr/>
+
+<div>
+  <table class="table is-fullwidth is-hoverable">
+      <thead>
+        <tr>
+          <th>
+              <a href="?page={{ feeds_entry.number }}&sort_by=title&order={{ order|lower|default:"asc" }}">
+                  {% if sort_by == "title" and order == "desc" %}
+                  &uarr;
+                  {% elif sort_by == "title" and order == "asc"%}
+                  &darr;
+                  {% else %}
+                  
+                  {% endif %}
+                  Title
+              </a>
+          </th>
+          <th>
+              <a href="?page={{ feeds_entry.number }}&sort_by=author&order={{ order|lower|default:"asc" }}">
+                  {% if sort_by == "author" and order == "desc" %}
+                  &uarr;
+                  {% elif sort_by == "author" and order == "asc"%}
+                  &darr;
+                  {% else %}
+                  
+                  {% endif %}
+                  Author
+              </a>
+          </th>
+          <th>
+              <a href="?page={{ feeds_entry.number }}&sort_by=language_filter&order={{ order|lower|default:"asc" }}">
+                  {% if sort_by == "language_filter" and order == "desc" %}
+                  &uarr;
+                  {% elif sort_by == "language_filter" and order == "asc"%}
+                  &darr;
+                  {% else %}
+                  
+                  {% endif %}
+                  Language filter
+              </a>
+          </th>
+          <th>Need review</th>
+          <th>Published</th>
+          <th>
+              <a href="?page={{ feeds_entry.number }}&sort_by=publish_from&order={{ order|lower|default:"asc" }}">
+                  {% if sort_by == "publish_from" and order == "desc" %}
+                  &uarr;
+                  {% elif sort_by == "publish_from" and order == "asc"%}
+                  &darr;
+                  {% else %}
+                  
+                  {% endif %}
+                  Publication Start
+              </a>
+          </th>
+          <th>Publication End</th>
+          <th>Sorting Order</th>
+        </tr>
+      </thead>
+
+      <tbody>
+          {% for feed in feeds_entry %}
+
+            {% if user_can_change %}
+              <tr onclick="window.location.href='{% url 'feed_entry_update' feed.pk %}';" class="pointer">
+            {% else %}
+              <tr>
+            {% endif %}
+                  <td>{{ feed.title|default:"-" }}</td>
+                  <td>{{ feed.author|default:"-" }}</td>
+                  <td>{{ feed.get_language_filter_display|default:"-" }}</td>
+                  <td class="has-text-centered">
+                      {% if not feed.published %}
+                          <span class="icon has-text-danger">
+                              <i class="fa-solid fa-circle-exclamation"></i>
+                          </span>
+                      {% else %}
+                          -
+                      {% endif %}
+                  </td>
+                  <td class="has-text-centered">
+                      {% if feed.published %}
+                          <span class="icon has-text-success">
+                              <i class="fa-solid fa-circle-check"></i>
+                          </span>
+                      {% else %}
+                          <span class="icon has-text-danger">
+                              <i class="fa-solid fa-circle-xmark"></i>
+                          </span>
+                      {% endif %}
+                  </td>
+
+                  <td>{{ feed.publish_from|date:"Y-m-d, H:i"|default:"-" }}</td>
+                  <td>{{ feed.publish_to|date:"Y-m-d, H:i"|default:"-" }}</td>
+                  <td>{{ feed.sorting|default:"-" }}</td>
+              </tr>
+          {% endfor %}
+
+      </tbody>
+  </table>
+
+  <div class="columns">
+    <div class="field has-addons column is-6">
+        <p class="control">
+
+            <button class="button" 
+                {% if feeds_entry.has_previous  %}
+                onclick="window.location.href='?page=1&sort_by={{sort_by}}&order={{current_order}}';"
+                {% else %}
+                disabled
+                {% endif %}
+            >
+                <span class="icon is-small">
+                <i class="fas fa-backward-fast"></i>
+                </span>
+                <span>First</span>
+            </button>
+
+        </p>
+        <p class="control">
+          <button class="button" 
+            {% if feeds_entry.has_previous  %}
+            onclick="window.location.href='?page={{ feeds_entry.previous_page_number }}&sort_by={{sort_by}}&order={{current_order}}';"
+            {% else %}
+            disabled
+            {% endif %}
+          >
+            <span class="icon is-small">
+              <i class="fas fa-backward-step"></i>
+            </span>
+            <span>Prev</span>
+          </button>
+        </p>
+        <p class="control">
+          <button class="button" disabled>
+            <span>{{ feeds_entry.number }}</span>
+          </button>
+        </p>
+        <p class="control">
+          <button class="button"
+          {% if feeds_entry.has_next  %}
+          onclick="window.location.href='?page={{ feeds_entry.next_page_number }}&sort_by={{sort_by}}&order={{current_order}}';"
+          {% else %}
+          disabled
+          {% endif %}
+          >
+          <span>Next</span>
+          <span class="icon is-small">
+            <i class="fas fa-forward-step"></i>
+          </span>
+          </button>
+        </p>
+        <p class="control">
+          <button class="button"
+          {% if feeds_entry.has_next  %}
+          onclick="window.location.href='?page={{ feeds_entry.paginator.num_pages }}&sort_by={{sort_by}}&order={{current_order}}';"
+          {% else %}
+          disabled
+          {% endif %}
+          >
+          <span>Last</span>
+          <span class="icon is-small">
+            <i class="fas fa-forward-fast"></i>
+          </span>
+          </button>
+        </p>
+    </div>
+    <div class="column is-6 is-flex is-align-items-center is-justify-content-end">
+
+      <p class="is-small"><strong>{{count}}</strong> records found</p>
+    </div>
+  </div>
+</div>
 
 {% endblock content %}
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
+<script>
+  $(document).ready(function() {
+    $('#filter-button').click(function() {
+      $('#filter-container').toggle();
+      if ($('#filter-container').is(':visible')) {
+        $(this).html('<span>Hide filter<span id="filter-count" class="tag is-info ml-1">0</span></span>');
+      } else {
+        $(this).html('<span>Filter<span id="filter-count" class="tag is-info ml-1">0</span></span>');
+      }
+    });
+    $('#filter-form input, #filter-form select').on('change', function() {
+      let filledFields = 0;
+      $('#filter-form input, #filter-form select').each(function() {
+      if ($(this).val()) {
+        filledFields++;
+      }
+      });
+      $('#filter-count').text(filledFields);
+    }).trigger('change');
+  });
+</script>
 {% endblock javascripts %}

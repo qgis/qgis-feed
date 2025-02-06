@@ -12,9 +12,6 @@
     </title>
 
     <link rel="icon" type="image/png" href="{% static "images/favicon.ico" %}" />
-    <!-- Fonts -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
-    <link rel="stylesheet" href="https://fontlibrary.org/face/trueno" type="text/css"/>
     
     <!-- Icons -->
     <link rel="stylesheet" href="{% static 'font-awesome/css/fontawesome.min.css' %}" type="text/css">
@@ -33,18 +30,19 @@
 </head>
 
 <body>
-    <section style="height: 60px">
-        <qg-top-nav
+    <qg-top-nav
         breakpoint="1024"
         class="is-highest navbar is-fixed-top"
         location-prefix="{{ MAIN_WEBSITE_URL }}"
     ></qg-top-nav>
-    {% comment %} The location-prefix will be updated when the QGIS-Hugo site is migrated to qgis.org {% endcomment %}
     {% include 'layouts/header.html' %}
+    {% block pagetitle %}{% endblock %}
+    
+    <section class="section">
+        <div class="container content">
+            {% block content %}{% endblock content %}
+        </div>
     </section>
-    <div>
-        {% block content %}{% endblock content %}
-    </div>
 
     {% include 'layouts/footer.html' %}
 

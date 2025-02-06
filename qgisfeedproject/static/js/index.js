@@ -2,7 +2,7 @@ const hljs = require('highlight.js/lib/core');
 hljs.registerLanguage('json', require('highlight.js/lib/languages/json'));
 hljs.highlightAll();
 
-require('../style/style.scss');
+require('../style/scss/style.scss');
 
 document.addEventListener('DOMContentLoaded', () => {
 
