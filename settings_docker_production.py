@@ -12,7 +12,7 @@ DATABASES = {
         'NAME':  os.getenv('QGISFEED_DOCKER_DBNAME', 'qgisfeed'),
         'USER': os.getenv('QGISFEED_DOCKER_DBUSER', 'docker'),
         'PASSWORD': os.getenv('QGISFEED_DOCKER_DBPASSWORD', 'docker'),
-        'HOST': 'postgis',
+        'HOST': os.getenv('QGISFEED_DOCKER_DBHOST', 'postgis'),
         'PORT': '5432'
     }
 }
