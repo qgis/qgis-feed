@@ -96,8 +96,8 @@ class QgisFeedEntry(models.Model):
     spatial_filter = models.PolygonField(_('Spatial filter'), blank=True, null=True, help_text=_('The entry will be hidden to users who have set a location that does not match'))
 
     # Dates
-    publish_from = models.DateTimeField(_('Publication start'), auto_now=False, auto_now_add=False, blank=True, null=True, db_index=True)
-    publish_to = models.DateTimeField(_('Publication end'), auto_now=False, auto_now_add=False, blank=True, null=True, db_index=True, help_text=_('The entry will be hidden to users after this date. You can set this in the past to temove the entry from the users listing.'))
+    publish_from = models.DateTimeField(_('Publication start (UTC)'), auto_now=False, auto_now_add=False, blank=True, null=True, db_index=True)
+    publish_to = models.DateTimeField(_('Publication end (UTC)'), auto_now=False, auto_now_add=False, blank=True, null=True, db_index=True, help_text=_('The entry will be hidden to users after this date. You can set this in the past to temove the entry from the users listing.'))
 
     # Managers
     objects = models.Manager()

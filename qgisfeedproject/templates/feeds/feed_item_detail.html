@@ -47,14 +47,14 @@
             </tr>
         {% endif %}
         <tr>
-            <th>Publication start:</th>
+            <th>Publication start (UTC):</th>
             <td name="publishFromPreview">
                 {{ feed_entry.publish_from|default:"-" }}
                 <p class="help">The start date for the publication</p>
             </td>
         </tr>
         <tr>
-            <th>Publication end:</th>
+            <th>Publication end (UTC):</th>
             <td name="publishToPreview">
                 {{ feed_entry.publish_to|default:"-" }}
                 <p class="help">The entry will be hidden to users after this date. You can set this in the past to remove the entry from the users listing.</p>

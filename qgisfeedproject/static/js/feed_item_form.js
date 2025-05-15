@@ -144,7 +144,7 @@ function refreshDates() {
 publishFromField.addEventListener("change", function () {
   publishFromPreview.forEach((item) => {
     item.innerText = publishFromField.value
-      ? new Date(publishFromField.value).toString()
+      ? moment(new Date(publishFromField.value)).format('ddd DD MMM YYYY HH:mm:ss [UTC]')
       : "-";
   });
   checkFormValid();
@@ -154,7 +154,7 @@ publishFromField.addEventListener("change", function () {
 publishToField.addEventListener("change", function () {
   publishToPreview.forEach((item) => {
     item.innerText = publishToField.value
-      ? new Date(publishToField.value).toString()
+      ? moment(new Date(publishToField.value)).format('ddd DD MMM YYYY HH:mm:ss [UTC]')
       : "-";
   });
   checkFormValid();
