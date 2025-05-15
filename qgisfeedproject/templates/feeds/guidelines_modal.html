@@ -1,0 +1,34 @@
+<div id="guidelinesModal" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <div class="container rich m-0">
+          <div class="cont coloring-2">
+              <h2>Before Submitting a New Feed Entry</h2>
+              <p>Please ensure you adhere to the following guidelines:</p>
+                <ul>
+                <li>Each entry must be reviewed by at least <span class="has-text-weight-bold">two people</span> before publishing.</li>
+                <li>The maximum duration for an entry should not exceed <span class="has-text-weight-bold">10 days</span>.</li>
+                <li>Do not mark the entry as <span class="has-text-weight-bold">sticky</span> unless it is urgent. 
+                  Only an <span class="has-text-weight-bold">approver</span> can make an entry sticky.</li>
+                </ul>
+          </div>
+        </div>
+
+        <footer class="modal-card-foot is-justify-content-flex-end" style="top: -10px;">
+            <button class="button">
+          <span class="icon">
+              <i class="fas fa-arrow-left" aria-hidden="true"></i>
+          </span>
+          <span>Return to List</span>
+            </button>
+            <button class="button is-success"
+              value="add" 
+              onclick="window.location.href='{% url 'feed_entry_add'%}';">
+          <span class="icon">
+              <i class="fas fa-check-circle" aria-hidden="true"></i>
+          </span>
+          <span>Got it</span>
+            </button>
+        </footer>
+    </div>
+</div>

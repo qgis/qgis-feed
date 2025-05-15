@@ -97,7 +97,8 @@ class FeedItemForm(forms.ModelForm):
 
     sticky = forms.BooleanField(
         required=False,
-        widget=forms.CheckboxInput(attrs={'class': 'checkbox'})
+        widget=forms.CheckboxInput(attrs={'class': 'checkbox'}),
+        help_text="Do not mark the entry as sticky unless it is urgent."
     )
 
     approvers = forms.MultipleChoiceField(
@@ -149,7 +150,7 @@ class FeedItemForm(forms.ModelForm):
                 'class': 'input', 
                 }
         )
-        self.fields['publish_to'].initial = timezone.now() + timezone.timedelta(days=30)
+        self.fields['publish_to'].initial = timezone.now() + timezone.timedelta(days=10)
         self.fields['approvers'].choices = self.get_approvers_choices()
 
     def clean_content(self):
