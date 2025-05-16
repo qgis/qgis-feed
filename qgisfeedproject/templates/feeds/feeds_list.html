@@ -18,22 +18,22 @@
     QGIS Feed Management
 </h1>
 
+{% include 'feeds/guidelines_modal.html' %}
 
   <div class="is-flex is-justify-content-space-between" style="gap: 10px;">
     {% if user_can_add %}
-    <button 
-        class="button is-primary1"
-        value="add" 
-        onclick="window.location.href='{% url 'feed_entry_add'%}';"
-    >
-    <span class="icon">
-      <i class="fas fa-plus" aria-hidden="true"></i>
-    </span>
-    <span>New feed</span>
-         
-    </button>
+      <button 
+          class="button is-primary1 js-modal-trigger"
+          data-target="guidelinesModal"
+      >
+        <span class="icon">
+          <i class="fas fa-plus" aria-hidden="true"></i>
+        </span>
+        <span>New entry</span>
+          
+      </button>
 
-{% endif %}
+    {% endif %}
     <button 
         id="filter-button"
         class="button is-primary1 is-outlined"

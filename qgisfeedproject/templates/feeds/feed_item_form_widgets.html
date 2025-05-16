@@ -100,18 +100,21 @@
         {% endfor %}
       </div>
       <div class="column is-6 field">
-        <label class="label"> 
-          {% if form.sticky.field.required %}
-              <span style="color:red;">*</span>
+        {% if user_is_approver %}
+          <label class="label"> 
+            {% if form.sticky.field.required %}
+                <span style="color:red;">*</span>
+            {% endif %}
+            Sticky: 
+          </label>
+          <div class="control is-flex is-align-items-center" style="height:2.5em;">
+            <label class="checkbox"> {{form.sticky}} Keep this entry on top </label>
+          </div>
+          <p class="help">{{form.sticky.help_text}}</p>
+          {% for error in form.sticky.errors %}
+            <p class="help form-error">{{ error }}</p>
+          {% endfor %}
           {% endif %}
-          Sticky: 
-        </label>
-        <div class="control is-flex is-align-items-center" style="height:2.5em;">
-          <label class="checkbox"> {{form.sticky}} Keep this entry on top </label>
-        </div>
-        {% for error in form.sticky.errors %}
-          <p class="help form-error">{{ error }}</p>
-        {% endfor %}
       </div>
     </div>
 

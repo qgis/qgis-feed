@@ -40,16 +40,16 @@
 
 <h1 class="title">
     {% if form.title.value %}
-        Edit feed item
+        Edit feed entry
     {% else %}
-        New feed item
+        New feed entry
     {% endif %}
 </h1>
 <a href="{% url 'feeds_list' %}" class="button">
     <span class="icon">
         <i class="fas fa-arrow-left"></i>
     </span>
-    <span>Back to Feed List</span>
+    <span>Back to the list</span>
 </a>
 
 <div class="columns is-multiline is-centered mt-3 ">

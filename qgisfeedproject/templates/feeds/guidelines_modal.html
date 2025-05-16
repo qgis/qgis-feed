@@ -1,0 +1,29 @@
+<div id="guidelinesModal" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <div class="container rich m-0">
+          <div class="cont coloring-2">
+              <h2>Before Submitting a New Feed Entry</h2>
+              <p>Please ensure you adhere to the following guidelines:</p>
+                {% include "feeds/guidelines_content.html" %}
+          </div>
+        </div>
+
+        <footer class="modal-card-foot is-justify-content-flex-end" style="top: -10px;">
+            <button class="button">
+          <span class="icon">
+              <i class="fas fa-arrow-left" aria-hidden="true"></i>
+          </span>
+          <span>Return to List</span>
+            </button>
+            <button class="button is-success"
+              value="add" 
+              onclick="window.location.href='{% url 'feed_entry_add'%}';">
+          <span class="icon">
+              <i class="fas fa-check-circle" aria-hidden="true"></i>
+          </span>
+          <span>Got it</span>
+            </button>
+        </footer>
+    </div>
+</div>
