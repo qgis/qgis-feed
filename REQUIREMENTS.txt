@@ -4,6 +4,7 @@ asgiref~=3.7
 async-timeout~=4.0
 asynctest~=0.13
 attrs~=21.4
+beautifulsoup4~=4.12
 certifi~=2021.10
 charset-normalizer~=2.0
 Django~=4.2

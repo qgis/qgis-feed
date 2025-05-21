@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'user_visit',
 
     # Webpack
-    'webpack_loader'
+    'webpack_loader',
 ]
 
 # Useful debugging extensions

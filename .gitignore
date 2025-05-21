@@ -122,3 +122,6 @@ package-lock.json
 webpack-stats.json
 qgisfeedproject/static/bundles
 !qgisfeedproject/qgisfeedproject/settings_local.py.templ
+
+# Sustaining members template
+qgisfeedproject/templates/layouts/sustaining_members.html
