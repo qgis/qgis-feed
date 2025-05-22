@@ -29,6 +29,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const modal = $trigger.dataset.target;
     const $target = document.getElementById(modal);
 
+    // Social media buttons data
+    const socialName = $trigger.dataset.social;
+    const socialUrl = $trigger.dataset.url;
+    if (socialName && socialUrl) {
+      const socialNameEls = $target.querySelectorAll(".social-name");
+      socialNameEls.forEach((el) => {
+        el.textContent = socialName;
+      });
+      const formEl = $target.querySelector("form");
+      if (formEl) {
+        formEl.action = socialUrl;
+      }
+    }
+
     $trigger.addEventListener("click", () => {
       openModal($target);
     });

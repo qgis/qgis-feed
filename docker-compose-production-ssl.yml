@@ -68,6 +68,9 @@ services:
       EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
       SENTRY_DSN: ${SENTRY_DSN}
       SENTRY_RATE: ${SENTRY_RATE}
+      # Social syndication
+      MASTODON_ACCESS_TOKEN: ${MASTODON_ACCESS_TOKEN}
+      MASTODON_API_BASE_URL: ${MASTODON_API_BASE_URL}
     command: /code/entrypoint_production.sh
     expose:
     - "8000"

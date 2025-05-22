@@ -37,7 +37,11 @@ import json
 from user_visit.models import UserVisit
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+from .social_utils import MastodonManager
+from django.contrib import messages
+
 import re
+from django.utils.html import strip_tags
 
 
 QGISFEED_MAX_RECORDS=getattr(settings, 'QGISFEED_MAX_RECORDS', 20)
@@ -373,6 +377,7 @@ class FeedEntryUpdateView(View):
             "msg": msg,
             "success": success,
             "published": feed_entry.published,
+            "feed_entry": feed_entry,
             "user_is_approver": user_is_approver,
             "content_max_length": get_field_max_length(CharacterLimitConfiguration, field_name="content")
         }
@@ -422,3 +427,31 @@ class FeedEntryDetailView(View):
     def get(self, request, pk):
         feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
         return render(request, self.template_name, {"feed_entry": feed_entry})
+
+
+@method_decorator(staff_required, name='dispatch')
+@method_decorator(permission_required('qgisfeed.publish_qgisfeedentry'), name='dispatch')
+class FeedEntryShareMastodonView(View):
+    """
+    View to share a feed entry item to Mastodon
+    """
+    def post(self, request, pk):
+        feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
+        mastodon_manager = MastodonManager()
+        try:
+            content_text = strip_tags(feed_entry.content)
+            status = mastodon_manager.create_post(
+                status=f'{feed_entry.title}\n\n{content_text}',
+                image_path=feed_entry.image.path if feed_entry.image else None
+            )
+            if status:
+                messages.success(
+                    request, 
+                    f"Successfully shared to Mastodon! View post at: <a href='{status.url}' target='_blank'>{status.url}</a>",
+                    fail_silently=True
+                )
+            else:
+                messages.error(request, "Failed to share to Mastodon.", fail_silently=True)
+        except Exception as e:
+            messages.error(request, f"Error sharing to Mastodon: {str(e)}", fail_silently=True)
+        return redirect('feeds_list')

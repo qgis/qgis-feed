@@ -202,7 +202,6 @@ def aggregate_user_visit_data():
     )
 
     for user_visit_date in user_visit_dates:
-        print('Aggretating data for: ', user_visit_date)
         daily_visit, _ = DailyQgisUserVisit.objects.get_or_create(
             date=user_visit_date,
             defaults={

@@ -61,6 +61,27 @@
             <h5 class="title is-5 has-text-centered mt-3">Preview</h5>
             {% include 'feeds/feed_item_preview.html' %}
         </div>
+        {% if published %}
+            <div class="m-3">
+                <h4>Share this feed item:</h4>
+                <div class="buttons">
+                    <a
+                        class="button js-modal-trigger"
+                        title="Share on Mastodon"
+                        data-target="social-share-modal"
+                        data-social="Mastodon"
+                        data-url="{% url 'feed_entry_share_mastodon' pk=feed_entry.pk %}"
+                        style="background-color: #6364FF; color: #fff; border: none;"
+                    >
+                        <span class="icon is-large">
+                            <i class="fab fa-mastodon"></i>
+                        </span>
+                        <span>Mastodon</span>
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
     </div>
 </div>
 
@@ -105,6 +126,7 @@
 </div>
 
 {% include 'feeds/feed_item_confirmation.html' %}
+{% include 'feeds/social_share_modal.html' %}
 
 {% endblock content %}
 <!-- Specific JS goes HERE -->

@@ -1,0 +1,28 @@
+<div id="social-share-modal" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Share Feed Entry on <span class="social-name"></span></p>
+            <button class="delete" aria-label="close" type="button"></button>
+        </header>
+        <section class="modal-card-body">
+            Are you sure you want to share this feed item on <span class="social-name"></span>?
+        </section>
+        <footer class="modal-card-foot is-justify-content-flex-end">
+            <form 
+                method="post" 
+                action="" 
+                style="display:inline;"
+            >
+                {% csrf_token %}
+                <button class="button is-success" type="submit">        
+                    <span>Share on <span class="social-name"></span></span>
+                </button>
+            </form>
+            <button class="button is-default ml-3" type="button">    
+                <span>Cancel</span>
+            </button>
+
+        </footer>
+    </div>
+</div>
