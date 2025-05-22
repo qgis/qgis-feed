@@ -3,6 +3,10 @@
 @import "custom.bulma.scss";
 @import "sustaining_members.scss";
 
+html {
+  scroll-padding-top: 120px; /* height of your fixed header */
+}
+
 body {
   color: $text-primary1;
   font-weight: 300;
@@ -305,4 +309,17 @@ p {
 
 .rounded .rich-right img {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+a.heading-anchor {
+  visibility: hidden;
+}
+
+h1:hover > a.heading-anchor,
+h2:hover > a.heading-anchor,
+h3:hover > a.heading-anchor,
+h4:hover > a.heading-anchor,
+h5:hover > a.heading-anchor,
+h6:hover > a.heading-anchor {
+  visibility: visible;
 }

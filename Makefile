@@ -170,6 +170,14 @@ collectstatic:
 	@docker compose -f docker-compose-production-ssl.yml exec $(CONTAINER_NAME) python qgisfeedproject/manage.py collectstatic --noinput
 
 
+get-sustaining-members:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Getting sustaining members section"
+	@echo "------------------------------------------------------------------"
+	@docker compose -f docker-compose-production-ssl.yml exec $(CONTAINER_NAME) python qgisfeedproject/manage.py get_sustaining_members
+
+
 qgisfeed-shell:
 	@echo
 	@echo "------------------------------------------------------------------"
