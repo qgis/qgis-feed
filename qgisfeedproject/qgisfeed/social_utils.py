@@ -65,13 +65,11 @@ class BlueskyManager:
       settings.BLUESKY_PASSWORD,
     )
 
-  def build_text(self, title: str, content: str):
+  def build_text(self, content: str):
     """
     Constructs a text builder object with the given title and content, separated by two newlines.
     Parameters
     ----------
-    title : str
-      The title of the post.
     content : str
       The content of the post.
     Returns
@@ -80,8 +78,6 @@ class BlueskyManager:
       A text builder object containing the formatted title and content.
     """
     text_builder = client_utils.TextBuilder()
-    text_builder.text(title)
-    text_builder.text('\n\n')
     text_builder.text(content)
     return text_builder
   

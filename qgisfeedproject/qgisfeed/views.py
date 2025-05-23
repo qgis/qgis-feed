@@ -28,7 +28,7 @@ from django.utils.decorators import method_decorator
 from django.db import transaction
 from django.contrib.auth.models import User
 
-from .forms import FeedEntryFilterForm, FeedItemForm, HomePageFilterForm
+from .forms import FeedEntryFilterForm, FeedItemForm, HomePageFilterForm, FeedSocialSyndicationForm
 from .utils import get_field_max_length, notify_reviewers, parse_remote_addr, get_location
 from .models import QgisFeedEntry, CharacterLimitConfiguration
 from .languages import LANGUAGE_KEYS
@@ -42,6 +42,7 @@ from django.contrib import messages
 
 import re
 from django.utils.html import strip_tags
+import html
 
 
 QGISFEED_MAX_RECORDS=getattr(settings, 'QGISFEED_MAX_RECORDS', 20)
@@ -372,6 +373,14 @@ class FeedEntryUpdateView(View):
         user = request.user
         user_is_approver = user.has_perm("qgisfeed.publish_qgisfeedentry")
         form = self.form_class(instance=feed_entry)
+
+        # Initialize the social syndication form with values from feed_entry
+
+        initial_data = {
+            "post_content": f'{feed_entry.title}\n\n{html.unescape(strip_tags(feed_entry.content))}',
+        }
+        social_syndication_form = FeedSocialSyndicationForm(initial=initial_data)
+
         args = {
             "form": form,
             "msg": msg,
@@ -379,7 +388,8 @@ class FeedEntryUpdateView(View):
             "published": feed_entry.published,
             "feed_entry": feed_entry,
             "user_is_approver": user_is_approver,
-            "content_max_length": get_field_max_length(CharacterLimitConfiguration, field_name="content")
+            "content_max_length": get_field_max_length(CharacterLimitConfiguration, field_name="content"),
+            "social_syndication_form": social_syndication_form,
         }
 
         return render(request, self.template_name, args)
@@ -439,9 +449,10 @@ class FeedEntryShareMastodonView(View):
         feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
         mastodon_manager = MastodonManager()
         try:
-            content_text = strip_tags(feed_entry.content)
+            content_text = html.unescape(strip_tags(feed_entry.content))
+            post_content = request.POST.get('post_content', f'{feed_entry.title}\n\n{content_text}')
             status = mastodon_manager.create_post(
-                status=f'{feed_entry.title}\n\n{content_text}',
+                status=post_content,
                 image_path=feed_entry.image.path if feed_entry.image else None
             )
             if status:
@@ -466,10 +477,10 @@ class FeedEntryShareBlueskyView(View):
         feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
         bluesky_manager = BlueskyManager()
         try:
-            content_text = strip_tags(feed_entry.content)
+            content_text = html.unescape(strip_tags(feed_entry.content))
+            post_content = request.POST.get('post_content', f'{feed_entry.title}\n\n{content_text}')
             text_builder = bluesky_manager.build_text(
-                title=feed_entry.title,
-                content=content_text
+                content=post_content
             )
             status = bluesky_manager.create_post(
                 text_builder=text_builder,
@@ -502,8 +513,9 @@ class FeedEntryShareTelegramView(View):
         telegram_manager = TelegramManager()
         try:
             content_text = strip_tags(feed_entry.content)
+            post_content = request.POST.get('post_content', f'{feed_entry.title}\n\n{content_text}')
             response = telegram_manager.send_message(
-                message=f'{feed_entry.title}\n\n{content_text}',
+                message=post_content,
                 image_path=feed_entry.image.path if feed_entry.image else None
             )
             if response and response.get('ok'):
