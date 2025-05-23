@@ -39,6 +39,8 @@ services:
       # Social syndication
       MASTODON_ACCESS_TOKEN: ${MASTODON_ACCESS_TOKEN}
       MASTODON_API_BASE_URL: ${MASTODON_API_BASE_URL}
+      BLUESKY_HANDLE: ${BLUESKY_HANDLE}
+      BLUESKY_PASSWORD: ${BLUESKY_PASSWORD}
     ports:
     - "8000:8000"
     links:

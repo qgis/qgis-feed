@@ -3,6 +3,7 @@ aiosignal~=1.2
 asgiref~=3.7
 async-timeout~=4.0
 asynctest~=0.13
+atproto~=0.0.61
 attrs~=21.4
 beautifulsoup4~=4.12
 certifi~=2021.10

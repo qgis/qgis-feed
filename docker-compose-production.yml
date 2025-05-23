@@ -71,6 +71,8 @@ services:
       # Social syndication
       MASTODON_ACCESS_TOKEN: ${MASTODON_ACCESS_TOKEN}
       MASTODON_API_BASE_URL: ${MASTODON_API_BASE_URL}
+      BLUESKY_HANDLE: ${BLUESKY_HANDLE}
+      BLUESKY_PASSWORD: ${BLUESKY_PASSWORD}
     command: /code/entrypoint_production.sh
     expose:
     - "8000"

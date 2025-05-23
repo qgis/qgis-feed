@@ -78,6 +78,19 @@
                         </span>
                         <span>Mastodon</span>
                     </a>
+                    <a
+                        class="button js-modal-trigger"
+                        title="Share on Bluesky"
+                        data-target="social-share-modal"
+                        data-social="Bluesky"
+                        data-url="{% url 'feed_entry_share_bluesky' pk=feed_entry.pk %}"
+                        style="background-color: #0285FF; color: #fff; border: none;"
+                    >
+                        <span class="icon is-large">
+                            <i class="fa-brands fa-bluesky"></i>
+                        </span>
+                        <span>Bluesky</span>
+                    </a>
                 </div>
             </div>
         {% endif %}

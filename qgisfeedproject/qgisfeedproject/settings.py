@@ -213,3 +213,7 @@ if SENTRY_DSN and SENTRY_DSN != "":
 # Mastodon
 MASTODON_ACCESS_TOKEN = os.environ.get("MASTODON_ACCESS_TOKEN", "")
 MASTODON_API_BASE_URL = os.environ.get("MASTODON_API_BASE_URL", "https://mastodon.social")
+
+# Bluesky
+BLUESKY_HANDLE = os.environ.get("BLUESKY_HANDLE", "")
+BLUESKY_PASSWORD = os.environ.get("BLUESKY_PASSWORD", "")

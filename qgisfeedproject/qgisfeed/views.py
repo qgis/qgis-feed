@@ -37,7 +37,7 @@ import json
 from user_visit.models import UserVisit
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from .social_utils import MastodonManager
+from .social_utils import MastodonManager, BlueskyManager
 from django.contrib import messages
 
 import re
@@ -454,4 +454,38 @@ class FeedEntryShareMastodonView(View):
                 messages.error(request, "Failed to share to Mastodon.", fail_silently=True)
         except Exception as e:
             messages.error(request, f"Error sharing to Mastodon: {str(e)}", fail_silently=True)
+        return redirect('feeds_list')
+
+@method_decorator(staff_required, name='dispatch')
+@method_decorator(permission_required('qgisfeed.publish_qgisfeedentry'), name='dispatch')
+class FeedEntryShareBlueskyView(View):
+    """
+    View to share a feed entry item to Bluesky
+    """
+    def post(self, request, pk):
+        feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
+        bluesky_manager = BlueskyManager()
+        try:
+            content_text = strip_tags(feed_entry.content)
+            text_builder = bluesky_manager.build_text(
+                title=feed_entry.title,
+                content=content_text
+            )
+            status = bluesky_manager.create_post(
+                text_builder=text_builder,
+                image=feed_entry.image.read() if feed_entry.image else None
+            )
+            if status:
+                handle = settings.BLUESKY_HANDLE
+                post_id = status.uri.split("/")[-1]  # Extracts "xyz456" from the URI
+                bluesky_post_url = f"https://bsky.app/profile/{handle}/post/{post_id}"
+                messages.success(
+                    request, 
+                    f"Successfully shared to Bluesky! View post at: <a href='{bluesky_post_url}' target='_blank'>{bluesky_post_url}</a>",
+                    fail_silently=True
+                )
+            else:
+                messages.error(request, "Failed to share to Bluesky.", fail_silently=True)
+        except Exception as e:
+            messages.error(request, f"Error sharing to Bluesky: {str(e)}", fail_silently=True)
         return redirect('feeds_list')
