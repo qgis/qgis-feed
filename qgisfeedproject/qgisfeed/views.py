@@ -37,7 +37,7 @@ import json
 from user_visit.models import UserVisit
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from .social_utils import MastodonManager, BlueskyManager
+from .social_utils import MastodonManager, BlueskyManager, TelegramManager
 from django.contrib import messages
 
 import re
@@ -488,4 +488,32 @@ class FeedEntryShareBlueskyView(View):
                 messages.error(request, "Failed to share to Bluesky.", fail_silently=True)
         except Exception as e:
             messages.error(request, f"Error sharing to Bluesky: {str(e)}", fail_silently=True)
+        return redirect('feeds_list')
+
+
+@method_decorator(staff_required, name='dispatch')
+@method_decorator(permission_required('qgisfeed.delete_qgisfeedentry'), name='dispatch')
+class FeedEntryShareTelegramView(View):
+    """
+    View to share a feed entry item to Telegram
+    """
+    def post(self, request, pk):
+        feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
+        telegram_manager = TelegramManager()
+        try:
+            content_text = strip_tags(feed_entry.content)
+            response = telegram_manager.send_message(
+                message=f'{feed_entry.title}\n\n{content_text}',
+                image_path=feed_entry.image.path if feed_entry.image else None
+            )
+            if response and response.get('ok'):
+                messages.success(
+                    request, 
+                    f"Successfully shared to Telegram!",
+                    fail_silently=True
+                )
+            else:
+                messages.error(request, "Failed to share to Telegram.", fail_silently=True)
+        except Exception as e:
+            messages.error(request, f"Error sharing to Telegram: {str(e)}", fail_silently=True)
         return redirect('feeds_list')

@@ -12,4 +12,5 @@ urlpatterns = [
     # Social syndication
     path('manage/share-mastodon/<int:pk>/', views.FeedEntryShareMastodonView.as_view(), name='feed_entry_share_mastodon'),
     path('manage/share-bluesky/<int:pk>/', views.FeedEntryShareBlueskyView.as_view(), name='feed_entry_share_bluesky'),
+    path('manage/share-telegram/<int:pk>/', views.FeedEntryShareTelegramView.as_view(), name='feed_entry_share_telegram'),
 ]

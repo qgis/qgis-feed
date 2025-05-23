@@ -91,6 +91,19 @@
                         </span>
                         <span>Bluesky</span>
                     </a>
+                    <a
+                        class="button js-modal-trigger"
+                        title="Share on Telegram"
+                        data-target="social-share-modal"
+                        data-social="Telegram"
+                        data-url="{% url 'feed_entry_share_telegram' pk=feed_entry.pk %}"
+                        style="background-color: #229ED9; color: #fff; border: none;"
+                    >
+                        <span class="icon is-large">
+                            <i class="fab fa-telegram-plane"></i>
+                        </span>
+                        <span>Telegram</span>
+                    </a>
                 </div>
             </div>
         {% endif %}

@@ -217,3 +217,7 @@ MASTODON_API_BASE_URL = os.environ.get("MASTODON_API_BASE_URL", "https://mastodo
 # Bluesky
 BLUESKY_HANDLE = os.environ.get("BLUESKY_HANDLE", "")
 BLUESKY_PASSWORD = os.environ.get("BLUESKY_PASSWORD", "")
+
+# Telegram
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")

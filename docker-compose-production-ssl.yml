@@ -73,6 +73,8 @@ services:
       MASTODON_API_BASE_URL: ${MASTODON_API_BASE_URL}
       BLUESKY_HANDLE: ${BLUESKY_HANDLE}
       BLUESKY_PASSWORD: ${BLUESKY_PASSWORD}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID}
     command: /code/entrypoint_production.sh
     expose:
     - "8000"
