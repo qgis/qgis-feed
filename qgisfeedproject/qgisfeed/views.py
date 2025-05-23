@@ -375,9 +375,9 @@ class FeedEntryUpdateView(View):
         form = self.form_class(instance=feed_entry)
 
         # Initialize the social syndication form with values from feed_entry
-
+        post_link = f'\n\nLink: {feed_entry.url}' if feed_entry.url else ""
         initial_data = {
-            "post_content": f'{feed_entry.title}\n\n{html.unescape(strip_tags(feed_entry.content))}',
+            "post_content": f'{feed_entry.title}\n\n{html.unescape(strip_tags(feed_entry.content))}{post_link}',
         }
         social_syndication_form = FeedSocialSyndicationForm(initial=initial_data)
 
@@ -450,7 +450,8 @@ class FeedEntryShareMastodonView(View):
         mastodon_manager = MastodonManager()
         try:
             content_text = html.unescape(strip_tags(feed_entry.content))
-            post_content = request.POST.get('post_content', f'{feed_entry.title}\n\n{content_text}')
+            post_link = f'\n\nLink: {feed_entry.url}' if feed_entry.url else ""
+            post_content = request.POST.get('post_content', f'{feed_entry.title}\n\n{content_text}{post_link}')
             status = mastodon_manager.create_post(
                 status=post_content,
                 image_path=feed_entry.image.path if feed_entry.image else None
@@ -478,7 +479,8 @@ class FeedEntryShareBlueskyView(View):
         bluesky_manager = BlueskyManager()
         try:
             content_text = html.unescape(strip_tags(feed_entry.content))
-            post_content = request.POST.get('post_content', f'{feed_entry.title}\n\n{content_text}')
+            post_link = f'\n\nLink: {feed_entry.url}' if feed_entry.url else ""
+            post_content = request.POST.get('post_content', f'{feed_entry.title}\n\n{content_text}{post_link}')
             text_builder = bluesky_manager.build_text(
                 content=post_content
             )
@@ -513,7 +515,8 @@ class FeedEntryShareTelegramView(View):
         telegram_manager = TelegramManager()
         try:
             content_text = strip_tags(feed_entry.content)
-            post_content = request.POST.get('post_content', f'{feed_entry.title}\n\n{content_text}')
+            post_link = f'\n\nLink: {feed_entry.url}' if feed_entry.url else ""
+            post_content = request.POST.get('post_content', f'{feed_entry.title}\n\n{content_text}{post_link}')
             response = telegram_manager.send_message(
                 message=post_content,
                 image_path=feed_entry.image.path if feed_entry.image else None
