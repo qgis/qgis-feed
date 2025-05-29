@@ -1,0 +1,61 @@
+<div id="social-share-modal" class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">
+        Share on <span class="social-name"></span>
+      </p>
+      <button class="delete" aria-label="close" type="button"></button>
+    </header>
+    <section class="modal-card-body">
+      <form
+        method="post"
+        action=""
+        id="social-syndication-form"
+        style="display: inline"
+      >
+        {% csrf_token %}
+        <div class="field">
+            <label class="label">
+                Image:
+            </label>
+            <div class="control">
+                <div name="imagePreview" class="is-flex is-justify-content-center">
+                    {% if form.image.value %}
+                        <img src="{{ form.image.value.url }}" style="border-radius:10px;">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">
+                {% if social_syndication_form.post_content.field.required %}
+                    <span style="color:red;">*</span>
+                {% endif %}
+                {{social_syndication_form.post_content.label_tag}}
+            </label>
+            <div class="control">
+                {{social_syndication_form.post_content}}
+            </div>
+            <p class="help">{{social_syndication_form.post_content.help_text}}</p>
+            {% for error in social_syndication_form.post_content.errors %}
+                <p class="help form-error">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <div class="notification is-warning">
+          Are you sure you want to share this on
+          <span class="social-name"></span>?
+        </div>
+        </p>
+      </form>
+    </section>
+    <footer class="modal-card-foot is-justify-content-flex-end">
+        <button class="button is-success" type="submit" form="social-syndication-form">
+            <span>Share on <span class="social-name"></span></span>
+        </button>
+        <button class="button is-default ml-3" type="button">
+            <span>Cancel</span>
+        </button>
+    </footer>
+  </div>
+</div>

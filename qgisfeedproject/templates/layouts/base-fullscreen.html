@@ -14,7 +14,7 @@
     <link rel="icon" type="image/png" href="{% static "images/favicon.ico" %}" />
     
     <!-- Icons -->
-    <link rel="stylesheet" href="{% static 'font-awesome/css/fontawesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'font-awesome/css/all.min.css' %}" type="text/css">
 
     <script type="text/javascript" src="{% static "js/jquery.js" %}"></script>
     <script type="text/javascript" src="{% static "js/moment.min.js" %}"></script>
@@ -41,6 +41,22 @@
     
     <section class="section">
         <div class="container content">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="notification is-light
+                        {% if message.tags %}
+                            {% if 'success' in message.tags %} is-success
+                            {% elif 'error' in message.tags or 'danger' in message.tags %} is-danger
+                            {% elif 'warning' in message.tags %} is-warning
+                            {% elif 'info' in message.tags %} is-info
+                            {% endif %}
+                        {% endif %}
+                    ">
+                        <button class="delete"></button>
+                        <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
             {% block content %}{% endblock content %}
         </div>
     </section>

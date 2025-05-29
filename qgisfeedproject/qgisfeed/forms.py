@@ -177,3 +177,14 @@ class FeedItemForm(forms.ModelForm):
         )
 
 
+class FeedSocialSyndicationForm(forms.Form):
+    """
+    Form for feed syndication add or update
+    """
+    post_content = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={'class': 'textarea', 'placeholder': 'Content', 'rows': 5})
+    )
+    # post_image = forms.FileInput(
+    #     attrs={'class': 'file-input'}
+    # )

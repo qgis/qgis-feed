@@ -28,7 +28,7 @@ from django.utils.decorators import method_decorator
 from django.db import transaction
 from django.contrib.auth.models import User
 
-from .forms import FeedEntryFilterForm, FeedItemForm, HomePageFilterForm
+from .forms import FeedEntryFilterForm, FeedItemForm, HomePageFilterForm, FeedSocialSyndicationForm
 from .utils import get_field_max_length, notify_reviewers, parse_remote_addr, get_location
 from .models import QgisFeedEntry, CharacterLimitConfiguration
 from .languages import LANGUAGE_KEYS
@@ -37,7 +37,12 @@ import json
 from user_visit.models import UserVisit
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+from .social_utils import MastodonManager, BlueskyManager, TelegramManager
+from django.contrib import messages
+
 import re
+from django.utils.html import strip_tags
+import html
 
 
 QGISFEED_MAX_RECORDS=getattr(settings, 'QGISFEED_MAX_RECORDS', 20)
@@ -368,13 +373,23 @@ class FeedEntryUpdateView(View):
         user = request.user
         user_is_approver = user.has_perm("qgisfeed.publish_qgisfeedentry")
         form = self.form_class(instance=feed_entry)
+
+        # Initialize the social syndication form with values from feed_entry
+        post_link = f'\n\nLink: {feed_entry.url}' if feed_entry.url else ""
+        initial_data = {
+            "post_content": f'{feed_entry.title}\n\n{html.unescape(strip_tags(feed_entry.content))}{post_link}',
+        }
+        social_syndication_form = FeedSocialSyndicationForm(initial=initial_data)
+
         args = {
             "form": form,
             "msg": msg,
             "success": success,
             "published": feed_entry.published,
+            "feed_entry": feed_entry,
             "user_is_approver": user_is_approver,
-            "content_max_length": get_field_max_length(CharacterLimitConfiguration, field_name="content")
+            "content_max_length": get_field_max_length(CharacterLimitConfiguration, field_name="content"),
+            "social_syndication_form": social_syndication_form,
         }
 
         return render(request, self.template_name, args)
@@ -422,3 +437,98 @@ class FeedEntryDetailView(View):
     def get(self, request, pk):
         feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
         return render(request, self.template_name, {"feed_entry": feed_entry})
+
+
+@method_decorator(staff_required, name='dispatch')
+@method_decorator(permission_required('qgisfeed.publish_qgisfeedentry'), name='dispatch')
+class FeedEntryShareMastodonView(View):
+    """
+    View to share a feed entry item to Mastodon
+    """
+    def post(self, request, pk):
+        feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
+        mastodon_manager = MastodonManager()
+        try:
+            content_text = html.unescape(strip_tags(feed_entry.content))
+            post_link = f'\n\nLink: {feed_entry.url}' if feed_entry.url else ""
+            post_content = request.POST.get('post_content', f'{feed_entry.title}\n\n{content_text}{post_link}')
+            status = mastodon_manager.create_post(
+                status=post_content,
+                image_path=feed_entry.image.path if feed_entry.image else None
+            )
+            if status:
+                messages.success(
+                    request, 
+                    f"Successfully shared to Mastodon! View post at: <a href='{status.url}' target='_blank'>{status.url}</a>",
+                    fail_silently=True
+                )
+            else:
+                messages.error(request, "Failed to share to Mastodon.", fail_silently=True)
+        except Exception as e:
+            messages.error(request, f"Error sharing to Mastodon: {str(e)}", fail_silently=True)
+        return redirect('feeds_list')
+
+@method_decorator(staff_required, name='dispatch')
+@method_decorator(permission_required('qgisfeed.publish_qgisfeedentry'), name='dispatch')
+class FeedEntryShareBlueskyView(View):
+    """
+    View to share a feed entry item to Bluesky
+    """
+    def post(self, request, pk):
+        feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
+        bluesky_manager = BlueskyManager()
+        try:
+            content_text = html.unescape(strip_tags(feed_entry.content))
+            post_link = f'\n\nLink: {feed_entry.url}' if feed_entry.url else ""
+            post_content = request.POST.get('post_content', f'{feed_entry.title}\n\n{content_text}{post_link}')
+            text_builder = bluesky_manager.build_text(
+                content=post_content
+            )
+            status = bluesky_manager.create_post(
+                text_builder=text_builder,
+                image=feed_entry.image.read() if feed_entry.image else None
+            )
+            if status:
+                handle = settings.BLUESKY_HANDLE
+                post_id = status.uri.split("/")[-1]  # Extracts "xyz456" from the URI
+                bluesky_post_url = f"https://bsky.app/profile/{handle}/post/{post_id}"
+                messages.success(
+                    request, 
+                    f"Successfully shared to Bluesky! View post at: <a href='{bluesky_post_url}' target='_blank'>{bluesky_post_url}</a>",
+                    fail_silently=True
+                )
+            else:
+                messages.error(request, "Failed to share to Bluesky.", fail_silently=True)
+        except Exception as e:
+            messages.error(request, f"Error sharing to Bluesky: {str(e)}", fail_silently=True)
+        return redirect('feeds_list')
+
+
+@method_decorator(staff_required, name='dispatch')
+@method_decorator(permission_required('qgisfeed.delete_qgisfeedentry'), name='dispatch')
+class FeedEntryShareTelegramView(View):
+    """
+    View to share a feed entry item to Telegram
+    """
+    def post(self, request, pk):
+        feed_entry = get_object_or_404(QgisFeedEntry, pk=pk)
+        telegram_manager = TelegramManager()
+        try:
+            content_text = strip_tags(feed_entry.content)
+            post_link = f'\n\nLink: {feed_entry.url}' if feed_entry.url else ""
+            post_content = request.POST.get('post_content', f'{feed_entry.title}\n\n{content_text}{post_link}')
+            response = telegram_manager.send_message(
+                message=post_content,
+                image_path=feed_entry.image.path if feed_entry.image else None
+            )
+            if response and response.get('ok'):
+                messages.success(
+                    request, 
+                    f"Successfully shared to Telegram!",
+                    fail_silently=True
+                )
+            else:
+                messages.error(request, "Failed to share to Telegram.", fail_silently=True)
+        except Exception as e:
+            messages.error(request, f"Error sharing to Telegram: {str(e)}", fail_silently=True)
+        return redirect('feeds_list')
