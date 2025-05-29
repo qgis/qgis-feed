@@ -125,3 +125,6 @@ qgisfeedproject/static/bundles
 
 # Sustaining members template
 qgisfeedproject/templates/layouts/sustaining_members.html
+
+.vscode
+.vscode-extensions
