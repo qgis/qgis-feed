@@ -31,7 +31,6 @@ let fields = [
   contentField,
   imageField,
   urlField,
-  stickyField,
   sortingField,
   languageField,
   spatialFilterField,
@@ -81,18 +80,20 @@ urlField.addEventListener("input", function () {
 });
 
 // Update sticky in preview when change
-stickyField.addEventListener("change", function () {
-  stickyPreview.forEach((item) => {
-    item.innerHTML = stickyField.checked
-      ? '<span class="icon has-text-success">' +
-        '<i class="fa-solid fa-circle-check"></i>' +
-        "</span>"
-      : '<span class="icon has-text-danger">' +
-        '<i class="fa-solid fa-circle-xmark"></i>' +
-        "</span>";
+if (stickyField) {
+  stickyField.addEventListener("change", function () {
+    stickyPreview.forEach((item) => {
+      item.innerHTML = stickyField.checked
+        ? '<span class="icon has-text-success">' +
+          '<i class="fa-solid fa-circle-check"></i>' +
+          "</span>"
+        : '<span class="icon has-text-danger">' +
+          '<i class="fa-solid fa-circle-xmark"></i>' +
+          "</span>";
+    });
+    checkFormValid();
   });
-  checkFormValid();
-});
+}
 
 // Update sorting in preview when input change
 sortingField.addEventListener("input", function () {

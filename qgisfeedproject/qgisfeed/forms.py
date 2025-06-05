@@ -121,7 +121,13 @@ class FeedItemForm(forms.ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):
+        # Extract the user from kwargs before calling parent's __init__
+        self.user = kwargs.pop('user', None)
         super(FeedItemForm, self).__init__(*args, **kwargs)
+        
+        # Remove sticky field if user doesn't have the required permission
+        if self.user and not self.user.is_superuser and not self.user.has_perm("qgisfeed.publish_qgisfeedentry"):
+            del self.fields['sticky']
         # Custom fields widget
         self.fields['title'].widget = forms.TextInput(attrs={'class': 'input', 'placeholder': 'Title', 'maxlength': self.fields['title'].max_length})
         self.fields['image'].widget = forms.FileInput(attrs={'class': 'file-input'})
