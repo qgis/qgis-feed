@@ -54,6 +54,12 @@ INSTALLED_APPS = [
 
     # Webpack
     'webpack_loader',
+
+    # Allauth for user management
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.openid_connect',
 ]
 
 # Useful debugging extensions
@@ -71,6 +77,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'qgisfeed.middleware.QgisFeedUserVisitMiddleware',
+    # Add the account middleware:
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = 'qgisfeedproject.urls'
@@ -128,6 +136,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -176,6 +193,22 @@ except ImportError as ex:
 LOGIN_REDIRECT_URL = "/manage"
 LOGOUT_REDIRECT_URL = "/"
 
+# Allauth settings
+SOCIALACCOUNT_PROVIDERS = {
+    "openid_connect": {
+        "APPS": [
+            {
+                "provider_id": "keycloak",
+                "name": "Keycloak",
+                "client_id": "qgis-feed",
+                "secret": "QbTxCW1IPYFRhGq1dLICniwyKjfpTmtn",
+                "settings": {
+                    "server_url": "http://192.168.0.27:8081/realms/qgis/.well-known/openid-configuration",
+                },
+            }
+        ]
+    }
+}
 
 # Webpack
 WEBPACK_LOADER = {

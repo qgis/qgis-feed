@@ -9,6 +9,7 @@ beautifulsoup4~=4.12
 certifi~=2021.10
 charset-normalizer~=2.0
 Django~=4.2
+django-allauth~=65.9
 django-appconf~=1.0
 django-extensions~=3.1
 django-imagekit~=5.0
@@ -18,6 +19,8 @@ django-webpack-loader~=2.0
 frozenlist~=1.3
 geoip2~=4.5
 idna~=3.3
+# Required by django-allauth
+jwt~=1.3
 Mastodon.py~=2.0
 maxminddb~=2.2
 multidict~=6.0

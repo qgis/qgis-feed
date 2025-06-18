@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^tinymce/', include('tinymce.urls')),
     path('', include('qgisfeed.urls')),
+    path('auth/', include('allauth.urls')),
     path('accounts/login/', LoginView.as_view(), name='login'),
     path('accounts/logout/', LogoutView.as_view(), name='logout')
 ]

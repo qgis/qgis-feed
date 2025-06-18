@@ -69,6 +69,13 @@ dev-dbrestore:
 	@echo "Starting qgisfeed container"
 	@docker compose -f docker-compose.dev.yml up qgisfeed
 
+dev-exportusers:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Create an admin user"
+	@echo "------------------------------------------------------------------"
+	@docker compose -f docker-compose.dev.yml exec $(CONTAINER_NAME) python qgisfeedproject/manage.py export_users_to_keycloak --realm $(r) --output $(o)
+
 dev-createsuperuser:
 	@echo
 	@echo "------------------------------------------------------------------"
@@ -226,3 +233,10 @@ exec:
 	@echo "Execute a specific docker command"
 	@echo "------------------------------------------------------------------"
 	@docker compose -f docker-compose-production-ssl.yml $(c)
+
+exportusers:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Create an admin user"
+	@echo "------------------------------------------------------------------"
+	@docker compose -f docker-compose-production-ssl.yml exec $(CONTAINER_NAME) python qgisfeedproject/manage.py export_users_to_keycloak --realm $(r) --output $(o)
