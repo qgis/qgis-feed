@@ -198,12 +198,14 @@ SOCIALACCOUNT_PROVIDERS = {
     "openid_connect": {
         "APPS": [
             {
-                "provider_id": "keycloak",
-                "name": "Keycloak",
-                "client_id": "qgis-feed",
-                "secret": "QbTxCW1IPYFRhGq1dLICniwyKjfpTmtn",
+                "provider_id": os.environ.get("OIDC_PROVIDER_ID", "keycloak"),
+                "name": os.environ.get("OIDC_NAME", "Keycloak"),
+                "client_id": os.environ.get("OIDC_CLIENT_ID", ""),
+                "secret": os.environ.get("OIDC_SECRET", ""),
                 "settings": {
-                    "server_url": "http://192.168.0.27:8081/realms/qgis/.well-known/openid-configuration",
+                    "server_url": os.environ.get(
+                        "OIDC_SERVER_URL", ""
+                    ),
                 },
             }
         ]
