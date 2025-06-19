@@ -81,6 +81,8 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
 ]
 
+SOCIALACCOUNT_ADAPTER = 'qgisfeed.adapters.CustomSocialAccountAdapter'
+
 ROOT_URLCONF = 'qgisfeedproject.urls'
 
 TEMPLATES = [
