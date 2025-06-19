@@ -193,25 +193,6 @@ except ImportError as ex:
 LOGIN_REDIRECT_URL = "/manage"
 LOGOUT_REDIRECT_URL = "/"
 
-# Allauth settings
-SOCIALACCOUNT_PROVIDERS = {
-    "openid_connect": {
-        "APPS": [
-            {
-                "provider_id": os.environ.get("OIDC_PROVIDER_ID", "keycloak"),
-                "name": os.environ.get("OIDC_NAME", "Keycloak"),
-                "client_id": os.environ.get("OIDC_CLIENT_ID", ""),
-                "secret": os.environ.get("OIDC_SECRET", ""),
-                "settings": {
-                    "server_url": os.environ.get(
-                        "OIDC_SERVER_URL", ""
-                    ),
-                },
-            }
-        ]
-    }
-}
-
 # Webpack
 WEBPACK_LOADER = {
     'DEFAULT': {

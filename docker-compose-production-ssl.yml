@@ -76,10 +76,6 @@ services:
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
       TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID}
 
-      # Keycloak
-      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
-      OIDC_SECRET: ${OIDC_SECRET}
-      OIDC_SERVER_URL: ${OIDC_SERVER_URL}
     command: /code/entrypoint_production.sh
     expose:
     - "8000"

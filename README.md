@@ -309,6 +309,28 @@ $ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/
 ## Deployment
 
 <details>
+    <summary><strong>Keycloak Setup</strong></summary>
+    </br>
+
+Log in into the Django administration page and set up the Keycloak provider:
+- Social Accounts > Social Applications > Add Social Application
+- Fill the form with the following values:
+    - Provider: OpenID Connect
+    - Provider ID: keycloak
+    - Name: Keycloak
+    - Client id: client_id_from_keycloak
+    - Secret key: cliend_secret_from_keycloak
+    - Key: leave empty
+    - Settings:
+```json
+{
+    "server_url": "http://auth.qgis.org/realms/qgis/.well-known/openid-configuration"
+}
+```
+
+</details>
+
+<details>
     <summary><strong>Email-sending setup</strong></summary>
     </br>
 
