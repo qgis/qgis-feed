@@ -1,4 +1,6 @@
-{% extends 'layouts/base-fullscreen.html' %} 
+{% extends 'layouts/base-fullscreen.html' %}
+{% load socialaccount %}
+
 {% load static %}
 
 {% block pagetitle %}
@@ -67,6 +69,12 @@
                 Login <i class="fa fa-sign-in" aria-hidden="true"></i>
               </button>
             </form>
+              <a 
+                class="button is-primary3 is-medium is-fullwidth mt-3"
+                href="{% provider_login_url 'keycloak' %}"
+              >
+                Login with Keycloak<i class="fa fa-sign-in" aria-hidden="true"></i>
+              </a>
           </div>
         </div>
       </div>

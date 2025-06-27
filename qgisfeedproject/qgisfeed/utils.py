@@ -1,6 +1,7 @@
 # coding=utf-8
 import logging
 import unicodedata
+import requests
 
 from django.urls import reverse
 from django.conf import settings
@@ -9,6 +10,8 @@ from django.core.mail import send_mail
 from django.contrib.gis.db.models import Model
 from django.http import HttpRequest
 from django.contrib.gis.geoip2 import GeoIP2
+
+from allauth.socialaccount.models import SocialAccount
 
 logger = logging.getLogger('qgisfeed.admin')
 QGISFEED_FROM_EMAIL = getattr(settings, 'QGISFEED_FROM_EMAIL', 'noreply@qgis.org')
@@ -69,3 +72,84 @@ def get_location(remote_addr: str) -> str:
         except Exception as e:
             return None
     return None
+
+
+def is_user_from_keycloak(user):
+    """
+    Check if the given user is authenticated via Keycloak OAuth provider.
+    
+    Args:
+        user (User): The Django user instance to check
+        
+    Returns:
+        bool: True if the user is connected via Keycloak, False otherwise
+    """
+    if not user or not user.is_authenticated or user.is_anonymous:
+        return False
+        
+    try:
+        # Check if user has a social account with provider 'keycloak'
+        return SocialAccount.objects.filter(
+            user=user,
+            provider='keycloak'
+        ).exists()
+    except Exception:
+        # Handle any potential errors gracefully
+        return False
+
+
+def trigger_password_reset(user_email: str) -> str:
+    """
+    Trigger a Keycloak password reset email for the given user.
+    Sends a password reset action email using the Keycloak Admin API.
+    """
+
+    # We should get the token from Keycloak server
+    keycloak_base_url = settings.KEYCLOAK_BASE_URL
+    realm = settings.KEYCLOAK_REALM
+    admin_username = settings.KEYCLOAK_ADMIN_USERNAME
+    admin_password = settings.KEYCLOAK_ADMIN_PASSWORD
+    # client_id = settings.KEYCLOAK_CLIENT_ID
+
+
+    token_url = f"{keycloak_base_url}/realms/master/protocol/openid-connect/token"
+    token_data = {
+        "grant_type": "password",
+        "client_id": 'admin-cli',
+        "username": admin_username,
+        "password": admin_password
+    }
+    try:
+        token_response = requests.post(token_url, data=token_data)
+        token_response.raise_for_status()
+        access_token = token_response.json()["access_token"]
+
+        # 2. Get user ID
+        headers = {"Authorization": f"Bearer {access_token}"}
+        user_resp = requests.get(
+            f"{keycloak_base_url}/admin/realms/{realm}/users",
+            headers=headers,
+            params={"email": user_email}
+        )
+        user_resp.raise_for_status()
+        users = user_resp.json()
+        if not users:
+            logger.error(f"No user found with email: {user_email}")
+            return None
+        user_id = users[0]["id"]
+
+        # 3. Trigger execute-actions-email with redirectUri and lifespan
+        reset_url = f"{keycloak_base_url}/admin/realms/{realm}/users/{user_id}/execute-actions-email"
+        payload = ["UPDATE_PASSWORD"]
+        params = {
+            "lifespan": 1800,  # 30 minutes
+            # "redirectUri": "https://your-frontend-app.com/after-reset"  # optional
+        }
+        resp = requests.put(reset_url, headers=headers, json=payload, params=params)
+        resp.raise_for_status()
+
+        logger.info("Password reset action triggered.")
+        return True
+    except Exception as e:
+        logger.error(f"Error triggering password reset: {e}")
+        return False

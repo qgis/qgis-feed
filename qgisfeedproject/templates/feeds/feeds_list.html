@@ -14,6 +14,20 @@
 {% endblock stylesheets %} 
 {% block content %}
 
+{% if not user_from_keycloak %}
+<div class="notification is-warning">
+    <p>
+        We're transitioning to a Single Sign-On (SSO) system for login.
+        Click the button below to receive an email with instructions to set a password for your new Keycloak account.
+        Your username will remain the same.
+    </p>
+    <form method="post" action="{% url 'send_keycloak_instructions' %}">
+        {% csrf_token %}
+        <button type="submit" class="button is-primary1">Send instructions by email</button>
+    </form>
+</div>
+{% endif %}
+
 <h1 class="title">
     QGIS Feed Management
 </h1>

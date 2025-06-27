@@ -54,6 +54,12 @@ INSTALLED_APPS = [
 
     # Webpack
     'webpack_loader',
+
+    # Allauth for user management
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.openid_connect',
 ]
 
 # Useful debugging extensions
@@ -71,7 +77,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'qgisfeed.middleware.QgisFeedUserVisitMiddleware',
+    # Add the account middleware:
+    "allauth.account.middleware.AccountMiddleware",
 ]
+
+SOCIALACCOUNT_ADAPTER = 'qgisfeed.adapters.CustomSocialAccountAdapter'
 
 ROOT_URLCONF = 'qgisfeedproject.urls'
 
@@ -128,6 +138,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -176,7 +195,6 @@ except ImportError as ex:
 LOGIN_REDIRECT_URL = "/manage"
 LOGOUT_REDIRECT_URL = "/"
 
-
 # Webpack
 WEBPACK_LOADER = {
     'DEFAULT': {
@@ -221,3 +239,10 @@ BLUESKY_PASSWORD = os.environ.get("BLUESKY_PASSWORD", "")
 # Telegram
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
+
+# Keycloak settings
+KEYCLOAK_BASE_URL = os.environ.get("KEYCLOAK_BASE_URL", "http://localhost:8081")
+KEYCLOAK_REALM = os.environ.get("KEYCLOAK_REALM", "qgis")
+KEYCLOAK_ADMIN_USERNAME = os.environ.get("KEYCLOAK_ADMIN_USERNAME", "admin")
+KEYCLOAK_ADMIN_PASSWORD = os.environ.get("KEYCLOAK_ADMIN_PASSWORD", "admin")
+KEYCLOAK_CLIENT_ID = os.environ.get("KEYCLOAK_CLIENT_ID", "qgis-feed")
