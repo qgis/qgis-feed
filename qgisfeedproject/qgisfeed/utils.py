@@ -11,6 +11,8 @@ from django.contrib.gis.db.models import Model
 from django.http import HttpRequest
 from django.contrib.gis.geoip2 import GeoIP2
 
+from allauth.socialaccount.models import SocialAccount
+
 logger = logging.getLogger('qgisfeed.admin')
 QGISFEED_FROM_EMAIL = getattr(settings, 'QGISFEED_FROM_EMAIL', 'noreply@qgis.org')
 
@@ -72,6 +74,30 @@ def get_location(remote_addr: str) -> str:
     return None
 
 
+def is_user_from_keycloak(user):
+    """
+    Check if the given user is authenticated via Keycloak OAuth provider.
+    
+    Args:
+        user (User): The Django user instance to check
+        
+    Returns:
+        bool: True if the user is connected via Keycloak, False otherwise
+    """
+    if not user or not user.is_authenticated or user.is_anonymous:
+        return False
+        
+    try:
+        # Check if user has a social account with provider 'keycloak'
+        return SocialAccount.objects.filter(
+            user=user,
+            provider='keycloak'
+        ).exists()
+    except Exception:
+        # Handle any potential errors gracefully
+        return False
+
+
 def trigger_password_reset(user_email: str) -> str:
     """
     Trigger a Keycloak password reset email for the given user.
@@ -83,12 +109,13 @@ def trigger_password_reset(user_email: str) -> str:
     realm = settings.KEYCLOAK_REALM
     admin_username = settings.KEYCLOAK_ADMIN_USERNAME
     admin_password = settings.KEYCLOAK_ADMIN_PASSWORD
-    client_id = settings.KEYCLOAK_CLIENT_ID
+    # client_id = settings.KEYCLOAK_CLIENT_ID
+
 
     token_url = f"{keycloak_base_url}/realms/master/protocol/openid-connect/token"
     token_data = {
         "grant_type": "password",
-        "client_id": client_id,
+        "client_id": 'admin-cli',
         "username": admin_username,
         "password": admin_password
     }
@@ -122,7 +149,7 @@ def trigger_password_reset(user_email: str) -> str:
         resp.raise_for_status()
 
         logger.info("Password reset action triggered.")
-        return resp.json()  # Return the response from Keycloak
+        return True
     except Exception as e:
         logger.error(f"Error triggering password reset: {e}")
-        return None
+        return False

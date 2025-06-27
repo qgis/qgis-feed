@@ -29,7 +29,14 @@ from django.db import transaction
 from django.contrib.auth.models import User
 
 from .forms import FeedEntryFilterForm, FeedItemForm, HomePageFilterForm, FeedSocialSyndicationForm
-from .utils import get_field_max_length, notify_reviewers, parse_remote_addr, get_location
+from .utils import (
+    get_field_max_length,
+    notify_reviewers,
+    parse_remote_addr,
+    get_location,
+    is_user_from_keycloak,
+    trigger_password_reset
+)
 from .models import QgisFeedEntry, CharacterLimitConfiguration
 from .languages import LANGUAGE_KEYS
 import json
@@ -256,6 +263,9 @@ class FeedsListView(View):
         user_can_add = user.has_perm("qgisfeed.add_qgisfeedentry")
         user_can_change = user.has_perm("qgisfeed.change_qgisfeedentry")
 
+        user_from_keycloak = is_user_from_keycloak(user)
+        
+
         return render(
             request,
             self.template_name,
@@ -268,6 +278,7 @@ class FeedsListView(View):
                 "count": count,
                 "user_can_change": user_can_change,
                 "user_can_add": user_can_add,
+                "user_from_keycloak": user_from_keycloak,
             },
         )
 
@@ -531,4 +542,26 @@ class FeedEntryShareTelegramView(View):
                 messages.error(request, "Failed to share to Telegram.", fail_silently=True)
         except Exception as e:
             messages.error(request, f"Error sharing to Telegram: {str(e)}", fail_silently=True)
+        return redirect('feeds_list')
+
+
+@method_decorator(staff_required, name='dispatch')
+@method_decorator(permission_required('qgisfeed.view_qgisfeedentry'), name='dispatch')
+class SendResetPasswordEmailView(View):
+    """
+    View to send a reset password email
+    """
+    def post(self, request):
+        user = request.user
+        email = user.email
+        if not email:
+            messages.error(request, "Please add an email address to your profile")
+            return redirect('feeds_list')
+
+        # Trigger the password reset email
+        is_sent = trigger_password_reset(email)
+        if not is_sent:
+            messages.error(request, "Failed to send reset password email. Please try again later.")
+            return redirect('feeds_list')
+        messages.success(request, "Reset password email sent successfully.")
         return redirect('feeds_list')

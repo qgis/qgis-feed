@@ -239,3 +239,10 @@ BLUESKY_PASSWORD = os.environ.get("BLUESKY_PASSWORD", "")
 # Telegram
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
+
+# Keycloak settings
+KEYCLOAK_BASE_URL = os.environ.get("KEYCLOAK_BASE_URL", "http://localhost:8081")
+KEYCLOAK_REALM = os.environ.get("KEYCLOAK_REALM", "qgis")
+KEYCLOAK_ADMIN_USERNAME = os.environ.get("KEYCLOAK_ADMIN_USERNAME", "admin")
+KEYCLOAK_ADMIN_PASSWORD = os.environ.get("KEYCLOAK_ADMIN_PASSWORD", "admin")
+KEYCLOAK_CLIENT_ID = os.environ.get("KEYCLOAK_CLIENT_ID", "qgis-feed")
