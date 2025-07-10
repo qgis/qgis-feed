@@ -180,6 +180,7 @@
                   Language filter
               </a>
           </th>
+          <th>Spatial Filter</th>
           <th>Need review</th>
           <th>Published</th>
           <th>
@@ -210,6 +211,15 @@
                   <td>{{ feed.title|default:"-" }}</td>
                   <td>{{ feed.author|default:"-" }}</td>
                   <td>{{ feed.get_language_filter_display|default:"-" }}</td>
+                  <td class="has-text-centered">
+                    {% if feed.spatial_filter %}
+                      <span class="icon has-text-success">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                      </span>
+                    {% else %}
+                      -
+                    {% endif %}
+                  </td>
                   <td class="has-text-centered">
                       {% if not feed.published %}
                           <span class="icon has-text-danger">
