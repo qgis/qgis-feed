@@ -12,6 +12,48 @@ ensure a smooth contribution process.
 
 For development purposes only, you can run this application in debug mode with docker compose. Some of the docker compose commands are already configured in the Makefile.
 
+## 🏃Before you start
+
+This project requires [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/) to run the development and production environments.
+Please ensure both are installed on your system before proceeding.
+
+![Docker logo](https://www.docker.com/wp-content/uploads/2022/03/Moby-logo.png)
+
+You can check your installation with:
+```bash
+docker --version
+docker-compose --version
+```
+
+![-----------------------------------------------------](./img/green-gradient.png)
+
+## 🛒 Getting the Code
+
+- Clone git repo `git clone https://github.com/qgis/qgis-feed.git`
+- Run `$ pwd` in order to get your current directory
+- Path to your repo should be `<your current directory>/qgis-feed `
+- Go to dockerize directory `cd qgis-feed`
+
+![-----------------------------------------------------](./img/green-gradient.png)
+
+## Pre-commit hooks
+
+This repository uses [pre-commit](https://pre-commit.com/) to automate code quality checks before each commit. To set it up:
+
+1. Install pre-commit (if not already installed):
+    ```sh
+    pip install pre-commit
+    ```
+
+2. Install the hooks defined in `.pre-commit-config.yaml`:
+    ```sh
+    pre-commit install
+    ```
+
+Now, the configured checks (such as linting and formatting) will run automatically when you commit changes.
+
+![-----------------------------------------------------](./img/green-gradient.png)
+
 
 ### ❄️ Nix
 
@@ -121,9 +163,6 @@ $ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/
 $ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/manage.py test qgisfeed.tests.FeedsListViewTestCase
 ```
 </details>
-
-
-![-----------------------------------------------------](./img/green-gradient.png)
 
 ## 🚀 Production Environment
 
