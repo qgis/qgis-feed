@@ -70,7 +70,7 @@
 
 ### 🌐 Analytics Dashboard overview
 
-The **QGIS Analytics Dashboard** is a web-based interface that provides insights into QGIS usage statistics, including downloads, active versions, and platform distribution. It is powered by [Metabase](https://www.metabase.com/) and is available at [https://analytics.qgis.org](https://analytics.qgis.org). The dashboard visualizes aggregated, anonymized data collected from QGIS clients, helping the community and developers understand trends and adoption across regions and platforms.
+The **QGIS Analytics Dashboard** is a web-based interface that provides insights into QGIS usage statistics, including active versions and platform distribution. It is powered by [Metabase](https://www.metabase.com/) and is available at [https://analytics.qgis.org](https://analytics.qgis.org). The dashboard visualizes aggregated, anonymized data collected from QGIS clients, helping the community and developers understand trends and adoption across regions and platforms.
 
 ![Analytics Dashboard](./img/analytics-qgis-org.webp)
 
