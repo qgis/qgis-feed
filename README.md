@@ -3,16 +3,18 @@
 ![Home Page](img/homepage.webp)
 
 
-> ## 👋 Welcome to feed.qgis.org!
+> ## 👋 Welcome to the QGIS Home Page News Feed!
 >
-> **This repository hosts the source code for the website that manages and serves news for the QGIS welcome page:**
-> 🌍 [https://feed.qgis.org](https://feed.qgis.org)
+> **This repository hosts the source code for the website that manages and serves news for the QGIS welcome page and the QGIS Analytics Dashboard:**
 >
-> Here you'll find everything you need to **build, develop, and contribute** to the QGIS Home Page News Feed.
+> - 🌍 [https://feed.qgis.org](https://feed.qgis.org)
+> - 🌍 [https://analytics.qgis.org](https://analytics.qgis.org)
+>
+> Here you'll find everything you need to **build, develop, and contribute** to these sites.
 >
 > ### ⚠️ Note on Other QGIS Websites
 >
-> **This repository is _only_ for the main QGIS Home Page News Feed ([feed.qgis.org](https://feed.qgis.org)).**
+> **This repository is _only_ for the QGIS Home Page News Feed ([feed.qgis.org](https://feed.qgis.org)) and the QGIS Analytics Dashboard ([https://analytics.qgis.org](https://analytics.qgis.org)).**
 >
 > If you are looking for the source code or want to contribute to other QGIS websites, please visit their respective repositories below.
 > Each website has its own codebase and contribution process:
@@ -38,6 +40,7 @@
   <summary>Table of Contents</summary>
   <ol>
     <li><a href="#-project-overview"> 🚀 Project Overview </a></li>
+    <li><a href="#-qgis-analytics-dashboard"> 📊 QGIS Analytics Dashboard </a></li>
     <li><a href="#-qa-status"> 🚥 QA Status </a></li>
     <li><a href="#-user-guide"> 📖 User Guide </a></li>
     <li><a href="#-license"> 📜 License </a></li>
@@ -58,6 +61,95 @@
 ## 🚀 Project Overview
 
 ![Overview](./img/feed-qgis-org.gif)
+
+![-----------------------------------------------------](./img/green-gradient.png)
+
+
+## 📊 QGIS Analytics Dashboard
+
+
+### 🌐 Analytics Dashboard overview
+
+The **QGIS Analytics Dashboard** is a web-based interface that provides insights into QGIS usage statistics, including downloads, active versions, and platform distribution. It is powered by [Metabase](https://www.metabase.com/) and is available at [https://analytics.qgis.org](https://analytics.qgis.org). The dashboard visualizes aggregated, anonymized data collected from QGIS clients, helping the community and developers understand trends and adoption across regions and platforms.
+
+![Analytics Dashboard](./img/analytics-qgis-org.webp)
+
+### 📊 How QGIS Analytics Data is Collected and Processed
+<details>
+  <summary><strong>How Tables Are Aggregated</strong></summary>
+
+When a user opens QGIS, their application sends a request to `https://feed.qgis.org`. The server processes each request and extracts only three key pieces of information:
+
+1. **Date** (rounded to the nearest day)
+2. **QGIS Version** (the version code of the software)
+3. **Country** (determined from the IP address, but the IP itself is not stored)
+4. **Operating System** (platform string)
+
+This information is then **aggregated hourly** into three separate tables:
+
+- **Daily Country Table:**
+  - Columns: date, country ISO code, number of hits
+  - Example: `2024-06-10, DE, 1200`
+
+- **Daily QGIS Version Table:**
+  - Columns: date, QGIS version, number of hits
+  - Example: `2024-06-10, 3.34.0, 800`
+
+- **Daily Platform Table:**
+  - Columns: date, OS platform, number of hits
+  - Example: `2024-06-10, Windows, 900`
+
+Each table records the **count of requests** (hits) for each unique value per day.
+
+</details>
+
+<details>
+  <summary><strong>How User Data Is Anonymized</strong></summary>
+
+- **No IP Addresses Stored:**
+  The server uses the IP address only to determine the country. The IP is immediately discarded and never stored.
+
+- **No Persistent Identifiers:**
+  No user IDs, device IDs, or other persistent identifiers are collected or stored.
+
+- **Aggregation:**
+  Data is stored only as **counts** per day, per country/version/platform. There is no way to trace data back to an individual user.
+
+- **Rate Limiting:**
+  - Only one hit per IP per hour is counted.
+  - Only one opening per day is recorded per user (even if they open/close QGIS multiple times).
+
+</details>
+
+<details>
+  <summary><strong>Summary Table Example</strong></summary>
+
+| Date       | Country | QGIS Version | Platform | Hits |
+|------------|---------|--------------|----------|------|
+| 2024-06-10 | DE      | 3.34.0       | Windows  | 120  |
+
+</details>
+
+<details>
+  <summary><strong>Privacy Measures</strong></summary>
+
+- **No personal or device information is stored.**
+- **No sharing with third parties.**
+- **Data is only used in aggregate for analytics.**
+
+</details>
+
+<details>
+  <summary><strong>Gotchas</strong></summary>
+
+- Users behind NAT or managed networks may be undercounted.
+- Users who disable the news feed are not counted.
+- Only one hit per IP per hour/day, so heavy users are not overrepresented.
+
+</details>
+
+
+
 
 ![-----------------------------------------------------](./img/green-gradient.png)
 
