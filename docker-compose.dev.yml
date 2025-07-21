@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_USER: docker
       POSTGRES_PASS: docker
-      POSTGRES_DBNAME: qgisfeed    
+      POSTGRES_DBNAME: qgisfeed
     volumes:
       - ${QGISFEED_DOCKER_SHARED_VOLUME}:/var/lib/postgresql
       - ${QGISFEED_BACKUP_VOLUME}:/backups
@@ -52,12 +52,13 @@ services:
     volumes:
       - ../qgis-feed:/code
       - ./REQUIREMENTS.txt:/REQUIREMENTS.txt
+      - ${QGISFEED_MEDIA_VOLUME}:/shared-volume/media
 
   webpack:
     build:
       context: .
       dockerfile: ./Dockerfile
-    platform: linux/amd64 
+    platform: linux/amd64
     command: npm start
     working_dir: /code
     volumes:

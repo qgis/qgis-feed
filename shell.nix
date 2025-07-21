@@ -20,15 +20,24 @@ in
     allowUnfree = true;
     buildInputs = [
       vscode
+      pinnedPkgs.pre-commit
     ];
 
-    # Now we can execute any commands within the virtual environment.
-    # This is optional and can be left out to run pip manually.
     shellHook = ''
+      # Set up pre-commit hook if .pre-commit-config.yaml exists
+      if [ -f .pre-commit-config.yaml ]; then
+        if [ ! -d .git ]; then
+          echo "No .git directory found, skipping pre-commit install."
+        else
+          pre-commit install
+          echo "pre-commit hook installed."
+        fi
+      fi
       echo "QGIS Feed"
       echo "_________________________________________________________"
       echo "Command : Description"
       echo "_________________________________________________________"
       echo "🚀 ./vscode.sh          : Open VSCode"
+
     '';
   }

@@ -1,15 +1,182 @@
-<!-- [![CircleCI](https://circleci.com/gh/elpaso/qgis-feed.svg?style=svg)](https://circleci.com/gh/elpaso/qgis-feed) -->
-
-# QGIS Home Page News Feed
-
-[![DPG Badge](https://img.shields.io/badge/Verified-DPG-3333AB?logo=data:image/svg%2bxml;base64,PHN2ZyB3aWR0aD0iMzEiIGhlaWdodD0iMzMiIHZpZXdCb3g9IjAgMCAzMSAzMyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE0LjIwMDggMjEuMzY3OEwxMC4xNzM2IDE4LjAxMjRMMTEuNTIxOSAxNi40MDAzTDEzLjk5MjggMTguNDU5TDE5LjYyNjkgMTIuMjExMUwyMS4xOTA5IDEzLjYxNkwxNC4yMDA4IDIxLjM2NzhaTTI0LjYyNDEgOS4zNTEyN0wyNC44MDcxIDMuMDcyOTdMMTguODgxIDUuMTg2NjJMMTUuMzMxNCAtMi4zMzA4MmUtMDVMMTEuNzgyMSA1LjE4NjYyTDUuODU2MDEgMy4wNzI5N0w2LjAzOTA2IDkuMzUxMjdMMCAxMS4xMTc3TDMuODQ1MjEgMTYuMDg5NUwwIDIxLjA2MTJMNi4wMzkwNiAyMi44Mjc3TDUuODU2MDEgMjkuMTA2TDExLjc4MjEgMjYuOTkyM0wxNS4zMzE0IDMyLjE3OUwxOC44ODEgMjYuOTkyM0wyNC44MDcxIDI5LjEwNkwyNC42MjQxIDIyLjgyNzdMMzAuNjYzMSAyMS4wNjEyTDI2LjgxNzYgMTYuMDg5NUwzMC42NjMxIDExLjExNzdMMjQuNjI0MSA5LjM1MTI3WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cg==)](https://blog.qgis.org/2025/02/08/qgis-recognized-as-digital-public-good/)
-
-This application is the backend part that manages and serves news for the QGIS welcome page.
+# 🌐 QGIS Home Page News Feed [![DPG Badge](https://img.shields.io/badge/Verified-DPG-3333AB?logo=data:image/svg%2bxml;base64,PHN2ZyB3aWR0aD0iMzEiIGhlaWdodD0iMzMiIHZpZXdCb3g9IjAgMCAzMSAzMyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE0LjIwMDggMjEuMzY3OEwxMC4xNzM2IDE4LjAxMjRMMTEuNTIxOSAxNi40MDAzTDEzLjk5MjggMTguNDU5TDE5LjYyNjkgMTIuMjExMUwyMS4xOTA5IDEzLjYxNkwxNC4yMDA4IDIxLjM2NzhaTTI0LjYyNDEgOS4zNTEyN0wyNC44MDcxIDMuMDcyOTdMMTguODgxIDUuMTg2NjJMMTUuMzMxNCAtMi4zMzA4MmUtMDVMMTEuNzgyMSA1LjE4NjYyTDUuODU2MDEgMy4wNzI5N0w2LjAzOTA2IDkuMzUxMjdMMCAxMS4xMTc3TDMuODQ1MjEgMTYuMDg5NUwwIDIxLjA2MTJMNi4wMzkwNiAyMi44Mjc3TDUuODU2MDEgMjkuMTA2TDExLjc4MjEgMjYuOTkyM0wxNS4zMzE0IDMyLjE3OUwxOC44ODEgMjYuOTkyM0wyNC44MDcxIDI5LjEwNkwyNC42MjQxIDIyLjgyNzdMMzAuNjYzMSAyMS4wNjEyTDI2LjgxNzYgMTYuMDg5NUwzMC42NjMxIDExLjExNzdMMjQuNjI0MSA5LjM1MTI3WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cg==)](https://blog.qgis.org/2025/02/08/qgis-recognized-as-digital-public-good/)
 
 ![Home Page](img/homepage.webp)
 
 
-## User guide
+> ## 👋 Welcome to the QGIS Home Page News Feed!
+>
+> **This repository hosts the source code for the website that manages and serves news for the QGIS welcome page and the QGIS Analytics Dashboard:**
+>
+> - 🌍 [https://feed.qgis.org](https://feed.qgis.org)
+> - 🌍 [https://analytics.qgis.org](https://analytics.qgis.org)
+>
+> Here you'll find everything you need to **build, develop, and contribute** to these sites.
+>
+> ### ⚠️ Note on Other QGIS Websites
+>
+> **This repository is _only_ for the QGIS Home Page News Feed ([feed.qgis.org](https://feed.qgis.org)) and the QGIS Analytics Dashboard ([https://analytics.qgis.org](https://analytics.qgis.org)).**
+>
+> If you are looking for the source code or want to contribute to other QGIS websites, please visit their respective repositories below.
+> Each website has its own codebase and contribution process:
+>
+> - [qgis.org](https://qgis.org) ([GitHub: QGIS-Website](https://github.com/qgis/QGIS-Website)) – QGIS Main Wesite
+> - [hub.qgis.org](https://hub.qgis.org) ([GitHub: QGIS-Hub-Website](https://github.com/qgis/QGIS-Hub-Website)) – QGIS Resources Hub
+> - [plugins.qgis.org](https://plugins.qgis.org) ([GitHub: QGIS-Plugins-Website](https://github.com/qgis/QGIS-Plugins-Website)) – QGIS Plugins Repository
+> - [planet.qgis.org](https://planet.qgis.org) ([GitHub: QGIS-Planet-Website](https://github.com/qgis/QGIS-Planet-Website)) – QGIS Planet Blog Aggregator
+> - [members.qgis.org](https://members.qgis.org) ([GitHub: QGIS-Members-Website](https://github.com/qgis/QGIS-Members-Website)) – QGIS Sustaining Members Portal
+> - [certification.qgis.org](https://certification.qgis.org) ([GitHub: QGIS-Certification-Website](https://github.com/qgis/QGIS-Certification-Website)) – QGIS Certification Programme Platform
+> - [changelog.qgis.org](https://changelog.qgis.org) ([GitHub: QGIS-Changelog-Website](https://github.com/qgis/QGIS-Changelog-Website)) – QGIS Changelog Manager
+> - [uc2025.qgis.org](https://uc.qgis.org) ([GitHub: QGIS-UC-Website](https://github.com/qgis/QGIS-UC-Website)) – QGIS User Conference Website
+>
+
+![-----------------------------------------------------](./img/green-gradient.png)
+
+
+
+<!-- TABLE OF CONTENTS -->
+<h2 id="table-of-contents"> 📖 Table of Contents</h2>
+
+<details open="open">
+  <summary>Table of Contents</summary>
+  <ol>
+    <li><a href="#-project-overview"> 🚀 Project Overview </a></li>
+    <li><a href="#-qgis-analytics-dashboard"> 📊 QGIS Analytics Dashboard </a></li>
+    <li><a href="#-qa-status"> 🚥 QA Status </a></li>
+    <li><a href="#-user-guide"> 📖 User Guide </a></li>
+    <li><a href="#-license"> 📜 License </a></li>
+    <li><a href="#-folder-structure"> 📂 Folder Structure </a></li>
+    <li><a href="#-using-ai-large-language-models"> 🤖 Using 'AI' (Large Language Models) </a></li>
+    <li><a href="#️-tech-stack"> 🛠️ Tech Stack </a></li>
+    <li><a href="#️-data-model"> 🗄️ Data Model </a></li>
+    <li><a href="#-using-the-nix-shell"> 🧊 Using the Nix Shell </a></li>
+    <li><a href="#-contributing"> ✨ Contributing </a></li>
+    <li><a href="#-have-questions"> 🙋 Have Questions? </a></li>
+    <li><a href="#-contributors"> 🧑‍💻👩‍💻 Contributors </a></li>
+  </ol>
+</details>
+
+![-----------------------------------------------------](./img/green-gradient.png)
+
+
+## 🚀 Project Overview
+
+![Overview](./img/feed-qgis-org.gif)
+
+![-----------------------------------------------------](./img/green-gradient.png)
+
+
+## 📊 QGIS Analytics Dashboard
+
+
+### 🌐 Analytics Dashboard overview
+
+The **QGIS Analytics Dashboard** is a web-based interface that provides insights into QGIS usage statistics, including active versions and platform distribution. It is powered by [Metabase](https://www.metabase.com/) and is available at [https://analytics.qgis.org](https://analytics.qgis.org). The dashboard visualizes aggregated, anonymized data collected from QGIS clients, helping the community and developers understand trends and adoption across regions and platforms.
+
+![Analytics Dashboard](./img/analytics-qgis-org.webp)
+
+### 📊 How QGIS Analytics Data is Collected and Processed
+<details>
+  <summary><strong>How Tables Are Aggregated</strong></summary>
+
+When a user opens QGIS, their application sends a request to `https://feed.qgis.org`. The server processes each request and extracts only three key pieces of information:
+
+1. **Date** (rounded to the nearest day)
+2. **QGIS Version** (the version code of the software)
+3. **Country** (determined from the IP address, but the IP itself is not stored)
+4. **Operating System** (platform string)
+
+This information is then **aggregated hourly** into three separate tables:
+
+- **Daily Country Table:**
+  - Columns: date, country ISO code, number of hits
+  - Example: `2024-06-10, DE, 1200`
+
+- **Daily QGIS Version Table:**
+  - Columns: date, QGIS version, number of hits
+  - Example: `2024-06-10, 3.34.0, 800`
+
+- **Daily Platform Table:**
+  - Columns: date, OS platform, number of hits
+  - Example: `2024-06-10, Windows, 900`
+
+Each table records the **count of requests** (hits) for each unique value per day.
+
+</details>
+
+<details>
+  <summary><strong>How User Data Is Anonymized</strong></summary>
+
+- **No IP Addresses Stored:**
+  The server uses the IP address only to determine the country. The IP is immediately discarded and never stored.
+
+- **No Persistent Identifiers:**
+  No user IDs, device IDs, or other persistent identifiers are collected or stored.
+
+- **Aggregation:**
+  Data is stored only as **counts** per day, per country/version/platform. There is no way to trace data back to an individual user.
+
+- **Rate Limiting:**
+  - Only one hit per IP per hour is counted.
+  - Only one opening per day is recorded per user (even if they open/close QGIS multiple times).
+
+</details>
+
+<details>
+  <summary><strong>Summary Table Example</strong></summary>
+
+| Date       | Country | QGIS Version | Platform | Hits |
+|------------|---------|--------------|----------|------|
+| 2024-06-10 | DE      | 3.34.0       | Windows  | 120  |
+
+</details>
+
+<details>
+  <summary><strong>Privacy Measures</strong></summary>
+
+- **No personal or device information is stored.**
+- **No sharing with third parties.**
+- **Data is only used in aggregate for analytics.**
+
+</details>
+
+<details>
+  <summary><strong>Gotchas</strong></summary>
+
+- Users behind NAT or managed networks may be undercounted.
+- Users who disable the news feed are not counted.
+- Only one hit per IP per hour/day, so heavy users are not overrepresented.
+
+</details>
+
+
+
+
+![-----------------------------------------------------](./img/green-gradient.png)
+
+
+## 🚥 QA Status
+
+### 🪪 Badges
+| Badge | Description |
+|-------|-------------|
+| [![Lint and Django Unit Tests](https://github.com/qgis/qgis-feed/actions/workflows/test.yaml/badge.svg)](https://github.com/qgis/qgis-feed/actions/workflows/test.yaml) | Lint and Django Unit Tests |
+| [![Build and Push Docker Image to DockerHub](https://github.com/qgis/qgis-feed/actions/workflows/build_push_image.yml/badge.svg)](https://github.com/qgis/qgis-feed/actions/workflows/build_push_image.yml) | Build and Push Docker Image to DockerHub |
+| ![Website Status](https://img.shields.io/website-up-down-green-red/https/feed.qgis.org.svg) | Website availability status |
+| ![License](https://img.shields.io/github/license/qgis/qgis-feed.svg) | Repository license |
+| ![](https://img.shields.io/github/issues/qgis/qgis-feed.svg) | Open issues count |
+| ![](https://img.shields.io/github/issues-closed/qgis/qgis-feed.svg) | Closed issues count |
+| ![](https://img.shields.io/github/issues-pr/qgis/qgis-feed.svg) | Open pull requests count |
+| ![](https://img.shields.io/github/issues-pr-closed/qgis/qgis-feed.svg) | Closed pull requests count |
+
+
+### ⭐️ Project Stars
+
+![Stars](https://starchart.cc/qgis/qgis-feed.svg)
+
+![-----------------------------------------------------](./img/green-gradient.png)
+
+
+## 📖 User Guide
 
 <details>
     <summary><strong>Home page</strong></summary>
@@ -51,9 +218,9 @@ After logging in with the login screen at `/accounts/login/` (can be also access
     <summary><strong>Feed item form</strong></summary>
     </br>
 
-The feed item form page is displayed when clicking the **New feed** item button or an item on the list:
+The feed item form page is displayed when clicking the **New entry** item button or an item on the list:
 - The feed item form is displayed on the left with all the widgets needed to edit the entry. On the right, a preview of the entry as it will be rendered in QGIS. Any edits made in the form shall immediately update the preview.
-- In the content widget only the following html tags are allowed: p, strong, italics. A hard limit on the number of characters allowed is configurable in administration page in the model `Character limit configurations`.
+- In the content widget only the following html tags are allowed: p, strong, italics. A hard limit on the number of characters allowed is configurable in administration page in the model `Character limit configurations` (default is 500).
 - Once a feed item is created or modified, there will be a review step where the user is asked to confirm that they have checked everything carefully.
 - The form is placed in the column **Need review** in the list before final submission.
 - The form must be approved by someone the permission `qgisfeed | Can publish QGIS feed` before it is published.
@@ -134,229 +301,105 @@ Accepted values: `ESPG:4326` latitude and longitude
 Example call: http://localhost:8000/?lat=44.5&lon=9.23
 </details>
 
-## Tech stack
+![-----------------------------------------------------](./img/green-gradient.png)
+
+
+## 📜 License
+
+This project is licensed under the GPL-2.0 License. See the [COPYING](./COPYING) file for details.
+
+![-----------------------------------------------------](./img/green-gradient.png)
+
+## 📂 Folder Structure
+
+```plaintext
+qgis-feed/
+├── 🛡️ config/                          # Nginx configuration files
+├── 🖼️ img/                             # Images and media assets for this README
+├── 🐍 qgisfeedproject/                 # Main Django project source code
+├── 🛠️ scripts/                         # Utility and deployment scripts (eg. renew_ssl.sh)
+├── 📜  COPYING                         # Project license (GPL-2.0)
+├── 🐳 docker-compose-production-ssl.yml # Docker Compose config for production with SSL
+├── 🐳 docker-compose-production.yml    # Docker Compose config for production
+├── 🧪 docker-compose-testing.yml       # Docker Compose config for testing
+├── 🛠️ docker-compose.dev.yml           # Docker Compose config for development
+├── 🐳 Dockerfile                       # Main Docker build instructions
+├── 🐳 Dockerfile.nginx.production      # Dockerfile for Nginx in production
+├── 🐳 Dockerfile.production            # Dockerfile for production app container
+├── 🧪 Dockerfile.testing               # Dockerfile for testing environment
+├── 🏁 entrypoint_production.sh         # Entrypoint script for production container
+├── 🏁 entrypoint_testing.sh            # Entrypoint script for testing container
+├── 📝 env.template                     # Example environment variables file
+├── 📖 MAKE_COMMANDS.md                 # Documentation for Makefile commands
+├── 🛠️ Makefile                         # Common development and deployment commands
+├── 📦 package.json                     # Node.js dependencies and scripts
+├── 📖 README.md                        # Project documentation
+├── 📄 REQUIREMENTS.txt                 # Python dependencies for development
+├── 📄 REQUIREMENTS_PRODUCTION.txt      # Python dependencies for production
+├── ⚙️ settings_docker_production.py    # Django settings for Docker production
+├── ⚙️ settings_docker_testing.py       # Django settings for Docker testing
+├── ❄️ shell.nix                        # Nix shell environment for development
+├── 💻 vscode.sh                        # VSCode helper script for Nix shell environment
+├── 📝 list-vscode-extensions.sh        # Script to list VSCode extensions for Nix shell environment
+├── ⚙️ webpack.config.js                # Webpack configuration
+```
+
+
+![-----------------------------------------------------](./img/green-gradient.png)
+
+## 🤖 Using 'AI' (Large Language Models)
+
+We are fine with using LLM's and Generative Machine Learning to act as general assistants, but the following three guidelines should be followed:
+
+1. **Repeatability:** Although we understand that repeatability is not possible generally, whenever you are verbatim using LLM or Generative Machine Learning outputs in this project, you **must** also provide the prompt that you used to generate the resource.
+2. **Declaration:** Sharing the prompt above is implicit declaration that a machine learning assistant was used. If it is not obvious that a piece of work was generated, include the robot (🤖) icon next to a code snippet or text snippet.
+3. **Validation:** Outputs generated by a virtual assistant should always be validated by a human and you, as contributor, take ultimate responsibility for the correct functionality of any code and the correct expression in any text or media you submit to this project.
+
+![-----------------------------------------------------](./img/green-gradient.png)
+
+
+## 🛠️ Tech Stack
 
 ![image](./img/Docker_Services.png)
 
-This application is based on Django, written in Python and deployed on the server using
-docker-compose.
+This application is based on Django, written in Python and deployed on the server using docker-compose.
 
-## Installation Guide
-<details>
-    <summary><strong>Development Environment Installation</strong></summary>
-    </br>
-
-For development purposes only, you can run this application in debug mode with docker compose. Some of the docker compose commands are already configured in the Makefile.
-
-- Build the docker the container
-```bash
-$ make dev-build
-```
-
-- Create `settings_local.py` int the `qgisfeedproject` directory, configure the email sender variables and DB configuration as in the example below:
-
-```python
-# The db service in the docker-compose is used by default
-# You can specify the databse with the configuration below
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'qgisfeed',
-        'USER': 'your_username',
-        'PASSWORD': 'your_password',
-        'HOST': 'localhost',
-        'PORT': '5432'
-    }
-}
-```
-
-- Generate the `.env` from `env.template` and edit it with your email variables:
-```sh
-cp env.template .env
-nano .env
-```
-
-See https://docs.djangoproject.com/en/2.2/topics/email/#module-django.core.mail for further email configuration.
-
-- To prevent DDOS attacks there is limit in the number of returned records (defaults to 20): it can be configured by overriding the settings in `settings_local.py` with:
-
-```python
-QGISFEED_MAX_RECORDS=40  # default value is 20
-```
-
-- Start the docker the container
-```bash
-$ make dev-start
-```
-
-- Run migrations:
-```bash
-$ make dev-migrate
-```
-
-- Create an admin user and set a password:
-```bash
-$ make dev-createsuperuser
-```
-
-- Show the development server logs:
-```bash
-$ make dev-logs
-```
+![-----------------------------------------------------](./img/green-gradient.png)
 
 
-A set of test data will be automatically loaded and the application will be available at http://localhost:8000
+## 🗄️ Data Model
 
-To enter the control panel http://localhost:8000/admin, two test users are available:
+Below is the Entity-Relationship Diagram (ERD) illustrating the core data model for the QGIS Feed Website.
+For a detailed view, click on the image below or see the full-size diagram in [erd.svg](./img/erd.svg):
 
-- Super Admin: the credentials are `admin`/`admin`
-- Staff (News Entry Author): the credentials are `staff`/`staff`
+[![ERD](./img/erd.svg)](./img/erd.svg)
 
-</details>
+![-----------------------------------------------------](./img/green-gradient.png)
 
-<details>
-    <summary><strong>Production Environment Installation</strong></summary>
-    </br>
-For production, you can run this application with make commands or docker compose:
+## 🧊 Using the Nix Shell
 
-Docker configuration should be present in `.env` file in the main directory,
-an example is provided in `env.template`:
+Please refer to the [Nix section](./CONTRIBUTING.md#️-nix) in [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-```bash
-# This file can be used as a template for .env
-# The values in this file are also the default values.
+![-----------------------------------------------------](./img/green-gradient.png)
 
-# Host machine persistent storage directory, this path
-# must be an existent directory with r/w permissions for
-# the users from the Docker containers.
-QGISFEED_DOCKER_SHARED_VOLUME=/shared-volume
+## ✨ Contributing
 
-# Number of Gunicorn workers (usually: number of cores * 2 + 1)
-QGISFEED_GUNICORN_WORKERS=4
+We welcome contributions! Please read the [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to get started.
 
-# Database name
-QGISFEED_DOCKER_DBNAME=qgisfeed
-# Database user
-QGISFEED_DOCKER_DBUSER=docker
-# Database password
-QGISFEED_DOCKER_DBPASSWORD=docker
-```
+![-----------------------------------------------------](./img/green-gradient.png)
 
-```bash
-$ make start
-```
+## 🙋 Have Questions?
 
-A set of test data will be automatically loaded and the application will be available at http://localhost:80
+Have questions or feedback? Feel free to open an issue or submit a Pull Request!
 
-To enter the control panel http://localhost:80/admin, two test users are available:
+![-----------------------------------------------------](./img/green-gradient.png)
+## 🧑‍💻👩‍💻 Contributors
 
-- Super Admin: the credentials are `admin`/`admin`
-- Staff (News Entry Author): the credentials are `staff`/`staff`
+- [Tim Sutton](https://github.com/timlinux) – Original author and lead maintainer of the QGIS Feed Website project
+- [Kontur Team](https://www.kontur.io) – Responsible for the design of the current theme
+- [Lova Andriarimalala](https://github.com/Xpirix) – Core developer and ongoing maintainer
+- [QGIS Contributors](https://github.com/qgis/QGIS-Website/graphs/contributors) – See the full list of amazing contributors who have helped make this website possible.
 
-### Enable SSL Certificate on production using Docker
+![-----------------------------------------------------](./img/green-gradient.png)
 
-1. Generate key using openssl in dhparam directory
-```bash
-openssl dhparam -out /home/web/qgis-feed/dhparam/dhparam-2048.pem 2048
-```
-
-2. Run the container
-```bash
-$ make start
-```
-
-3. Update `config/nginx/qgisfeed.conf` to include the new config file in `config/nginx/ssl/qgisfeed.conf`
-```
-include conf.d/ssl/*.conf;
-```
-
-4. Restart nginx service
-```
-nginx -s reload
-```
-
-5. To enable a cronjob to automatically renew ssl cert, add `scripts/renew_ssl.sh` to crontab file.
-
-</details>
-
-## Runing tests
-<details>
-    <summary><strong>Run all tests</strong></summary>
-    </br>
-
-To run all tests cases in the qgisfeed app, from the main directory:
-```sh
-$ make dev-runtests
-```
-</details>
-
-<details>
-    <summary><strong>Run each test</strong></summary>
-    </br>
-
-To run each test case class in the qgisfeed app:
-```sh
-$ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/manage.py test qgisfeed.tests.QgisFeedEntryTestCase
-$ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/manage.py test qgisfeed.tests.QgisUserVisitTestCase
-$ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/manage.py test qgisfeed.tests.HomePageTestCase
-$ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/manage.py test qgisfeed.tests.LoginTestCase
-$ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/manage.py test qgisfeed.tests.FeedsItemFormTestCase
-$ docker-compose -f docker-compose.dev.yml exec qgisfeed python qgisfeedproject/manage.py test qgisfeed.tests.FeedsListViewTestCase
-```
-</details>
-
-
-## Deployment
-
-<details>
-    <summary><strong>Email-sending setup</strong></summary>
-    </br>
-
-
-- Generate the `.env` from `env.template` and edit it with the production email variables:
-```sh
-cp env.template .env
-nano .env
-```
-
-</details>
-
-<details>
-    <summary><strong>Troubleshooting SSL in production</strong></summary>
-    </br>
-
-Sometimes it seems our cron does not refresh the certificate. We can fix like this:
-
-**Gentle Way**
-
-```
-ssh feed.qgis.org
-cd /home/web/qgis-feed
-scripts/renew_ssl.sh
-```
-
-Now check if your browser is showing the site opening with no SSL errors: https://feed.qgis.org
-
-**More crude way**
-
-```
-ssh feed.qgis.org
-cd /home/web/qgis-feed
-make start c=certbot
-make restart c=nginx
-```
-
-Now check if your browser is showing the site opening with no SSL errors: https://feed.qgis.org
-
-</details>
-
-Please visit the private Sysadmin documentation for more details about the deployment of https://feed.qgis.org
-
-
-## Backups
-
-If something goes terribly wrong, we keep 7 nights of backups on hetzner and daily backups on a storage box.
-
-If those are also not useful there are a collection of snapshot backups on hetzner and on a storage box
-
-Last resort: Tim makes backups to his local machine on a semi-regular basis.
+Made with ❤️ by Tim Sutton (@timlinux), Lova Andriarimalala (@Xpirix) and QGIS Contributors.
