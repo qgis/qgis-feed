@@ -37,8 +37,8 @@
     "published": true,
     "sticky": true,
     "sorting": 1,
-    "language_filter": null,
-    "spatial_filter": null,
+    "language_filter": "en",
+    "spatial_filter": "SRID=4326;POLYGON ((95 -11, 141 -11, 141 6, 95 6, 95 -11))",
     "publish_from": "2019-05-05T16:29:08.130Z",
     "publish_to": null
   }
@@ -81,8 +81,8 @@
     "published": true,
     "sticky": true,
     "sorting": 0,
-    "language_filter": null,
-    "spatial_filter": null,
+    "language_filter": "id",
+    "spatial_filter": "SRID=4326;POLYGON ((95 -11, 141 -11, 141 6, 95 6, 95 -11))",
     "publish_from": "1999-01-01T13:16:08Z",
     "publish_to": "2999-01-01"
   }
@@ -195,6 +195,28 @@
     "spatial_filter": "SRID=4326;POLYGON ((9 44, 10 44, 10 45, 9 45, 9 44))",
     "publish_from": "2019-05-09T00:00:08.132Z",
     "publish_to": null
+  }
+},
+{
+  "model": "qgisfeed.qgisfeedentry",
+  "pk": 12,
+  "fields": {
+    "title": "QGIS core will be rewritten in Python",
+    "image": "",
+    "content": "<p>Tired with C++ intricacies, the core developers have decided to rewrite QGIS in <strong>Python</strong>, since Qt is not available for Python, the new GUI will be based on Tcl/Tk.</p>",
+    "url": "https://www.null.com",
+    "author": 1,
+    "image_height": 180,
+    "image_width": 180,
+    "created": "2019-01-01",
+    "modified": "2019-01-01",
+    "published": true,
+    "sticky": true,
+    "sorting": 0,
+    "language_filter": "id",
+    "spatial_filter": null,
+    "publish_from": "1999-01-01T13:16:08Z",
+    "publish_to": "2999-01-01"
   }
 }
 ]

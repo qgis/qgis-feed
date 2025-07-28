@@ -156,13 +156,31 @@ class QgisEntriesView(View):
                 qs = qs.filter(modified__gte=after, published=True)
 
         # Get filters for lang and lat/lon
-        if filters.get('lang') is not None:
-            qs = qs.filter(Q(language_filter__isnull=True) | Q(language_filter=filters.get('lang')))
-
-        if filters.get('location') is not None:
+        lang = filters.get('lang')
+        location = filters.get('location')
+        if lang is not None and location is not None:
+            # Filter for records that either:
+            # 1. Match the specified language, OR
+            # 2. Contain the specified location, OR 
+            # 3. Have no language or location filters set (null values)
+            # This ensures we get all potentially relevant records while respecting filter settings
             qs = qs.filter(
-                Q(spatial_filter__contains=filters.get('location')) | Q(spatial_filter__isnull=True)
+                Q(language_filter=lang) |
+                Q(spatial_filter__contains=location) |
+                Q(language_filter__isnull=True, spatial_filter__isnull=True)
             )
+        elif lang is not None:
+            # Filter for records that either:
+            # 1. Match the specified language, OR
+            # 2. Have no filters set at all (both language and location null)
+            # This provides language-specific results while including unfiltered records
+            qs = qs.filter(Q(language_filter=lang) | Q(language_filter__isnull=True, spatial_filter__isnull=True))
+        elif location is not None:
+            # Filter for records that either:
+            # 1. Contain the specified location, OR
+            # 2. Have no filters set at all (both language and location null)
+            # This provides location-specific results while including unfiltered records
+            qs = qs.filter(Q(spatial_filter__contains=location) | Q(language_filter__isnull=True, spatial_filter__isnull=True))
 
         for record in qs.values('pk', 'publish_from', 'publish_to', 'title','image', 'content', 'url', 'sticky')[:QGISFEED_MAX_RECORDS]:
             if record['publish_from']:
