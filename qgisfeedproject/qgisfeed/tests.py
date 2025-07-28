@@ -134,7 +134,7 @@ class QgisFeedEntryTestCase(TestCase):
         self.assertTrue("QGIS acquired by ESRI" in titles)
     
     def test_lang_and_location_filter(self):
-        # Test with lang (en) and location filter (Indonesia)
+        # Test with lang (id) and location filter (Indonesia)
         c = Client(HTTP_USER_AGENT='Mozilla/5.0 QGIS/31400/Fedora '
                                    'Linux (Workstation Edition)',
                    REMOTE_ADDR='180.247.213.170')
