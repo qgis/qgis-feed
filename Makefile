@@ -43,7 +43,7 @@ dev-migrate:
 	@docker compose -f docker-compose.dev.yml exec $(CONTAINER_NAME) python qgisfeedproject/manage.py migrate
 
 dev-dbseed:
-	@echom
+	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Seed db with JSON data from /fixtures/*.json"
 	@echo "------------------------------------------------------------------"

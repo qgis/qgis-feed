@@ -132,6 +132,36 @@ class QgisFeedEntryTestCase(TestCase):
         titles = [d['title'] for d in data]
         self.assertTrue("Null Island QGIS Meeting" in titles)
         self.assertTrue("QGIS acquired by ESRI" in titles)
+    
+    def test_lang_and_location_filter(self):
+        # Test with lang (en) and location filter (Indonesia)
+        c = Client(HTTP_USER_AGENT='Mozilla/5.0 QGIS/31400/Fedora '
+                                   'Linux (Workstation Edition)',
+                   REMOTE_ADDR='180.247.213.170')
+        response = c.get('/?lang=id')
+        data = json.loads(response.content)
+        titles = [d['title'] for d in data]
+
+        # The entry with language_filter='en' and spatial_filter='Polygon near the null island'
+        # should not be included in the results
+        self.assertFalse("Null Island QGIS Meeting" in titles)
+
+        # The entry with language_filter='en' and spatial_filter='Polygon near Indonesia'
+        # should be included in the results
+        self.assertTrue("Next Microsoft Windows code name revealed" in titles)
+
+        # The entry with language_filter='id' and spatial_filter='Polygon near Indonesia'
+        # should be included in the results
+        self.assertTrue("QGIS core will be rewritten in Rust" in titles)
+
+        # The entry with language_filter='id' and spatial_filter=null
+        # should not be included in the results
+        self.assertTrue("QGIS core will be rewritten in Python" in titles)
+
+        # The entry with language_filter=null and spatial_filter=null
+        # should be included in the results
+        self.assertTrue("QGIS acquired by ESRI" in titles)
+
 
     def test_after(self):
         c = Client(HTTP_USER_AGENT='Mozilla/5.0 QGIS/32400/Fedora '

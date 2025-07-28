@@ -15,5 +15,14 @@
       "django-html"
     ]
   },
-  "git.enableCommitSigning": true
+  "git.enableCommitSigning": true,
+  "python.testing.unittestArgs": [
+    "-v",
+    "-s",
+    "./qgisfeedproject",
+    "-p",
+    "test*.py"
+  ],
+  "python.testing.pytestEnabled": false,
+  "python.testing.unittestEnabled": true
 }
