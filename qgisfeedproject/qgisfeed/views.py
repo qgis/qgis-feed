@@ -73,17 +73,22 @@ class QgisEntriesView(View):
         """
         filters = {}
         if request.GET.get('lang'):
-            lang = request.GET.get('lang')
-            # Define the regular expression pattern for 'xx' or 'xx_XX'
+            langs = request.GET.get('lang')
+            # Accept comma-separated language codes
+            lang_list = [l.strip() for l in langs.split(',')]
+            valid_langs = []
             pattern = re.compile(r'^[a-z]{2}(_[A-Z]{2})?$')
-            if pattern.match(lang):
-                # Get the first two letters of the language code
-                lang = lang[:2]
-                if lang not in LANGUAGE_KEYS:
+            for lang in lang_list:
+                if pattern.match(lang):
+                    lang_code = lang[:2]
+                    if lang_code in LANGUAGE_KEYS:
+                        valid_langs.append(lang_code)
+                    else:
+                        raise BadRequestException("Invalid language parameter.")
+                else:
                     raise BadRequestException("Invalid language parameter.")
-            else:
-                raise BadRequestException("Invalid language parameter.")
-            filters['lang'] = lang
+            if valid_langs:
+                filters['lang'] = valid_langs
 
         # Build location filter from the request's remote address
         # as QGIS doesn't send the location in the request
@@ -165,7 +170,7 @@ class QgisEntriesView(View):
             # 3. Have no language or location filters set (null values)
             # This ensures we get all potentially relevant records while respecting filter settings
             qs = qs.filter(
-                Q(language_filter=lang) |
+                Q(language_filter__in=lang) |
                 Q(spatial_filter__contains=location) |
                 Q(language_filter__isnull=True, spatial_filter__isnull=True)
             )
@@ -174,7 +179,7 @@ class QgisEntriesView(View):
             # 1. Match the specified language, OR
             # 2. Have no filters set at all (both language and location null)
             # This provides language-specific results while including unfiltered records
-            qs = qs.filter(Q(language_filter=lang) | Q(language_filter__isnull=True, spatial_filter__isnull=True))
+            qs = qs.filter(Q(language_filter__in=lang) | Q(language_filter__isnull=True, spatial_filter__isnull=True))
         elif location is not None:
             # Filter for records that either:
             # 1. Contain the specified location, OR
