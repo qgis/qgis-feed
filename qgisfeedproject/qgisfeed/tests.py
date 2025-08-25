@@ -132,6 +132,13 @@ class QgisFeedEntryTestCase(TestCase):
         titles = [d['title'] for d in data]
         self.assertTrue("Null Island QGIS Meeting" in titles)
         self.assertTrue("QGIS acquired by ESRI" in titles)
+
+        # Test with multiple languages (comma separated)
+        response = c.get('/?lang=en,fr')
+        data = json.loads(response.content)
+        titles = [d['title'] for d in data]
+        self.assertTrue("Null Island QGIS Meeting" in titles)
+        self.assertTrue("QGIS acquired by ESRI" in titles)
     
     def test_lang_and_location_filter(self):
         # Test with lang (id) and location filter (Indonesia)
