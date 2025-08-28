@@ -210,8 +210,10 @@
         paste_preprocess: function (plugin, args) {
             var editor = tinymce.get(tinymce.activeEditor.id);
             var len = editor.contentDocument.body.innerHTML.length;
-            var text = $(args.content).text();
-            if (len + text.length > editor.settings.max_chars) {
+            var tempDiv = document.createElement('div');
+            tempDiv.innerHTML = args.content;
+            var text = tempDiv.textContent || tempDiv.innerText || "";
+            if (text.length > editor.settings.max_chars) {
                 alert('Pasting this exceeds the maximum allowed number of ' + editor.settings.max_chars +
                     ' characters.');
                 args.content = '';
