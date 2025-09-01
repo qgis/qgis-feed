@@ -1,4 +1,4 @@
-{% extends 'layouts/base-fullscreen.html' %} 
+{% extends 'layouts/base-fullscreen.html' %}
 {% block title %} QGIS Home Page News Feed {% endblock title %} {% load static %}
 
 <!-- Specific CSS goes HERE -->
@@ -11,7 +11,7 @@
     display: none;
   }
 </style>
-{% endblock stylesheets %} 
+{% endblock stylesheets %}
 {% block content %}
 
 <h1 class="title">
@@ -22,7 +22,7 @@
 
   <div class="is-flex is-justify-content-space-between" style="gap: 10px;">
     {% if user_can_add %}
-      <button 
+      <button
           class="button is-primary1 js-modal-trigger"
           data-target="guidelinesModal"
       >
@@ -30,11 +30,11 @@
           <i class="fas fa-plus" aria-hidden="true"></i>
         </span>
         <span>New entry</span>
-          
+
       </button>
 
     {% endif %}
-    <button 
+    <button
         id="filter-button"
         class="button is-primary1 is-outlined"
     >
@@ -60,7 +60,7 @@
               </span>
             </div>
           </div>
-  
+
           <div class="field">
             <label class="label">Author:</label>
             <div class="control has-icons-left">
@@ -70,7 +70,7 @@
               </span>
             </div>
           </div>
-          
+
           <div class="field">
               <label class="label">Language filter:</label>
             <div class="select is-fullwidth">
@@ -79,7 +79,7 @@
           </div>
         </div>
         <div class="column is-6">
-  
+
           <div class="field">
             <label class="label">Date published from:</label>
             <div class="control has-icons-left">
@@ -89,7 +89,7 @@
               </span>
             </div>
           </div>
-  
+
           <div class="field">
               <label class="label">Date published to:</label>
               <div class="control has-icons-left">
@@ -99,8 +99,8 @@
                 </span>
               </div>
             </div>
-  
-          
+
+
           <div class="field">
             <label class="label">
               Need review:
@@ -114,7 +114,7 @@
   </form>
 
   <div class="is-flex is-justify-content-flex-end mt-3" style="gap: 10px;">
-    <button 
+    <button
         class="button is-primary1"
         type="submit"
         form="filter-form"
@@ -125,7 +125,7 @@
       </span>
       <span>Apply filter</span>
     </button>
-    <button 
+    <button
         class="button is-primary1 is-outlined"
         id="clear-button"
         onclick="window.location.href='?';"
@@ -151,7 +151,7 @@
                   {% elif sort_by == "title" and order == "asc"%}
                   &darr;
                   {% else %}
-                  
+
                   {% endif %}
                   Title
               </a>
@@ -163,7 +163,7 @@
                   {% elif sort_by == "author" and order == "asc"%}
                   &darr;
                   {% else %}
-                  
+
                   {% endif %}
                   Author
               </a>
@@ -175,7 +175,7 @@
                   {% elif sort_by == "language_filter" and order == "asc"%}
                   &darr;
                   {% else %}
-                  
+
                   {% endif %}
                   Language filter
               </a>
@@ -190,12 +190,23 @@
                   {% elif sort_by == "publish_from" and order == "asc"%}
                   &darr;
                   {% else %}
-                  
+
                   {% endif %}
                   Publication Start (UTC)
               </a>
           </th>
-          <th>Publication End (UTC)</th>
+          <th>
+              <a href="?page={{ feeds_entry.number }}&sort_by=publish_to&order={{ order|lower|default:"asc" }}">
+                  {% if sort_by == "publish_to" and order == "desc" %}
+                  &uarr;
+                  {% elif sort_by == "publish_to" and order == "asc"%}
+                  &darr;
+                  {% else %}
+
+                  {% endif %}
+                  Publication End (UTC)
+              </a>
+          </th>
           <th>Sorting Order</th>
         </tr>
       </thead>
@@ -254,7 +265,7 @@
     <div class="field has-addons column is-6">
         <p class="control">
 
-            <button class="button" 
+            <button class="button"
                 {% if feeds_entry.has_previous  %}
                 onclick="window.location.href='?page=1&sort_by={{sort_by}}&order={{current_order}}';"
                 {% else %}
@@ -269,7 +280,7 @@
 
         </p>
         <p class="control">
-          <button class="button" 
+          <button class="button"
             {% if feeds_entry.has_previous  %}
             onclick="window.location.href='?page={{ feeds_entry.previous_page_number }}&sort_by={{sort_by}}&order={{current_order}}';"
             {% else %}
