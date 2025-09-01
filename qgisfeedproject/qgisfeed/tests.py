@@ -195,6 +195,16 @@ class QgisFeedEntryTestCase(TestCase):
         null_island = [d for d in data if d['title'] == "Null Island QGIS Hackfest"][0]
         self.assertTrue(timezone.datetime(2019, 5, 9).timestamp() > null_island['publish_to'])
 
+        # Future feed entries should not be included in the results
+        QgisFeedEntry.objects.filter(title='Null Island QGIS Hackfest').update(
+            publish_from='2999-01-01T13:16:08Z',
+            publish_to='2999-04-09',
+            modified='2025-08-28'
+        )
+        response = c.get('/?after=%s' % timezone.datetime(2025, 8, 26).timestamp())
+        data = json.loads(response.content)
+        titles = [d['title'] for d in data]
+        self.assertFalse("Null Island QGIS Hackfest" in titles)
 
     def test_invalid_parameters(self):
         c = Client(HTTP_USER_AGENT='Mozilla/5.0 QGIS/32400/Fedora '

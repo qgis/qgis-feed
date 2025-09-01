@@ -141,9 +141,9 @@ class QgisEntriesView(View):
 
         # "after" is only set by QGIS client on requests after the first one.
         # The logic here is for QGIS >= 3.36 to send anything "published=True"
-        # that has been modified since the last feed check, we also need to
-        # send expired items because setting the "publish_to" publication end
-        # time in the past is the way to remove them from the cient cache and
+        # that has been modified since the last feed check, and exclude upcoming entries,
+        # we also need to send expired items because setting the "publish_to" publication end
+        # time in the past is the way to remove them from the client cache and
         # because entries might have been updated.
         # For older QGIS < 3.36 we only send published items, optionally filtered
         # by >= `after`.
@@ -152,14 +152,22 @@ class QgisEntriesView(View):
         if after is None:
             qs = QgisFeedEntry.published_entries.all()
         else:
-            # For update capabilities require QGIS >= 3.36
+            # fallback to original behavior if
+            # QGIS Version is not specified or QGIS < 3.36
             if qgis_version is None or qgis_version < 33600:
                 qs = QgisFeedEntry.published_entries.all()
                 qs = qs.filter(publish_from__gte=filters.get('after'))
-            else:  # fallback to original behavior for QGIS < 3.36
+            # For update capabilities require QGIS >= 3.36, 
+            # exclude upcoming entries
+            else:
                 qs = QgisFeedEntry.objects.all()
-                qs = qs.filter(modified__gte=after, published=True)
+                now = timezone.now()
+                qs = qs.filter(
+                    modified__gte=after,
+                    published=True
+                ).exclude(publish_from__gte=now)
 
+                
         # Get filters for lang and lat/lon
         lang = filters.get('lang')
         location = filters.get('location')
