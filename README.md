@@ -286,11 +286,11 @@ Example call: http://localhost:8000/?after=1557419013
 
 #### lang
 
-When `lang` is passed, the records that have a different `lang` will be excluded from the results. Only the records with `null` `lang` and the records with a matching `lang` will be returned.
+When `lang` is passed, you can specify one or more language codes as a comma-separated list. Only records with a matching `lang` or `null` `lang` will be returned; records with non-matching languages are excluded.
 
-Accepted values: `ISO-939-1` two letters language code
+Accepted values: Comma-separated list of `ISO-639-1` two-letter language codes
 
-Example call: http://localhost:8000/?lang=de
+Example call: http://localhost:8000/?lang=de,fr,it
 
 #### lat lon (location)
 
