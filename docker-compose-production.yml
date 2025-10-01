@@ -1,5 +1,3 @@
-version: "3.7"
-
 services:
 
   postgis:
@@ -128,5 +126,3 @@ services:
 
 networks:
     internal:
-
-
