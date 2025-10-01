@@ -29,7 +29,7 @@ docker-compose --version
 
 ## 🛒 Getting the Code
 
-- Clone git repo `git clone https://github.com/qgis/qgis-feed.git`
+- Clone git repo `git clone https://github.com/qgis/QGIS-Feed-Website.git`
 - Run `$ pwd` in order to get your current directory
 - Path to your repo should be `<your current directory>/qgis-feed `
 - Go to dockerize directory `cd qgis-feed`

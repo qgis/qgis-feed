@@ -159,8 +159,8 @@ Each table records the **count of requests** (hits) for each unique value per da
 ### 🪪 Badges
 | Badge | Description |
 |-------|-------------|
-| [![Lint and Django Unit Tests](https://github.com/qgis/qgis-feed/actions/workflows/test.yaml/badge.svg)](https://github.com/qgis/qgis-feed/actions/workflows/test.yaml) | Lint and Django Unit Tests |
-| [![Build and Push Docker Image to DockerHub](https://github.com/qgis/qgis-feed/actions/workflows/build_push_image.yml/badge.svg)](https://github.com/qgis/qgis-feed/actions/workflows/build_push_image.yml) | Build and Push Docker Image to DockerHub |
+| [![Lint and Django Unit Tests](https://github.com/qgis/QGIS-Feed-Website/actions/workflows/test.yaml/badge.svg)](https://github.com/qgis/QGIS-Feed-Website/actions/workflows/test.yaml) | Lint and Django Unit Tests |
+| [![Build and Push Docker Image to DockerHub](https://github.com/qgis/QGIS-Feed-Website/actions/workflows/build_push_image.yml/badge.svg)](https://github.com/qgis/QGIS-Feed-Website/actions/workflows/build_push_image.yml) | Build and Push Docker Image to DockerHub |
 | ![Website Status](https://img.shields.io/website-up-down-green-red/https/feed.qgis.org.svg) | Website availability status |
 | ![License](https://img.shields.io/github/license/qgis/qgis-feed.svg) | Repository license |
 | ![](https://img.shields.io/github/issues/qgis/qgis-feed.svg) | Open issues count |
@@ -398,7 +398,7 @@ Have questions or feedback? Feel free to open an issue or submit a Pull Request!
 - [Tim Sutton](https://github.com/timlinux) – Original author and lead maintainer of the QGIS Feed Website project
 - [Kontur Team](https://www.kontur.io) – Responsible for the design of the current theme
 - [Lova Andriarimalala](https://github.com/Xpirix) – Core developer and ongoing maintainer
-- [QGIS Contributors](https://github.com/qgis/qgis-feed/graphs/contributors) – See the full list of amazing contributors who have helped make this website possible.
+- [QGIS Contributors](https://github.com/qgis/QGIS-Feed-Website/graphs/contributors) – See the full list of amazing contributors who have helped make this website possible.
 
 ![-----------------------------------------------------](./img/green-gradient.png)
 
