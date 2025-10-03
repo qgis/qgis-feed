@@ -1,5 +1,5 @@
 {
-  "name": "qgis-feed",
+  "name": "QGIS-Feed-Website",
   "version": "1.0.0",
   "description": "[![CircleCI](https://circleci.com/gh/elpaso/qgis-feed.svg?style=svg)](https://circleci.com/gh/elpaso/qgis-feed)",
   "main": "webpack.config.js",

@@ -27,7 +27,7 @@ RUN python -m pip install -r REQUIREMENTS.txt
 RUN apt-get update && apt-get install -y curl && curl -LJO https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-City.mmdb && \
     mkdir /var/opt/maxmind && \
     mv GeoLite2-City.mmdb /var/opt/maxmind/GeoLite2-City.mmdb
-    
+
 # Install NodeJS and bulma css webpack
 RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends wget && \
     wget --no-check-certificate https://deb.nodesource.com/setup_20.x -O /tmp/node.sh && bash /tmp/node.sh && \
@@ -40,6 +40,6 @@ RUN npm install -g npm@10.2.1 && npm install -g webpack@5.89.0 && npm install -g
 ENV GEOIP_PATH=/var/opt/maxmind/
 
 
-# Creates a non-root user 
+# Creates a non-root user
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "qgisfeedproject.wsgi"]
