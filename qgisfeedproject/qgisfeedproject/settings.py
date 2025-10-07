@@ -167,7 +167,7 @@ EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "noreply")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
 
 try:
-    pass
+    from .settings_local import *
 except ImportError:
     pass
 
